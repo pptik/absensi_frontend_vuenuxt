@@ -1,0 +1,57 @@
+<template>
+  <div class="page-container">
+    <md-app md-waterfall md-mode="fixed">
+    
+      <!-- Right Menu  Navigation Section -->
+      <md-app-toolbar class="md-primary">
+        <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+          <md-icon>menu</md-icon>
+        </md-button>
+        <span class="md-title">Dashboard</span>
+      </md-app-toolbar>
+
+      <!-- Toogle Menu Visible -->
+      <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
+        <md-toolbar class="md-transparent" md-elevation="0">
+          Navigation
+        </md-toolbar>
+        <!-- Call Navigation Menu Components Here -->
+        <NavigationMenu></NavigationMenu>
+      </md-app-drawer>
+
+      <!-- Content Section -->
+      <md-app-content>
+        <!-- Nuxt Instance -->
+        <nuxt />
+      </md-app-content>
+    </md-app>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+  .md-app {
+    height: 100vh;
+    border: 1px solid rgba(#000, .12);
+  }
+  .md-drawer {
+    width: 230px;
+    max-width: calc(100vw - 125px);
+  }
+</style>
+
+<script>
+import NavigationMenu from '~/components/NavigationMenu.vue' // Load Navigation Menu Components
+
+/**
+  * NuxtJS Vue Instance
+  */
+export default {
+  name: 'default',
+  components: {
+    NavigationMenu // Attach Navigation Menu Components
+  },
+  data: () => ({
+    menuVisible: false // toogle visible menu
+  })
+}
+</script>
