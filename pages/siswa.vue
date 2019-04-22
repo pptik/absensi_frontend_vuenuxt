@@ -57,9 +57,9 @@
                   <label>Sandi</label>
                   <md-input type="password" v-model="inputSandi" ></md-input>
                 </md-field>
-                  <md-field class="md-layout-item md-size-30">
+                  <md-field class="md-layout-item md-size-35">
                     <label>Kode RFID</label>
-                    <md-input class="md-layout-item md-size-100" v-model="inputKodeRFID"></md-input>
+                    <md-input class="md-layout-item md-size-100" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
                   </md-field>
                 <label>Kelas</label>
                 <md-autocomplete v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
@@ -116,7 +116,6 @@ export default {
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
       this.dataKelas = response.data.data
-
       for (let i = 0; i < this.dataKelas.length; i++) {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)

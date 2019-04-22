@@ -15,6 +15,10 @@
                   <md-input v-model="inputNamaKelas"></md-input>
                 </md-field>
                 <md-field>
+                  <label>Tingkat</label>
+                  <md-input v-model="inputTingkat"></md-input>
+                </md-field>
+                <md-field>
                   <label>Jurusan</label>
                   <md-input v-model="inputJurusan"></md-input>
                 </md-field>
@@ -43,29 +47,54 @@
             </md-table-toolbar>
             <md-table-row slot="md-table-row" slot-scope="{ item }">
               <md-table-cell md-label="Name">{{ item.nama_kelas }}</md-table-cell>
+              <md-table-cell type="number" md-label="Tingkat">{{ item.tingkat }}</md-table-cell>
               <md-table-cell md-label="RFID">{{ item.jurusan }}</md-table-cell>
               <md-table-cell md-label="Jam Masuk">{{ item.jam_masuk }}</md-table-cell>
               <md-table-cell md-label="Jam Masuk">{{ item.jam_pulang }}</md-table-cell>
               <md-table-cell>
-                <md-button v-on:click.prevent="simpansiswa(item.nama_lengkap)">Edit</md-button>
-                <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
+                <md-button class="md-primary md-raised" @click="showDialogEdit = true; editKelasFieldTampil(item);">Edit</md-button>
+                <md-button v-on:click.prevent="deleteKelasFungsi(item._id)" class="md-accent">Delete</md-button>            
               </md-table-cell>
             </md-table-row>
           </md-table>
           </form>
         </md-tab>
-        <md-tab md-label="List Test">
-        <div class="md-layout md-gutter md-alignment-center">
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"></div>
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"></div>
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"></div>
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"></div>
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"></div>
-          <div class="md-layout-item md-medium-size-33 md-small-size-50 md-xsmall-size-100"></div>
-        </div>
-        </md-tab>
       </md-tabs>
     </div>
+
+    <!---DIALOG BOX--->
+    <md-dialog :md-active.sync="showDialogEdit" class="md-layout-item md-size-50 md-small-size-70">
+      <md-dialog-title>Edit Kelas</md-dialog-title>
+      <md-tabs md-dynamic-height>
+        <md-tab md-label="Kelas">
+          <div style="padding:20px;">
+            <md-field>
+              <label>Nama Kelas</label>
+              <md-input v-model="inputNamaKelasEdit"></md-input>
+            </md-field>
+             <md-field>
+              <label>Tingkat</label>
+              <md-input v-model="inputTingkatEdit"></md-input>
+            </md-field>
+            <md-field>
+              <label>Jurusan</label>
+              <md-input v-model="inputJurusanEdit"></md-input>
+            </md-field>
+            <md-field>
+              <label>Jam Masuk</label>
+              <md-input v-model="inputJamMasukEdit"></md-input>
+            </md-field>
+            <md-field>
+              <label>Jam Pulang</label>
+              <md-input v-model="inputJamPulangEdit"></md-input>
+            </md-field>
+            <md-dialog-actions>
+              <md-button class="md-primary" @click="editKelasFungsi()">Simpan</md-button>
+            </md-dialog-actions>
+          </div>
+        </md-tab>
+      </md-tabs>
+    </md-dialog>
   </section>
 </template>
 
@@ -77,30 +106,78 @@ export default {
   layout: 'default', // layouts used,
   data () {
     return {
+      showDialogEdit: false,
       dataKelas: [],
       selectedKelas: [],
-      idSekolah: 'hoho',
       dataArrayNamaKelas: [],
-      // input field jurusan
+      // sekolah
+      idSekolah: 'hoho',
+      objectIdSekolah: '5c874518afa7c397f8bb17d8',
+      // input field kelas
       inputNamaKelas: null,
+      inputTingkat: null,
       inputJurusan: null,
       inputJamMasuk: null,
-      inputJamPulang: null
+      inputJamPulang: null,
+      // input field kelas edit
+      inputNamaKelasEdit: null,
+      inputTingkatEdit: null,
+      inputJurusanEdit: null,
+      inputJamMasukEdit: null,
+      inputJamPulangEdit: null
     }
+  },
+  components: {
   },
   mounted () {
     this.tampilsemuakelas({'sekolah': this.idSekolah})
   },
   methods: {
+    simpankelas: async function (param) {
+      var dataSimpanKelas = {
+        nama_kelas: this.inputNamaKelas,
+        tingkat: this.inputTingkat,
+        jurusan: this.inputJurusan,
+        sekolah: this.idSekolah,
+        jam_masuk: this.inputJamMasuk,
+        jam_pulang: this.inputJamPulang
+      }
+      // console.log(dataSimpanKelas)
+      var response = await api.requestKelas(dataSimpanKelas, 'tambah')
+      
+    },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
       this.dataKelas = response.data.data
-
       for (let i = 0; i < this.dataKelas.length; i++) {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)
       }
       this.selectedKelas = response.data.data[0]
+    },
+    editKelasFieldTampil: async function (param) {
+      this.inputNamaKelasEdit = param.nama_kelas
+      this.inputTingkatEdit = param.tingkat
+      this.inputJurusanEdit = param.jurusan
+      this.inputJamMasukEdit = param.jam_masuk
+      this.inputJamPulangEdit = param.jam_pulang
+    },
+    editKelasFungsi: async function (param) {
+      var dataKelas = {
+        _id: this.objectIdSekolah,
+        nama: this.inputNamaKelasEdit,
+        tingkat: this.inputTingkatEdit,
+        jurusan: this.inputJurusanEdit,
+        sekolah: this.idSekolah,
+        jam_masuk: this.inputJamMasukEdit,
+        jam_pulang: this.inputJamPulangEdit
+      }
+      // await api.requestKelas(dataKelas, 'edit')
+      console.log(dataKelas)
+    },
+    deleteKelasFungsi: async function (param) {
+      // await api.requestKelas(param, 'delete')
+      console.log(param)
     }
   }
 }

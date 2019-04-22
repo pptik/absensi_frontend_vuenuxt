@@ -17,13 +17,13 @@ export default {
     return Api().post('/user/web/tampilsiswakelas', params)
   },
   simpanKelas (params) {
-    return Api().post('/user/tambahkelas', {params: params})
+    return Api().post('/user/tambahKelas', {params: params})
   },
   deleteKelas (params) {
     return Api().post('/user/deleteKelas', {params: params})
   },
   getMacAddressAll (params) {
-    return Api().post('/user/listMacAddress', {params: params})
+    return Api().post('/user/listMacAddress', params)
   },
   // GET SISWA
   getSemuasiswaSekolah (params) {
