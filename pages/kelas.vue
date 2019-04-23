@@ -95,7 +95,7 @@
             <md-table-row slot="md-table-row" slot-scope="{ item }">
               <md-table-cell md-label="Name">{{ item.nama_kelas }}</md-table-cell>
               <md-table-cell type="number" md-label="Tingkat">{{ item.tingkat }}</md-table-cell>
-              <md-table-cell md-label="RFID">{{ item.jurusan }}</md-table-cell>
+              <md-table-cell md-label="Jurusan">{{ item.jurusan }}</md-table-cell>
               <md-table-cell md-label="Jam Masuk">{{ item.jam_masuk }}</md-table-cell>
               <md-table-cell md-label="Jam Masuk">{{ item.jam_pulang }}</md-table-cell>
               <md-table-cell>
@@ -157,7 +157,7 @@ export default {
       selectedKelas: [],
       dataArrayNamaKelas: [],
       // sekolah
-      idSekolah: 'hoho',
+      idSekolah: 'SMP Assalaam',
       objectIdSekolah: '5c874518afa7c397f8bb17d8',
       // input field kelas
       inputNamaKelas: null,

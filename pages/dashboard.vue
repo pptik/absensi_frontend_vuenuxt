@@ -46,24 +46,54 @@
       </div>
     </div>
     </div>
-    <div class="content_kelas">
-      <form novalidate class="md-layout">
-        <md-table v-model="tbl_DataSiswaTidakMasuk" md-card class="md-alignment-top-center">
-          <md-table-toolbar>
-            <h1 class="md-title">Monitoring Siswa Tidak Hadir</h1>
-          </md-table-toolbar>
-          <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Name">{{ item.nama_siswa }}</md-table-cell>
-            <md-table-cell type="number" md-label="Tingkat">{{ item.kelas }}</md-table-cell>
-            <md-table-cell type="number" md-label="Tingkat">{{ item.status }}</md-table-cell>
-          </md-table-row>
-        </md-table>
-      </form>
+     <div class="md-layout md-gutter">
+      <div class="md-layout-item">
+        <div class="content_kelas">
+          <md-table md-card v-model="tbl_DataSiswaTidakMasuk" class="md-alignment-top-center">
+            <md-table-toolbar>
+              <h1 class="md-title">Monitoring Siswa Tidak Hadir</h1>
+            </md-table-toolbar>
+            <md-table-row slot="md-table-row" slot-scope="{ item }">
+              <md-table-cell md-label="Name">{{ item.nama_siswa }}</md-table-cell>
+              <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
+              <md-table-cell type="number" md-label="Status">{{ item.status }}</md-table-cell>
+            </md-table-row>
+          </md-table>
+        </div>
+      </div>
+      <div class="md-layout-item">
+        <div class="content_kelas">
+          <md-table md-card v-model="tbl_DataSiswaTerbanyak" class="md-alignment-top-center">
+            <md-table-toolbar>
+              <h1 class="md-title">Siswa Tidak Masuk Terbanyak</h1>
+            </md-table-toolbar>
+            <md-table-row slot="md-table-row" slot-scope="{ item }">
+              <md-table-cell md-label="Name">{{ item.nama_siswa }}</md-table-cell>
+              <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
+              <md-table-cell type="number" md-label="Total">{{ item.jumlah }}</md-table-cell>
+            </md-table-row>
+          </md-table>
+        </div>
+      </div>
     </div>
-    <div md-card class="md-layout-item">
-      <div class="bar-chart">
-        <h3>Data Bulan Ini</h3>
-        <BarChart :data="barcollection"/>
+    <div class="md-layout md-gutter">
+      <div class="md-layout-item">
+        <div class="bar-chart grafik">
+          <md-card class="innerCard">
+          <h4 class="md-title">Data Bulan Ini</h4>
+          <BarChart :data="barcollection"/>
+          </md-card>
+        </div>
+      </div>
+      <div class="md-layout-item">
+        
+        <div class="bar-chart grafik">
+          <md-card class="innerCard">
+            <h4 class="md-title">Data Tahun Ini</h4>
+            <BarChart :data="barcollection"/>
+           </md-card>
+        </div>
+       
       </div>
     </div>
   </section>
@@ -79,14 +109,15 @@ export default {
   },
   data () {
     return {
+      statusSakit: 2,
       barcollection: {
-        labels: ['Sakit', 'Izin', 'Alfa'],
+        labels: ['Hadir', 'Sakit', 'Izin', 'Alfa'],
         datasets: [
           {
-            label: 'Data One',
-            borderColor: 'rgba(50, 115, 220, 1)',
-            backgroundColor: 'rgba(50, 115, 220, 1)',
-            data: [2, 6, 1]
+            label: 'April',
+            borderColor: '#00796B',
+            backgroundColor: '#00796B',
+            data: [5, 6, 3, 1, 0, 30]
           }
         ]
       },
@@ -104,9 +135,38 @@ export default {
           nama_siswa: 'Dani', kelas: '7A', status: 'Izin'
         }
       ],
-      status_sakit: 2,
+      tbl_DataSiswaTerbanyak: [
+        {
+          nama_siswa: 'Dani Irawan Dani', kelas: '7A', jumlah: 15
+        },
+        {
+          nama_siswa: 'Dani Irawan Dani', kelas: '7A', jumlah: 7
+        },
+        {
+          nama_siswa: 'Irawan Dani', kelas: '7A', jumlah: 6
+        },
+        {
+          nama_siswa: 'Dani', kelas: '7A', jumlah: 4
+        }
+      ],
+      // status_sakit: 2,
       status_izin: 6,
       status_alfa: 0
+    }
+  },
+  methods: {
+    barchartDataKehadiran: function (sakit, izin, alfa, batasbawah) {
+      return {
+        labels: ['Sakit', 'Izin', 'Alfa'],
+        datasets: [
+          {
+            label: sakit,
+            borderColor: 'rgba(50, 115, 220, 1)',
+            backgroundColor: 'rgba(50, 115, 220, 1)',
+            data: [sakit, izin, alfa, batasbawah]
+          }
+        ]
+      }
     }
   }
 }
@@ -121,10 +181,19 @@ export default {
     padding-bottom: 20px;
   }
   .bar-chart {
-    width: 500px;
-    height: 100px;
+    height: 10px;
+    width: 480px;
   }
    .content_kelas{
     padding-top: 50px;
+  }
+  .judulGrafik{
+    padding: 1em 1em 1em 1em
+  }
+  .grafik {
+    padding-top: 3em;
+  }
+  .innerCard{
+    padding: 15px;
   }
 </style>

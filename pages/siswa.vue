@@ -89,7 +89,7 @@ export default {
       selectedKelas: [],
       dataHasilTampilSiswa: [],
       date_time: Date.now(),
-      idSekolah: 'hoho',
+      idSekolah: 'SMP Assalaam',
       // Kelas
       inputEmail: null,
       inputUsername: null,

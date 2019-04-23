@@ -64,7 +64,7 @@ export default {
   data () {
     return {
       dataMesin: [],
-      idsekolah: 'hoho',
+      idsekolah: 'SMP Assalaam',
       inputAddressMesin: null,
       inputNamaMesin: null,
       inputLokasi: null,
