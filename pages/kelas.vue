@@ -199,6 +199,7 @@ export default {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)
       }
+      console.log(this.dataKelas)
       this.selectedKelas = response.data.data[0]
     },
     editKelasFieldTampil: async function (param) {

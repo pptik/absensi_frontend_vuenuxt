@@ -2,7 +2,7 @@
   <section class="container">
   <div class="mt-5">
     <md-tabs  md-sync-route>
-      <md-tab id="tab-pages" md-label="Pages">
+      <md-tab id="tab-pages" md-label="List Siswa">
         <select v-model="selectedKelas" @change="tampilsiswaperkelas(selectedKelas)">
         <option v-for="hasil in dataKelas" :value="hasil.nama_kelas" :key="hasil._id">
           {{ hasil.nama_kelas }}
@@ -86,7 +86,7 @@ export default {
       allPost: [],
       post: [],
       dataKelas: [],
-      selectedKelas: [],
+      selectedKelas: null,
       dataHasilTampilSiswa: [],
       date_time: Date.now(),
       idSekolah: 'SMP Assalaam',
@@ -112,6 +112,7 @@ export default {
       }
       const response = await api.getKelasPersekolah(this.dataParams)
       this.dataHasilTampilSiswa = response.data.data
+      console.log(this.dataHasilTampilSiswa)
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
@@ -120,7 +121,8 @@ export default {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)
       }
-      this.selectedKelas = response.data.data[0]
+      this.selectedKelas = response.data.data[0].nama_kelas
+      this.tampilsiswaperkelas(this.selectedKelas)
     },
     simpansiswa: async function () {
       var dataSiswa = {
@@ -143,5 +145,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
- 
 </style>
