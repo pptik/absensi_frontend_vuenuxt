@@ -1,10 +1,10 @@
 <template>
   <div class="centered-container">
-    <md-content class="md-elevation-3">
+    <md-content class="md-elevation-5">
       <div class="title">
-        <img src="https://vuematerial.io/assets/logo-color.png">
-        <div class="md-title">Vue Material</div>
-        <div class="md-body-1">Build beautiful apps with Material Design and Vue.js</div>
+        <img src="../assets/logo/Tutwuri.png">
+        <div class="md-title">Selamat Datang</div>
+        <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
       </div>
       <div class="form">
         <md-field>
@@ -18,8 +18,8 @@
         </md-field>
       </div>
       <div class="actions md-layout md-alignment-center-space-between">
-        <a href="#">Register</a>
-        <md-button class="md-raised md-primary" @click="auth">Log in</md-button>
+        <a href="#">Daftar</a>
+        <md-button class="md-raised md-primary" @click="auth">Masuk</md-button>
       </div>
       <div class="loading-overlay" v-if="loading">
         <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>

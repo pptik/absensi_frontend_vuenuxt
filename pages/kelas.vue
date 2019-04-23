@@ -1,8 +1,54 @@
 <template>
    <section class="container">
-  <div class="mt-5">
-    <md-tabs  md-sync-route>
-      <md-tab id="tab-pages" md-label="Tambah Kelas">
+    <div class="mt-5">
+    <div class="md-layout md-gutter">
+      <div class="md-layout-item">
+        <md-card>
+        <md-card-header>
+          <div class="md-title md-alignment-top-center">Hadir</div>
+        </md-card-header>
+        <md-card-content class="md-content">
+          150
+        </md-card-content>
+      </md-card>
+      </div>
+      <div class="md-layout-item">
+        <md-card>
+        <md-card-header>
+          <div class="md-title">Sakit</div>
+        </md-card-header>
+        <md-card-content class="md-content">
+          5
+        </md-card-content>
+      </md-card>
+      </div>
+      <div class="md-layout-item">
+        <md-card>
+        <md-card-header>
+          <div class="md-title">Izin</div>
+        </md-card-header>
+        <md-card-content class="md-content">
+          2
+        </md-card-content>
+      </md-card>
+      </div>
+      <div class="md-layout-item">
+         <md-card>
+        <md-card-header>
+          <div class="md-title">Alfa</div>
+        </md-card-header>
+        <md-card-content class="md-content"> 
+          1
+        </md-card-content>
+      </md-card>
+      </div>
+    </div>
+      
+      
+      
+     
+    <!--<md-tabs  md-sync-route>
+       <md-tab id="tab-pages" md-label="Tambah Kelas">
       <div>
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
@@ -38,10 +84,11 @@
              </md-card>
             </form>
       </div>       
-      </md-tab>
-      <md-tab id="tab-posts" md-label="List Kelas">
-        <form novalidate class="md-layout" >
-          <md-table v-model="dataKelas" md-card>
+      </md-tab> -->
+      <!-- <md-tab id="tab-posts" md-label="List Kelas"> -->
+      <div class="content_kelas">
+        <form novalidate class="md-layout">
+          <md-table v-model="dataKelas" md-card class="md-layout-item md-alignment-top-center">
             <md-table-toolbar>
               <h1 class="md-title">Kelas </h1>
             </md-table-toolbar>
@@ -58,8 +105,7 @@
             </md-table-row>
           </md-table>
           </form>
-        </md-tab>
-      </md-tabs>
+      </div>
     </div>
 
     <!---DIALOG BOX--->
@@ -144,7 +190,7 @@ export default {
       }
       // console.log(dataSimpanKelas)
       var response = await api.requestKelas(dataSimpanKelas, 'tambah')
-      
+      console.log(response)
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
@@ -183,6 +229,14 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
+  .md-title{
+    text-align: center;
+  }
+  .md-content{
+    text-align: center;
+  }
+  .content_kelas{
+    padding-top: 50px;
+  }
 </style>
  
