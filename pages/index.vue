@@ -2,7 +2,7 @@
   <div class="centered-container">
     <md-content class="md-elevation-5">
       <div class="title">
-        <img src="../assets/logo/Tutwuri.png">
+        <img src="http://absensi.pptik.id/src/assets/images/shortcut-icon.1.png">
         <div class="md-title">Selamat Datang</div>
         <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
       </div>
@@ -10,13 +10,14 @@
         <md-field>
           <label>E-mail</label>
           <md-input v-model="login.email" autofocus></md-input>
+           <span v-if="login.email === 'admin'">Valid</span>
+           <span v-else-if="!login.email === 'admin'">Invalid Email</span>
         </md-field>
-
         <md-field md-has-password>
           <label>Password</label>
           <md-input v-model="login.password" type="password"></md-input>
         </md-field>
-      </div>
+      </div>  
       <div class="actions md-layout md-alignment-center-space-between">
         <a href="#">Daftar</a>
         <md-button class="md-raised md-primary" @click="auth">Masuk</md-button>
@@ -99,7 +100,9 @@ export default {
       loading: false,
       login: {
         email: '',
-        password: ''
+        password: '',
+        emailValid: '',
+        passwordValid: ''
       }
     }
   },
@@ -108,11 +111,26 @@ export default {
     auth () {
       // your code to login user
       // this is only for example of loading
-      this.loading = true
-      setTimeout(() => {
-        this.loading = false
-        this.$router.replace('/dashboard')
-      }, 5000)
+      if (this.login.email === 'admin') {
+        this.emailValid = 'Valid'
+        console.log(this.emailValid)
+        if (this.login.password === 'admin') {
+          this.passwordValid = 'Valid'
+          this.loading = true
+          setTimeout(() => {
+            this.loading = false
+            this.$router.replace('/dashboard')
+          }, 2000)
+        } else {
+          this.passwordValid = 'Invalid'
+        }
+      } else {
+        this.emailValid = 'Invalid'
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+        }, 1000)
+      }
     }
   }
 }

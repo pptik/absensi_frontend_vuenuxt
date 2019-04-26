@@ -1,4 +1,5 @@
 import Api from '../api_service'
+import ApiJson from '../api_json_dev'
 
 export default {
   requestKelas (params, type) {
@@ -28,5 +29,14 @@ export default {
   // GET SISWA
   getSemuasiswaSekolah (params) {
     return Api().post('/user/tampilSiswa', {params: params})
+  },
+  getJSONHttp (params) {
+    return ApiJson().get('/data/' + params.sekolah + '/kelas.json')
+  },
+  getJSONSiswa (params) {
+    return ApiJson().get('/data/' + params.sekolah + '/siswa.json')
+  },
+  getJSONMac (params) {
+    return ApiJson().get('/data/' + params.sekolah + '/mac_address.json')
   }
 }

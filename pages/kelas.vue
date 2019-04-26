@@ -88,7 +88,7 @@
       <!-- <md-tab id="tab-posts" md-label="List Kelas"> -->
       <div class="content_kelas">
         <form novalidate class="md-layout">
-          <md-table v-model="dataKelas" md-card class="md-layout-item md-alignment-top-center">
+          <md-table v-model="listDataKelasJSON" md-card class="md-layout-item md-alignment-top-center">
             <md-table-toolbar>
               <h1 class="md-title">Kelas </h1>
             </md-table-toolbar>
@@ -157,7 +157,7 @@ export default {
       selectedKelas: [],
       dataArrayNamaKelas: [],
       // sekolah
-      idSekolah: 'SMP Assalaam',
+      idSekolah: 'SMP Assalam',
       objectIdSekolah: '5c874518afa7c397f8bb17d8',
       // input field kelas
       inputNamaKelas: null,
@@ -170,13 +170,17 @@ export default {
       inputTingkatEdit: null,
       inputJurusanEdit: null,
       inputJamMasukEdit: null,
-      inputJamPulangEdit: null
+      inputJamPulangEdit: null,
+      // JSON
+      listDataKelasJSON: []
     }
   },
   components: {
   },
   mounted () {
     this.tampilsemuakelas({'sekolah': this.idSekolah})
+    this.listKelasJSON({'sekolah': 'hahaw'})
+    // this.listMacAddress({'sekolah': this.idsekolah})
   },
   methods: {
     simpankelas: async function (param) {
@@ -225,6 +229,11 @@ export default {
     deleteKelasFungsi: async function (param) {
       // await api.requestKelas(param, 'delete')
       console.log(param)
+    },
+    listKelasJSON: async function (param) {
+      const response = await api.getJSONHttp(param)
+      var dataParseJson = JSON.parse(JSON.stringify(response.data))
+      this.listDataKelasJSON = dataParseJson
     }
   }
 }

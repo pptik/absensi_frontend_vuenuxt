@@ -14,9 +14,10 @@
             <h1 class="md-title">Siswa</h1>
           </md-table-toolbar>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
-            <md-table-cell md-label="RFID">{{ item.rfid }}</md-table-cell>
-            <md-table-cell md-label="Jam Masuk">{{ item.created_at }}</md-table-cell>
+            <md-table-cell md-label="Name">{{ item.profile.nama_lengkap }}</md-table-cell>
+            <md-table-cell md-label="RFID">{{ item.RFID_card.serial_number }}</md-table-cell>
+            <md-table-cell md-label="Jenis Kelamin">{{ item.profile.jenis_kelamin }}</md-table-cell>
+            <md-table-cell md-label="Kelas">{{ item.Class_data.kelas }}</md-table-cell>
             <md-table-cell>
               <md-button v-on:click.prevent="simpansiswa(item.nama_lengkap)">Edit</md-button>
               <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
@@ -32,6 +33,7 @@
             <md-card-header>
               <div class="md-title">Tambah Siswa</div>
                 </md-card-header>
+
                 <div style="padding:25px;">
                 <md-field>
                   <label>Email</label>
@@ -57,15 +59,20 @@
                   <label>Sandi</label>
                   <md-input type="password" v-model="inputSandi" ></md-input>
                 </md-field>
-                  <md-field class="md-layout-item md-size-35">
-                    <label>Kode RFID</label>
-                    <md-input class="md-layout-item md-size-100" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
-                  </md-field>
+                <md-field class="md-layout-item md-size-35">
+                  <label>Kode RFID</label>
+                  <md-input class="md-layout-item md-size-100" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
+                </md-field>
                 <label>Kelas</label>
                 <md-autocomplete v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
-                  <md-card-actions>
-                    <md-button type="submit" class="md-primary" v-on:click.prevent="simpansiswa()" >Tambah Siswa</md-button>
-                  </md-card-actions>
+                <md-card-actions>
+                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpansiswa()" >Tambah Siswa</md-button>
+                </md-card-actions>
+                <md-field class="md-layout-item">
+                  <label>Tahun Ajaran</label>
+                  <md-input type="number" class="md-layout-item md-size-100" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="4" v-model="inputTahunAjaran" ></md-input>
+                </md-field>
+                
               </div>
              </md-card>
             </form>
@@ -89,7 +96,7 @@ export default {
       selectedKelas: null,
       dataHasilTampilSiswa: [],
       date_time: Date.now(),
-      idSekolah: 'SMP Assalaam',
+      idSekolah: 'SMP Assalam',
       // Kelas
       inputEmail: null,
       inputUsername: null,
@@ -97,7 +104,10 @@ export default {
       inputJenisKelamin: null,
       inputSandi: null,
       inputKodeRFID: null,
-      inputKelas: null
+      inputKelas: null,
+      inputTahunAjaran: null,
+      // TAMPIL SISWA JSON
+      dataJsonTampilSiswa: []
     }
   },
   mounted () {
@@ -107,16 +117,17 @@ export default {
     tampilsiswaperkelas: async function (param) {
       this.dataParams = {
         'sekolah': this.idSekolah,
-        'kelas': param,
-        'date_time': this.date_time
+        'kelas': param
       }
-      const response = await api.getKelasPersekolah(this.dataParams)
+      const response = await api.requestSiswa(this.dataParams, 'tampilperkelas')
       this.dataHasilTampilSiswa = response.data.data
-      console.log(this.dataHasilTampilSiswa)
+      console.log(this.dataHasilTampilSiswa[0].Class_data.kelas[0])
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
       this.dataKelas = response.data.data
+
+      console.log(this.dataKelas)
       for (let i = 0; i < this.dataKelas.length; i++) {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)
@@ -133,12 +144,17 @@ export default {
         'sekolah': this.sekolah,
         'username': this.inputUsername,
         'nama_lengkap': this.inputNamaLengkap,
-        'jenis_kelamin': this.inputJenisKelamin
+        'jenis_kelamin': this.inputJenisKelamin,
+        'tahun_ajaran': this.inputTahunAjaran
       }
       await api.requestSiswa(dataSiswa, 'tambah')
     },
     DeleteSiswa: async function (params) {
       console.log(params)
+    },
+    tampilSiswaJSON: async function (param) {
+      const response = await api.getJSONHttp(param)
+      console.log(response.data + 'awoekoawe')
     }
   }
 }

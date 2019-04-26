@@ -16,8 +16,11 @@
     "amqplib": "^0.5.3",
     "axios": "^0.18.0",
     "chart.js": "^2.8.0",
+    "fs": "0.0.1-security",
     "moment": "^2.24.0",
+    "net": "^1.0.2",
     "nuxt": "^1.0.0",
+    "tls": "0.0.1",
     "vue-chartjs": "^3.4.2",
     "vue-datatable": "^1.0.4",
     "vue-material": "latest"

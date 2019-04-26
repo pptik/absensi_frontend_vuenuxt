@@ -35,7 +35,7 @@
             </md-tab>
             <md-tab id="tab-posts" md-label="List Mesin">
               <form novalidate class="md-layout" >
-                <md-table v-model="dataMesin" md-card>
+                <md-table v-model="dataMesinJSON" md-card>
                   <md-table-toolbar>
                     <h1 class="md-title">Mesin</h1>
                   </md-table-toolbar>
@@ -58,21 +58,23 @@
 
 <script>
 import api from '../middleware/routes_api/routes'
-
+// import connectionRMQ from '../middleware/RMQ/setup_rmq'
 export default {
   layout: 'default', // layouts used
   data () {
     return {
       dataMesin: [],
-      idsekolah: 'SMP Assalaam',
+      idsekolah: 'SMP Assalam',
       inputAddressMesin: null,
       inputNamaMesin: null,
       inputLokasi: null,
-      inputDeskripsi: null
+      inputDeskripsi: null,
+      dataMesinJSON: []
     }
   },
   mounted () {
-    this.listMacAddress({'sekolah': this.idsekolah})
+    // this.listMacAddress({'sekolah': this.idsekolah})
+    this.listMacAddressJSON({'sekolah': 'hahaw'})
   },
   methods: {
     simpanMacAddress: async function (param) {
@@ -83,7 +85,17 @@ export default {
       const response = await api.getMacAddressAll(param)
       this.dataMesin = response.data.data
       console.log(this.dataMesin)
+    },
+    listMacAddressJSON: async function (param) {
+      // console.log('wekaokaewok')
+      const response = await api.getJSONMac(param)
+      this.dataMesinJSON = response.data
+      console.log(response.data + 'awoekoawe')
     }
+    // kirimKeRMQ: async function (param) {
+    //   let connect = connectionRMQ.connectToRmq()
+    //   require('../middleware/RMQ/controller/sendDataRmq').publish(connect)
+    // }
   }
 }
 </script>

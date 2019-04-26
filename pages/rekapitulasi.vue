@@ -1,7 +1,7 @@
 <template>
   <section class="container">
-    <div>
-      Halaman Rekapitulasi
+    <div class="md-layout md-alignment-top-center">
+      <h1 class="md-title">Coming Soon</h1>
     </div>
   </section>
 </template>
