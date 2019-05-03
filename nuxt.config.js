@@ -40,7 +40,11 @@ module.exports = {
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
-          exclude: /(node_modules)/
+          exclude: /(node_modules)/,
+          query: {
+            limit: 10000000, // 1KO
+            name: 'img/[name].[hash:7].[ext]',
+          }
         })
       }
     }

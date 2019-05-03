@@ -3,8 +3,8 @@
   <div class="mt-5">
     <md-tabs  md-sync-route>
       <md-tab id="tab-pages" md-label="List Siswa">
-        <select v-model="selectedKelas" @change="tampilsiswaperkelas(selectedKelas)">
-        <option v-for="hasil in dataKelas" :value="hasil.nama_kelas" :key="hasil._id">
+      <select v-model="selectedKelas" @change="tampilsiswaperkelas(selectedKelas)">
+        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.nama_kelas" :key="hasil._id">
           {{ hasil.nama_kelas }}
         </option>
       </select>
@@ -65,13 +65,13 @@
                 </md-field>
                 <label>Kelas</label>
                 <md-autocomplete v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
-                <md-card-actions>
-                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpansiswa()" >Tambah Siswa</md-button>
-                </md-card-actions>
                 <md-field class="md-layout-item">
                   <label>Tahun Ajaran</label>
                   <md-input type="number" class="md-layout-item md-size-100" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="4" v-model="inputTahunAjaran" ></md-input>
                 </md-field>
+                <md-card-actions>
+                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpanDataSiswa()" >Tambah Siswa</md-button>
+                </md-card-actions>
                 
               </div>
              </md-card>
@@ -84,7 +84,7 @@
 
 <script>
 import api from '../middleware/routes_api/routes'
-
+import load from 'lodash'
 export default {
   layout: 'default', // layouts used
   data () {
@@ -102,16 +102,19 @@ export default {
       inputUsername: null,
       inputNamaLengkap: null,
       inputJenisKelamin: null,
+      inputKelaminConvert: null,
       inputSandi: null,
       inputKodeRFID: null,
       inputKelas: null,
       inputTahunAjaran: null,
       // TAMPIL SISWA JSON
-      dataJsonTampilSiswa: []
+      dataJsonTampilSiswa: [],
+      dataJSONTampilKelas: []
     }
   },
   mounted () {
-    this.tampilsemuakelas({'sekolah': this.idSekolah})
+    // this.tampilsemuakelas({'sekolah': this.idSekolah})
+    this.listKelasJSON({'sekolah': 'SMP_Assalam'})
   },
   methods: {
     tampilsiswaperkelas: async function (param) {
@@ -121,7 +124,6 @@ export default {
       }
       const response = await api.requestSiswa(this.dataParams, 'tampilperkelas')
       this.dataHasilTampilSiswa = response.data.data
-      console.log(this.dataHasilTampilSiswa[0].Class_data.kelas[0])
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
@@ -155,6 +157,64 @@ export default {
     tampilSiswaJSON: async function (param) {
       const response = await api.getJSONHttp(param)
       console.log(response.data + 'awoekoawe')
+    },
+
+    // TAHAP PENGGUNAAN JSON
+    listKelasJSON: async function (param) {
+      const response = await api.getJSONKelas(param)
+      var dataParseJson = JSON.parse(JSON.stringify(response.data))
+      this.dataJSONTampilKelas = dataParseJson
+      for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
+        const element = this.dataJSONTampilKelas[i].nama_kelas
+        this.dataArrayNamaKelas.push(element)
+      }
+      this.selectedKelas = this.dataArrayNamaKelas[0]
+
+      const responTwo = await api.getJSONSiswa({'sekolah': 'hahaw'})
+      var loadData = load.find(responTwo.data, {'Kelas.nama_kelas': '8A'})
+      console.log(loadData + 'ds')
+
+      var users = [
+        { 'user': 'barney', 'age': 36, 'active': true },
+        { 'user': 'fred', 'age': [40, 22], 'active': false }
+      ]
+      var findtest = load.chain(users).map('user').flatten().filter({age: '40'})
+      console.log(findtest)
+    },
+    simpanDataSiswa: async function (param) {
+      if (this.jenis_kelamin === 'Laki-Laki') {
+        this.inputKelaminConvert = 'L'
+      } else {
+        this.inputJenisKelamin = 'P'
+      }
+      var dataInputSimpanSiswa = {
+        email: this.inputEmail,
+        sandi: this.inputSandi,
+        rfid: this.inputKodeRFID,
+        nama_kelas: this.inputKelas,
+        tahun_Ajaran: this.inputTahunAjaran,
+        sekolah: this.idSekolah,
+        username: this.inputUsername,
+        nama_lengkap: this.inputNamaLengkap,
+        jenis_kelamin: this.inputJenisKelamin
+      }
+      const response = await api.requestJsonPengguna('tambah', param)
+      console.log(dataInputSimpanSiswa + response)
+    },
+    editDataSiswa: async function (param) {
+      var dataInputEditSiswa = {
+        email: this.inputEmail,
+        sandi: this.inputSandi,
+        rfid: this.inputKodeRFID,
+        nama_kelas: this.inputKelas,
+        tahun_Ajaran: this.inputTahunAjaran,
+        sekolah: this.idSekolah,
+        username: this.inputUsername,
+        nama_lengkap: this.inputNamaLengkap,
+        jenis_kelamin: this.inputJenisKelamin
+      }
+      // const response = await api.requestJsonPengguna('edit', param)
+      console.log(dataInputEditSiswa)
     }
   }
 }

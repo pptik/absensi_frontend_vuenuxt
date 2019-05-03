@@ -40,13 +40,11 @@
                     <h1 class="md-title">Mesin</h1>
                   </md-table-toolbar>
                   <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Address">{{ item.address }}</md-table-cell>
-                    <md-table-cell md-label="Nama Mesin">{{ item.nama }}</md-table-cell>
-                    <md-table-cell md-label="Lokasi">{{ item.lokasi }}</md-table-cell>
-                    <md-table-cell md-label="Deskripsi">{{ item.deskripsi }}</md-table-cell>
+                    <md-table-cell md-label="Address">{{ item.nama_sekolah }}</md-table-cell>
+                    <md-table-cell md-label="Address">{{ item.mac_address_absensi }}</md-table-cell>
                     <md-table-cell>
                       <md-button v-on:click.prevent="editMacAddress(item.nama_lengkap)">Edit</md-button>
-                      <md-button v-on:click.prevent="deleteMacAddress(item.nama_lengkap)" class="md-accent">Delete</md-button>            
+                      <md-button v-on:click.prevent="deleteMacAddress(item.mac_address_absensi)" class="md-accent">Delete</md-button>            
                     </md-table-cell>
                   </md-table-row>
                 </md-table>
@@ -73,29 +71,33 @@ export default {
     }
   },
   mounted () {
-    // this.listMacAddress({'sekolah': this.idsekolah})
-    this.listMacAddressJSON({'sekolah': 'hahaw'})
+    this.listMacAddressJSON({'sekolah': 'SMP_Assalam'})
   },
   methods: {
     simpanMacAddress: async function (param) {
+      var dataInputMesin = {
+        lokasi: this.inputLokasi,
+        address: this.inputAddressMesin,
+        nama: this.inputNamaMesin,
+        nama_sekolah: this.idsekolah,
+        deskripsi: this.inputDeskripsi
+      }
+      // await api.requestJsonMesin('tambah', dataInputMesin)
+      console.log(dataInputMesin)
     },
     deleteMacAddress: async function (param) {
-    },
-    listMacAddress: async function (param) {
-      const response = await api.getMacAddressAll(param)
-      this.dataMesin = response.data.data
-      console.log(this.dataMesin)
+      var dataDeleteMesin = {
+        nama_sekolah: this.idsekolah,
+        address: this.address
+      }
+      // api.requestJsonMesin('delete', dataDeleteMesin)
+      console.log(dataDeleteMesin)
     },
     listMacAddressJSON: async function (param) {
-      // console.log('wekaokaewok')
       const response = await api.getJSONMac(param)
       this.dataMesinJSON = response.data
-      console.log(response.data + 'awoekoawe')
+      console.log(JSON.stringify(response.data.nama_sekolah))
     }
-    // kirimKeRMQ: async function (param) {
-    //   let connect = connectionRMQ.connectToRmq()
-    //   require('../middleware/RMQ/controller/sendDataRmq').publish(connect)
-    // }
   }
 }
 </script>

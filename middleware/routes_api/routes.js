@@ -8,9 +8,7 @@ export default {
   requestSiswa (params, type) {
     return Api().post('/user/' + type + 'Siswa', params)
   },
-  requestMacAddress (params, type) {
-    return Api().post('/user/' + type + 'MacAddress', {data: params})
-  },
+  // BARU
   getKelas (params) {
     return Api().post('/user/pilihkelas', {params: params})
   },
@@ -31,12 +29,26 @@ export default {
     return Api().post('/user/tampilSiswa', {params: params})
   },
   getJSONHttp (params) {
-    return ApiJson().get('/data/' + params.sekolah + '/kelas.json')
+    return ApiJson().get('/data/kelas.json')
+  },
+  getJSONKelas (params) {
+    return ApiJson().get('/data/SMP Assalam_kelas.json')
   },
   getJSONSiswa (params) {
-    return ApiJson().get('/data/' + params.sekolah + '/siswa.json')
+    return ApiJson().get('/data/SMP Assalam_siswa.json')
   },
   getJSONMac (params) {
-    return ApiJson().get('/data/' + params.sekolah + '/mac_address.json')
+    return ApiJson().get('/data/SMP Assalam_mesin.json')
+  },
+  getJSONDashboard (params) {
+    return ApiJson().get('/data/dashboard.json')
+  },
+  // REQUEST BARU MENGGUNAKAN JSON
+  requestJsonMesin (params, type) {
+    return Api().post('/mesin/' + type + 'MacAddress', params)
+  },
+  requestJsonPengguna (params, type) {
+    return Api().post('/siswa/' + type + 'Pengguna', params)
   }
+
 }

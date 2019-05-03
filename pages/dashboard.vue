@@ -10,7 +10,7 @@
           <div class="md-title md-alignment-top-center">Hadir</div>
         </md-card-header>
         <md-card-content class="md-content">
-          150
+          {{status_SIA.daftar_hadir}}
         </md-card-content>
       </md-card>
       </div>
@@ -20,7 +20,7 @@
           <div class="md-title">Sakit</div>
         </md-card-header>
         <md-card-content class="md-content">
-          5
+          {{status_SIA.daftar_sakit}}
         </md-card-content>
       </md-card>
       </div>
@@ -30,7 +30,7 @@
           <div class="md-title">Izin</div>
         </md-card-header>
         <md-card-content class="md-content">
-          2
+          {{status_SIA.daftar_izin}}
         </md-card-content>
       </md-card>
       </div>
@@ -40,7 +40,7 @@
           <div class="md-title">Alfa</div>
         </md-card-header>
         <md-card-content class="md-content"> 
-          1
+          {{status_SIA.daftar_alfa}}
         </md-card-content>
       </md-card>
       </div>
@@ -101,6 +101,7 @@
 
 <script>
 import BarChart from '@/components/charts/BarChart'
+import api from '../middleware/routes_api/routes'
 
 export default {
   layout: 'default', // layouts used
@@ -110,6 +111,7 @@ export default {
   data () {
     return {
       statusSakit: 2,
+      status_SIA: '',
       barcollection: {
         labels: ['Hadir', 'Sakit', 'Izin', 'Alfa'],
         datasets: [
@@ -154,6 +156,10 @@ export default {
       status_alfa: 0
     }
   },
+  mounted () {
+    // this.dashboardJSON({'sekolah': 'hahaw'})
+    this.monitoringSiswaJSON()
+  },
   methods: {
     barchartDataKehadiran: function (sakit, izin, alfa, batasbawah) {
       return {
@@ -167,6 +173,16 @@ export default {
           }
         ]
       }
+    },
+    dashboardJSON: async function (param) {
+      const response = await api.getJSONDashboard(param)
+      var dataParseJson = JSON.parse(JSON.stringify(response.data))
+      this.status_SIA = dataParseJson
+    },
+    monitoringSiswaJSON: async function (param) {
+      const response = await api.getJSONSiswa()
+      console.log(response.data)
+      // console.log(_.filter(response.data, { 'RFID': { 'rekap_rfid': { '2019': {'April': '_23'} } } }))
     }
   }
 }

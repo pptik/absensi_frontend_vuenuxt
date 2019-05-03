@@ -1,0 +1,11 @@
+[
+  { 
+    "monitoring_tidak_hadir":
+    {
+      "daftar_hadir": "75",
+      "daftar_sakit": "2",
+      "daftar_izin": "1",
+      "daftar_alfa": "4"  
+    }
+  }
+]

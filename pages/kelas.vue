@@ -8,7 +8,7 @@
           <div class="md-title md-alignment-top-center">Hadir</div>
         </md-card-header>
         <md-card-content class="md-content">
-          150
+          {{status_SIA.daftar_hadir}}
         </md-card-content>
       </md-card>
       </div>
@@ -18,7 +18,7 @@
           <div class="md-title">Sakit</div>
         </md-card-header>
         <md-card-content class="md-content">
-          5
+          {{status_SIA.daftar_sakit}}
         </md-card-content>
       </md-card>
       </div>
@@ -28,7 +28,7 @@
           <div class="md-title">Izin</div>
         </md-card-header>
         <md-card-content class="md-content">
-          2
+          {{status_SIA.daftar_izin}}
         </md-card-content>
       </md-card>
       </div>
@@ -38,15 +38,11 @@
           <div class="md-title">Alfa</div>
         </md-card-header>
         <md-card-content class="md-content"> 
-          1
+          {{status_SIA.daftar_alfa}}
         </md-card-content>
       </md-card>
       </div>
     </div>
-      
-      
-      
-     
     <!--<md-tabs  md-sync-route>
        <md-tab id="tab-pages" md-label="Tambah Kelas">
       <div>
@@ -172,14 +168,16 @@ export default {
       inputJamMasukEdit: null,
       inputJamPulangEdit: null,
       // JSON
-      listDataKelasJSON: []
+      listDataKelasJSON: [],
+      status_SIA: []
     }
   },
   components: {
   },
   mounted () {
-    this.tampilsemuakelas({'sekolah': this.idSekolah})
-    this.listKelasJSON({'sekolah': 'hahaw'})
+    // this.tampilsemuakelas({'sekolah': this.idSekolah})
+    this.listKelasJSON({'sekolah': 'SMP_Assalam'})
+    this.dashboardJSON({'sekolah': 'hahaw'})
     // this.listMacAddress({'sekolah': this.idsekolah})
   },
   methods: {
@@ -231,9 +229,15 @@ export default {
       console.log(param)
     },
     listKelasJSON: async function (param) {
-      const response = await api.getJSONHttp(param)
+      const response = await api.getJSONKelas(param)
       var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.listDataKelasJSON = dataParseJson
+      console.log(this.listDataKelasJSON)
+    },
+    dashboardJSON: async function (param) {
+      const response = await api.getJSONDashboard(param)
+      var dataParseJson = JSON.parse(JSON.stringify(response.data))
+      this.status_SIA = dataParseJson
     }
   }
 }
