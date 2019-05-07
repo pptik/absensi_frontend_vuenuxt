@@ -19,8 +19,7 @@
         </md-field>
       </div>  
       <div class="actions md-layout md-alignment-center-space-between">
-        <a href="#">Daftar</a>
-        <md-button class="md-raised md-primary" @click="auth">Masuk</md-button>
+        <md-button class="md-raised md-primary" @click="loginAuth()">Masuk</md-button>
       </div>
       <div class="loading-overlay" v-if="loading">
         <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>
@@ -94,6 +93,7 @@ export default {
 </style>
 
 <script>
+import api from '../middleware/routes_api/routes'
 export default {
   data () {
     return {
@@ -108,6 +108,32 @@ export default {
   },
   layout: 'loginarea',
   methods: {
+    loginAuth: async function (param) {
+      this.loading = true
+      var dataLogin = {
+        email: this.login.email,
+        pass: this.login.password
+      }
+      const response = await api.requestLogin(dataLogin)
+      if (response.data.success === true) {
+        var dataAuth = {
+          username: response.data.data.username,
+          sekolah: response.data.data.sekolah,
+          _id: response.data.data._id
+        }
+        localStorage.setItem('auth', JSON.stringify(dataAuth))
+        setTimeout(() => {
+          this.loading = false
+          this.$router.replace('/dashboard')
+        }, 2000)
+      } else {
+        this.emailValid = 'Invalid'
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+        }, 1000)
+      }
+    },
     auth () {
       // your code to login user
       // this is only for example of loading

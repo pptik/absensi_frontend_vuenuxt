@@ -43,7 +43,7 @@ module.exports = {
           exclude: /(node_modules)/,
           query: {
             limit: 10000000, // 1KO
-            name: 'img/[name].[hash:7].[ext]',
+            name: 'img/[name].[hash:7].[ext]'
           }
         })
       }

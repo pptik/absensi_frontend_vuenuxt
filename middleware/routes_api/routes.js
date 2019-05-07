@@ -43,12 +43,15 @@ export default {
   getJSONDashboard (params) {
     return ApiJson().get('/data/dashboard.json')
   },
+
   // REQUEST BARU MENGGUNAKAN JSON
   requestJsonMesin (params, type) {
     return Api().post('/mesin/' + type + 'MacAddress', params)
   },
   requestJsonPengguna (params, type) {
-    return Api().post('/siswa/' + type + 'Pengguna', params)
+    return Api().post('/pengguna/' + type + 'Pengguna', params)
+  },
+  requestLogin (params) {
+    return Api().post('/pengguna/login', params)
   }
-
 }

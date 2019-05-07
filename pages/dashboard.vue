@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <div class="md-title">Sekolah Assalam</div>
+    <div class="md-title">Sekolah {{namaSekolahLocal}}</div>
     <div class="md-body-1">Jl.Pelajar Pejuang</div>
     <div class="md-layout">
       <div class="md-layout md-gutter">
@@ -49,14 +49,14 @@
      <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div class="content_kelas">
-          <md-table md-card v-model="tbl_DataSiswaTidakMasuk" class="md-alignment-top-center">
+          <md-table md-card v-model="monitoringSiswaData" class="md-alignment-top-center">
             <md-table-toolbar>
               <h1 class="md-title">Monitoring Siswa Tidak Hadir</h1>
             </md-table-toolbar>
             <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Name">{{ item.nama_siswa }}</md-table-cell>
+              <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
               <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Status">{{ item.status }}</md-table-cell>
+              <md-table-cell type="number" md-label="Status">{{ item.created_at }}</md-table-cell>
             </md-table-row>
           </md-table>
         </div>
@@ -112,6 +112,8 @@ export default {
     return {
       statusSakit: 2,
       status_SIA: '',
+      idsekolah: 'SMP Assalam',
+      monitoringSiswaData: [],
       barcollection: {
         labels: ['Hadir', 'Sakit', 'Izin', 'Alfa'],
         datasets: [
@@ -153,11 +155,15 @@ export default {
       ],
       // status_sakit: 2,
       status_izin: 6,
-      status_alfa: 0
+      status_alfa: 0,
+      namaSekolahLocal: null,
+      usernameLocal: null,
+      sekolah_id: null
     }
   },
   mounted () {
     // this.dashboardJSON({'sekolah': 'hahaw'})
+    this.setItemAuth()
     this.monitoringSiswaJSON()
   },
   methods: {
@@ -174,15 +180,27 @@ export default {
         ]
       }
     },
+    setItemAuth: async function (param) {
+      var dataAuth = JSON.parse(localStorage.getItem('auth'))
+      this.namaSekolahLocal = dataAuth.sekolah
+      this.usernameLocal = dataAuth.username
+      this.sekolah_id = dataAuth._id
+    },
     dashboardJSON: async function (param) {
       const response = await api.getJSONDashboard(param)
       var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.status_SIA = dataParseJson
     },
     monitoringSiswaJSON: async function (param) {
-      const response = await api.getJSONSiswa()
-      console.log(response.data)
-      // console.log(_.filter(response.data, { 'RFID': { 'rekap_rfid': { '2019': {'April': '_23'} } } }))
+      var date = new Date()
+      var dataParamSend = {
+        sekolah: this.namaSekolahLocal,
+        tahun: new Date().getFullYear(),
+        jam_awal: date
+      }
+      const response = await api.requestJsonPengguna(dataParamSend, 'monitoring')
+      this.monitoringSiswaData = response.data.data
+      console.log(JSON.stringify(response.data.data) + ' res')
     }
   }
 }

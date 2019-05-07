@@ -14,10 +14,10 @@
             <h1 class="md-title">Siswa</h1>
           </md-table-toolbar>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Name">{{ item.profile.nama_lengkap }}</md-table-cell>
-            <md-table-cell md-label="RFID">{{ item.RFID_card.serial_number }}</md-table-cell>
-            <md-table-cell md-label="Jenis Kelamin">{{ item.profile.jenis_kelamin }}</md-table-cell>
-            <md-table-cell md-label="Kelas">{{ item.Class_data.kelas }}</md-table-cell>
+            <md-table-cell md-label="Name">{{ item.profil.nama_lengkap }}</md-table-cell>
+            <md-table-cell md-label="RFID">{{ item.RFID.serial_number }}</md-table-cell>
+            <md-table-cell md-label="Jenis Kelamin">{{ item.profil.jenis_kelamin }}</md-table-cell>
+            <md-table-cell md-label="Kelas">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
               <md-button v-on:click.prevent="simpansiswa(item.nama_lengkap)">Edit</md-button>
               <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
@@ -118,12 +118,13 @@ export default {
   },
   methods: {
     tampilsiswaperkelas: async function (param) {
-      this.dataParams = {
-        'sekolah': this.idSekolah,
-        'kelas': param
-      }
-      const response = await api.requestSiswa(this.dataParams, 'tampilperkelas')
-      this.dataHasilTampilSiswa = response.data.data
+      // this.dataParams = {
+      //   'sekolah': this.idSekolah,
+      //   'kelas': param
+      // }
+      // const response = await api.requestJsonPengguna(this.dataParams, 'tampilPerkelas')
+      // this.dataHasilTampilSiswa = response.data.data
+      console.log(param)
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
@@ -169,17 +170,14 @@ export default {
         this.dataArrayNamaKelas.push(element)
       }
       this.selectedKelas = this.dataArrayNamaKelas[0]
-
       const responTwo = await api.getJSONSiswa({'sekolah': 'hahaw'})
-      var loadData = load.find(responTwo.data, {'Kelas.nama_kelas': '8A'})
-      console.log(loadData + 'ds')
-
-      var users = [
-        { 'user': 'barney', 'age': 36, 'active': true },
-        { 'user': 'fred', 'age': [40, 22], 'active': false }
-      ]
-      var findtest = load.chain(users).map('user').flatten().filter({age: '40'})
-      console.log(findtest)
+      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: '2019', nama_kelas: this.selectedKelas }] })
+      this.dataHasilTampilSiswa = result
+      console.log(result)
+      // for (let i = 0; i < result.Kelas.length; i++) {
+      //   const kelasArray = result.Kelas[i]
+      //   console.log(kelasArray)
+      // }
     },
     simpanDataSiswa: async function (param) {
       if (this.jenis_kelamin === 'Laki-Laki') {

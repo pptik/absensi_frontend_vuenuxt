@@ -53,9 +53,11 @@ export default {
   components: {
     NavigationMenu // Attach Navigation Menu Components
   },
+  methods: {
+  },
   data: () => ({
     menuVisible: false,
-    namaPengguna: 'Asep Tisna'
+    namaPengguna: 'ADMIN'
   })
 }
 </script>
