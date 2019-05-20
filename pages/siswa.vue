@@ -4,8 +4,8 @@
     <md-tabs  md-sync-route>
       <md-tab id="tab-pages" md-label="List Siswa">
       <select v-model="selectedKelas" @change="tampilsiswaperkelas(selectedKelas)">
-        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.nama_kelas" :key="hasil._id">
-          {{ hasil.nama_kelas }}
+        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">
+          {{ hasil.NAMA_KELAS }}
         </option>
       </select>
       <div>
@@ -14,9 +14,9 @@
             <h1 class="md-title">Siswa</h1>
           </md-table-toolbar>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Name">{{ item.profil.nama_lengkap }}</md-table-cell>
-            <md-table-cell md-label="RFID">{{ item.RFID.serial_number }}</md-table-cell>
-            <md-table-cell md-label="Jenis Kelamin">{{ item.profil.jenis_kelamin }}</md-table-cell>
+            <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
+            <md-table-cell md-label="RFID">{{ item.RFID }}</md-table-cell>
+            <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
             <md-table-cell md-label="Kelas">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
               <md-button v-on:click.prevent="simpansiswa(item.nama_lengkap)">Edit</md-button>
@@ -67,12 +67,11 @@
                 <md-autocomplete v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
                 <md-field class="md-layout-item">
                   <label>Tahun Ajaran</label>
-                  <md-input type="number" class="md-layout-item md-size-100" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="4" v-model="inputTahunAjaran" ></md-input>
+                  <md-input type="text" class="md-layout-item md-size-100" v-model="inputTahunAjaran" placeholder="ex: 2018/2019"  maxlength="9"></md-input>
                 </md-field>
                 <md-card-actions>
                   <md-button type="submit" class="md-primary" v-on:click.prevent="simpanDataSiswa()" >Tambah Siswa</md-button>
                 </md-card-actions>
-                
               </div>
              </md-card>
             </form>
@@ -97,6 +96,7 @@ export default {
       dataHasilTampilSiswa: [],
       date_time: Date.now(),
       idSekolah: 'SMP Assalam',
+      tahun_ini: (new Date().getFullYear().toString() - 1) + '/' + new Date().getFullYear().toString(),
       // Kelas
       inputEmail: null,
       inputUsername: null,
@@ -109,22 +109,45 @@ export default {
       inputTahunAjaran: null,
       // TAMPIL SISWA JSON
       dataJsonTampilSiswa: [],
-      dataJSONTampilKelas: []
+      dataJSONTampilKelas: [],
+      // Local Data
+      namaSekolahLocal: null,
+      usernameLocal: null,
+      sekolah_id: null
     }
   },
   mounted () {
     // this.tampilsemuakelas({'sekolah': this.idSekolah})
-    this.listKelasJSON({'sekolah': 'SMP_Assalam'})
+    this.setItemAuth()
+    this.listKelasJSON()
   },
   methods: {
+    setItemAuth: async function (param) {
+      var dataAuth = JSON.parse(localStorage.getItem('auth'))
+      this.namaSekolahLocal = dataAuth.sekolah
+      this.usernameLocal = dataAuth.username
+      this.sekolah_id = dataAuth._id
+    },
     tampilsiswaperkelas: async function (param) {
-      // this.dataParams = {
-      //   'sekolah': this.idSekolah,
-      //   'kelas': param
-      // }
-      // const response = await api.requestJsonPengguna(this.dataParams, 'tampilPerkelas')
-      // this.dataHasilTampilSiswa = response.data.data
-      console.log(param)
+      var arrayHasil = []
+      const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
+      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+      console.log(responTwo.data)
+      for (let x = 0; x < result.length; x++) {
+        for (let i = 0; i < result[x].Kelas.length; i++) {
+          var kelasTahunAjaran = result[x].Kelas[i]
+          if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
+            var hasilArrayAkhir = {
+              'nama_lengkap': result[x].profil.nama_lengkap,
+              'RFID': result[x].RFID.serial_number,
+              'jenis_kelamin': result[x].profil.jenis_kelamin,
+              'Kelas': kelasTahunAjaran.nama_kelas
+            }
+            arrayHasil.push(hasilArrayAkhir)
+          }
+        }
+      }
+      this.dataHasilTampilSiswa = arrayHasil
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
@@ -162,22 +185,34 @@ export default {
 
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
-      const response = await api.getJSONKelas(param)
+      const response = await api.getJSONKelas(this.namaSekolahLocal)
       var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.dataJSONTampilKelas = dataParseJson
+      var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
-        const element = this.dataJSONTampilKelas[i].nama_kelas
+        const element = this.dataJSONTampilKelas[i].NAMA_KELAS
         this.dataArrayNamaKelas.push(element)
       }
+
       this.selectedKelas = this.dataArrayNamaKelas[0]
-      const responTwo = await api.getJSONSiswa({'sekolah': 'hahaw'})
-      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: '2019', nama_kelas: this.selectedKelas }] })
-      this.dataHasilTampilSiswa = result
-      console.log(result)
-      // for (let i = 0; i < result.Kelas.length; i++) {
-      //   const kelasArray = result.Kelas[i]
-      //   console.log(kelasArray)
-      // }
+      const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
+      console.log(JSON.stringify(responTwo))
+      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+      for (let x = 0; x < result.length; x++) {
+        for (let i = 0; i < result[x].Kelas.length; i++) {
+          var kelasTahunAjaran = result[x].Kelas[i]
+          if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
+            var hasilArrayAkhir = {
+              'nama_lengkap': result[x].profil.nama_lengkap,
+              'RFID': result[x].RFID.serial_number,
+              'jenis_kelamin': result[x].profil.jenis_kelamin,
+              'Kelas': kelasTahunAjaran.nama_kelas
+            }
+            arrayHasil.push(hasilArrayAkhir)
+          }
+        }
+      }
+      this.dataHasilTampilSiswa = arrayHasil
     },
     simpanDataSiswa: async function (param) {
       if (this.jenis_kelamin === 'Laki-Laki') {
@@ -191,13 +226,25 @@ export default {
         rfid: this.inputKodeRFID,
         nama_kelas: this.inputKelas,
         tahun_Ajaran: this.inputTahunAjaran,
-        sekolah: this.idSekolah,
+        sekolah: this.namaSekolahLocal,
         username: this.inputUsername,
         nama_lengkap: this.inputNamaLengkap,
         jenis_kelamin: this.inputJenisKelamin
       }
-      const response = await api.requestJsonPengguna('tambah', param)
-      console.log(dataInputSimpanSiswa + response)
+      const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
+      if (response.data.success === true) {
+        this.$swal({
+          title: 'Berhasil!',
+          text: 'Berhasil Membuat Pengguna baru!',
+          icon: 'success'
+        })
+      } else {
+        this.$swal('Gagal!', {
+          title: 'Gagal',
+          text: 'Gagal Membuat Pengguna baru!',
+          icon: 'error'
+        })
+      }
     },
     editDataSiswa: async function (param) {
       var dataInputEditSiswa = {

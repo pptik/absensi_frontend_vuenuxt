@@ -18,10 +18,6 @@
                   <md-input v-model="inputNamaMesin"></md-input>
                 </md-field>
                 <md-field>
-                <label>Lokasi</label>
-                  <md-input v-model="inputLokasi"></md-input>
-                </md-field>
-                <md-field>
                   <label>Deskripsi</label>
                   <md-input v-model="inputDeskripsi"></md-input>
                 </md-field>
@@ -40,11 +36,11 @@
                     <h1 class="md-title">Mesin</h1>
                   </md-table-toolbar>
                   <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Address">{{ item.nama_sekolah }}</md-table-cell>
-                    <md-table-cell md-label="Address">{{ item.mac_address_absensi }}</md-table-cell>
+                    <md-table-cell md-label="Nama Sekolah">{{ item.address }}</md-table-cell>
+                    <md-table-cell md-label="Address">{{ item.deskripsi }}</md-table-cell>
                     <md-table-cell>
-                      <md-button v-on:click.prevent="editMacAddress(item.nama_lengkap)">Edit</md-button>
-                      <md-button v-on:click.prevent="deleteMacAddress(item.mac_address_absensi)" class="md-accent">Delete</md-button>            
+                      <md-button v-on:click.prevent="editMacAddress(item.address)">Edit</md-button>
+                      <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button>            
                     </md-table-cell>
                   </md-table-row>
                 </md-table>
@@ -67,22 +63,31 @@ export default {
       inputNamaMesin: null,
       inputLokasi: null,
       inputDeskripsi: null,
-      dataMesinJSON: []
+      dataMesinJSON: [],
+      // DATA LOCAL
+      namaSekolahLocal: null,
+      usernameLocal: null,
+      sekolah_id: null
     }
   },
   mounted () {
-    this.listMacAddressJSON({'sekolah': 'SMP_Assalam'})
+    this.setItemAuth()
+    this.listMacAddressJSON()
   },
   methods: {
+    setItemAuth: async function () {
+      var dataAuth = JSON.parse(localStorage.getItem('auth'))
+      this.namaSekolahLocal = dataAuth.sekolah
+      this.usernameLocal = dataAuth.username
+      this.sekolah_id = dataAuth._id
+    },
     simpanMacAddress: async function (param) {
       var dataInputMesin = {
-        lokasi: this.inputLokasi,
-        address: this.inputAddressMesin,
-        nama: this.inputNamaMesin,
-        nama_sekolah: this.idsekolah,
+        mesin: this.inputNamaMesin,
+        nama_sekolah: this.namaSekolahLocal,
         deskripsi: this.inputDeskripsi
       }
-      // await api.requestJsonMesin('tambah', dataInputMesin)
+      await api.requestJsonSekolah(dataInputMesin, 'create')
       console.log(dataInputMesin)
     },
     deleteMacAddress: async function (param) {
@@ -94,9 +99,19 @@ export default {
       console.log(dataDeleteMesin)
     },
     listMacAddressJSON: async function (param) {
-      const response = await api.getJSONMac(param)
-      this.dataMesinJSON = response.data
-      console.log(JSON.stringify(response.data.nama_sekolah))
+      const response = await api.JSON_Sekolah(this.namaSekolahLocal)
+      this.dataMesinJSON = response.data[0].Mesin
+      // var totalMesin = []
+      // var mesin = response.data[0].mac_address_absensi
+      // for (let i = 0; i < mesin.length; i++) {
+      //   const elementMesin = mesin[i]
+      //   var dataMesinObj = {
+      //     nama_sekolah: response.data[0].nama_sekolah,
+      //     mac_address_absensi: elementMesin
+      //   }
+      //   totalMesin.push(dataMesinObj)
+      // }
+      // this.dataMesinJSON = totalMesin
     }
   }
 }

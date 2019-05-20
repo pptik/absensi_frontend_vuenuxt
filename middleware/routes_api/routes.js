@@ -32,13 +32,13 @@ export default {
     return ApiJson().get('/data/kelas.json')
   },
   getJSONKelas (params) {
-    return ApiJson().get('/data/SMP Assalam_kelas.json')
+    return ApiJson().get('/data/' + params + '_kelas.json')
   },
   getJSONSiswa (params) {
-    return ApiJson().get('/data/SMP Assalam_siswa.json')
+    return ApiJson().get('/data/' + params + '_siswa.json')
   },
   getJSONMac (params) {
-    return ApiJson().get('/data/SMP Assalam_mesin.json')
+    return ApiJson().get('/data/' + params + '_mesin.json')
   },
   getJSONDashboard (params) {
     return ApiJson().get('/data/dashboard.json')
@@ -51,7 +51,17 @@ export default {
   requestJsonPengguna (params, type) {
     return Api().post('/pengguna/' + type + 'Pengguna', params)
   },
+  requestJsonSekolah (params, type) {
+    return Api().post('/general/' + type + '_MacAddress', params)
+  },
   requestLogin (params) {
     return Api().post('/pengguna/login', params)
+  },
+  // JSON MESIN
+  requestJsonKelas (params, type) {
+    return Api().post('/kelas/' + type + 'Kelas', params)
+  },
+  JSON_Sekolah (params) {
+    return ApiJson().get('/data/' + params + '_sekolah.json')
   }
 }

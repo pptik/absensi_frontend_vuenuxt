@@ -21,9 +21,6 @@
       <div class="actions md-layout md-alignment-center-space-between">
         <md-button class="md-raised md-primary" @click="loginAuth()">Masuk</md-button>
       </div>
-      <div class="loading-overlay" v-if="loading">
-        <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>
-      </div>
     </md-content>
     <div class="background" />
   </div>

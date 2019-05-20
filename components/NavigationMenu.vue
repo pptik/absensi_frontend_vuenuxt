@@ -7,9 +7,9 @@
             <span class="md-list-item-text">Dashboard</span>
         </md-list-item>
 
-        <md-list-item to="rekapitulasi">
+        <md-list-item to="monitoring">
             <md-icon>insert_chart_outlined</md-icon>
-            <span class="md-list-item-text">Rekapitulasi</span>
+            <span class="md-list-item-text">Monitoring</span>
         </md-list-item>
 
         <md-list-item to="siswa">

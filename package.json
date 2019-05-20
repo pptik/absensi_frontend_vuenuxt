@@ -25,7 +25,8 @@
     "tls": "0.0.1",
     "vue-chartjs": "^3.4.2",
     "vue-datatable": "^1.0.4",
-    "vue-material": "latest"
+    "vue-material": "latest",
+    "vue-swal": "^1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

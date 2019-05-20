@@ -1,49 +1,8 @@
 <template>
    <section class="container">
     <div class="mt-5">
-    <div class="md-layout md-gutter">
-      <div class="md-layout-item">
-        <md-card>
-        <md-card-header>
-          <div class="md-title md-alignment-top-center">Hadir</div>
-        </md-card-header>
-        <md-card-content class="md-content">
-          {{status_SIA.daftar_hadir}}
-        </md-card-content>
-      </md-card>
-      </div>
-      <div class="md-layout-item">
-        <md-card>
-        <md-card-header>
-          <div class="md-title">Sakit</div>
-        </md-card-header>
-        <md-card-content class="md-content">
-          {{status_SIA.daftar_sakit}}
-        </md-card-content>
-      </md-card>
-      </div>
-      <div class="md-layout-item">
-        <md-card>
-        <md-card-header>
-          <div class="md-title">Izin</div>
-        </md-card-header>
-        <md-card-content class="md-content">
-          {{status_SIA.daftar_izin}}
-        </md-card-content>
-      </md-card>
-      </div>
-      <div class="md-layout-item">
-         <md-card>
-        <md-card-header>
-          <div class="md-title">Alfa</div>
-        </md-card-header>
-        <md-card-content class="md-content"> 
-          {{status_SIA.daftar_alfa}}
-        </md-card-content>
-      </md-card>
-      </div>
-    </div>
-    <!--<md-tabs  md-sync-route>
+    
+    <md-tabs  md-sync-route>
        <md-tab id="tab-pages" md-label="Tambah Kelas">
       <div>
         <form novalidate class="md-layout" >
@@ -80,7 +39,8 @@
              </md-card>
             </form>
       </div>       
-      </md-tab> -->
+      </md-tab>
+    </md-tabs>
       <!-- <md-tab id="tab-posts" md-label="List Kelas"> -->
       <div class="content_kelas">
         <form novalidate class="md-layout">
@@ -89,11 +49,11 @@
               <h1 class="md-title">Kelas </h1>
             </md-table-toolbar>
             <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Name">{{ item.nama_kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Tingkat">{{ item.tingkat }}</md-table-cell>
-              <md-table-cell md-label="Jurusan">{{ item.jurusan }}</md-table-cell>
-              <md-table-cell md-label="Jam Masuk">{{ item.jam_masuk }}</md-table-cell>
-              <md-table-cell md-label="Jam Masuk">{{ item.jam_pulang }}</md-table-cell>
+              <md-table-cell md-label="Name">{{ item.NAMA_KELAS }}</md-table-cell>
+              <md-table-cell type="number" md-label="Tingkat">{{ item.Tingkat }}</md-table-cell>
+              <md-table-cell md-label="Jurusan">{{ item.Jurusan }}</md-table-cell>
+              <md-table-cell md-label="Jam Masuk">{{ item.Jam_Masuk }}</md-table-cell>
+              <md-table-cell md-label="Jam Masuk">{{ item.Jam_Pulang }}</md-table-cell>
               <md-table-cell>
                 <md-button class="md-primary md-raised" @click="showDialogEdit = true; editKelasFieldTampil(item);">Edit</md-button>
                 <md-button v-on:click.prevent="deleteKelasFungsi(item._id)" class="md-accent">Delete</md-button>            
@@ -139,7 +99,6 @@
     </md-dialog>
   </section>
 </template>
-
 <script>
 
 import api from '../middleware/routes_api/routes'
@@ -169,33 +128,43 @@ export default {
       inputJamPulangEdit: null,
       // JSON
       listDataKelasJSON: [],
-      status_SIA: []
+      status_SIA: [],
+      // DATA LOCAL
+      namaSekolahLocal: null,
+      usernameLocal: null,
+      sekolah_id: null
     }
   },
   components: {
   },
   mounted () {
+    this.setItemAuth()
     // this.tampilsemuakelas({'sekolah': this.idSekolah})
-    this.listKelasJSON({'sekolah': 'SMP_Assalam'})
-    this.dashboardJSON({'sekolah': 'hahaw'})
+    this.listKelasJSON()
     // this.listMacAddress({'sekolah': this.idsekolah})
   },
   methods: {
+    setItemAuth: async function () {
+      var dataAuth = JSON.parse(localStorage.getItem('auth'))
+      this.namaSekolahLocal = dataAuth.sekolah
+      this.usernameLocal = dataAuth.username
+      this.sekolah_id = dataAuth._id
+    },
     simpankelas: async function (param) {
       var dataSimpanKelas = {
         nama_kelas: this.inputNamaKelas,
         tingkat: this.inputTingkat,
         jurusan: this.inputJurusan,
-        sekolah: this.idSekolah,
+        nama_sekolah: this.namaSekolahLocal,
         jam_masuk: this.inputJamMasuk,
         jam_pulang: this.inputJamPulang
       }
       // console.log(dataSimpanKelas)
-      var response = await api.requestKelas(dataSimpanKelas, 'tambah')
+      var response = await api.requestJsonKelas(dataSimpanKelas, 'dev_Tambah')
       console.log(response)
     },
     tampilsemuakelas: async function (param) {
-      const response = await api.getKelas(param)
+      const response = await api.getKelas(this.namaSekolahLocal)
       this.dataKelas = response.data.data
       for (let i = 0; i < this.dataKelas.length; i++) {
         const element = this.dataKelas[i].nama_kelas
@@ -229,15 +198,9 @@ export default {
       console.log(param)
     },
     listKelasJSON: async function (param) {
-      const response = await api.getJSONKelas(param)
+      const response = await api.getJSONKelas(this.namaSekolahLocal)
       var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.listDataKelasJSON = dataParseJson
-      console.log(this.listDataKelasJSON)
-    },
-    dashboardJSON: async function (param) {
-      const response = await api.getJSONDashboard(param)
-      var dataParseJson = JSON.parse(JSON.stringify(response.data))
-      this.status_SIA = dataParseJson
     }
   }
 }
