@@ -4,10 +4,16 @@
     <md-tabs  md-sync-route>
       <md-tab id="tab-pages" md-label="List Siswa">
       <select v-model="selectedKelas" @change="tampilsiswaperkelas(selectedKelas)">
-        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">
-          {{ hasil.NAMA_KELAS }}
+        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.nama_kelas" :key="hasil._id">
+          {{ hasil.nama_kelas }}
         </option>
       </select>
+      <md-field>
+        <label>Single select</label>
+        <md-select v-model="selectedKelas" @md-selected="cobain($event)">
+          <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.nama_kelas" :key="hasil._id"> {{ hasil.nama_kelas }} </md-option>
+        </md-select>
+      </md-field>
       <div>
         <md-table v-model="dataHasilTampilSiswa" md-card>
           <md-table-toolbar>
@@ -88,6 +94,59 @@ export default {
   layout: 'default', // layouts used
   data () {
     return {
+      model: {
+        selectedGroup: null
+      },
+      items: [
+        {
+          value1: [
+            {
+              id: 1.1,
+              text: 'sometext'
+            }
+          ],
+          value2: {
+            id: 1,
+            text: 'some primary text 1'
+          }
+        },
+        {
+          value1: [
+            {
+              id: 2.1,
+              text: 'sometext'
+            },
+            {
+              id: 2.2,
+              text: 'sometext'
+            }
+          ],
+          value2: {
+            id: 2,
+            text: 'some primary text 2'
+          }
+        },
+        {
+          value1: [
+            {
+              id: 3.1,
+              text: 'sometext'
+            },
+            {
+              id: 3.3,
+              text: 'sometext'
+            },
+            {
+              id: 3.3,
+              text: 'sometext'
+            }
+          ],
+          value2: {
+            id: 3,
+            text: 'some primary text 3'
+          }
+        }
+      ],
       dataArrayNamaKelas: [],
       allPost: [],
       post: [],
@@ -127,6 +186,9 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
+    },
+    cobain: function (event) {
+      console.log(event)
     },
     tampilsiswaperkelas: async function (param) {
       var arrayHasil = []
@@ -186,8 +248,7 @@ export default {
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
-      var dataParseJson = JSON.parse(JSON.stringify(response.data))
-      this.dataJSONTampilKelas = dataParseJson
+      this.dataJSONTampilKelas = response.data
       var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
