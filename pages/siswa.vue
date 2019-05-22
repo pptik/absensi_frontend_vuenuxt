@@ -1,7 +1,7 @@
 <template>
   <section class="container">
   <div class="mt-5">
-    <md-tabs  md-sync-route>
+    <md-tabs  md-active-tab>
       <md-tab id="tab-pages" md-label="List Siswa">
       <md-field>
         <label>Pilih kelas</label>

@@ -2,7 +2,7 @@
    <section class="container">
     <div class="mt-5">
     
-    <md-tabs  md-sync-route>
+    <md-tabs  md-active-tab>
        <md-tab id="tab-pages" md-label="Tambah Kelas">
       <div>
         <form novalidate class="md-layout" >

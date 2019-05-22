@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <md-tabs  md-sync-route>
+    <md-tabs  md-active-tab>
       <md-tab id="tab-pages" md-label="Tambah Mesin">
       <div>
         <form novalidate class="md-layout" >
