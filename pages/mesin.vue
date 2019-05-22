@@ -1,7 +1,24 @@
 <template>
   <section class="container">
     <md-tabs  md-active-tab>
-      <md-tab id="tab-pages" md-label="Tambah Mesin">
+            <md-tab id="tab-posts" md-label="List Mesin">
+              <form novalidate class="md-layout" >
+                <md-table v-model="dataMesinJSON" md-card>
+                  <md-table-toolbar>
+                    <h1 class="md-title">Mesin</h1>
+                  </md-table-toolbar>
+                  <md-table-row slot="md-table-row" slot-scope="{ item }">
+                    <md-table-cell md-label="Nama Sekolah">{{ item.address }}</md-table-cell>
+                    <md-table-cell md-label="Address">{{ item.deskripsi }}</md-table-cell>
+                    <md-table-cell>
+                      <md-button v-on:click.prevent="editMacAddress(item.address)">Edit</md-button>
+                      <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button>            
+                    </md-table-cell>
+                  </md-table-row>
+                </md-table>
+                </form>
+              </md-tab>
+                    <md-tab id="tab-pages" md-label="Tambah Mesin">
       <div>
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
@@ -22,30 +39,13 @@
                   <md-input v-model="inputDeskripsi"></md-input>
                 </md-field>
                 <md-card-actions>
-                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpanMacAddress()" >Tambah Kelas</md-button>
+                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpanMacAddress()" >Tambah Mesin</md-button>
                 </md-card-actions>
               </div>
              </md-card>
             </form>
             </div>       
             </md-tab>
-            <md-tab id="tab-posts" md-label="List Mesin">
-              <form novalidate class="md-layout" >
-                <md-table v-model="dataMesinJSON" md-card>
-                  <md-table-toolbar>
-                    <h1 class="md-title">Mesin</h1>
-                  </md-table-toolbar>
-                  <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Nama Sekolah">{{ item.address }}</md-table-cell>
-                    <md-table-cell md-label="Address">{{ item.deskripsi }}</md-table-cell>
-                    <md-table-cell>
-                      <md-button v-on:click.prevent="editMacAddress(item.address)">Edit</md-button>
-                      <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button>            
-                    </md-table-cell>
-                  </md-table-row>
-                </md-table>
-                </form>
-              </md-tab>
             </md-tabs>
         </section>
       </template>
@@ -87,7 +87,29 @@ export default {
         nama_sekolah: this.namaSekolahLocal,
         deskripsi: this.inputDeskripsi
       }
-      await api.requestJsonSekolah(dataInputMesin, 'create')
+      await api.requestJsonSekolah(dataInputMesin, 'create').then(response => {
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Mendaftarkan Mesin baru!',
+            icon: 'success',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Mendaftarkan baru!',
+            icon: 'error',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      })
       console.log(dataInputMesin)
     },
     deleteMacAddress: async function (param) {
