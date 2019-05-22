@@ -222,9 +222,6 @@ export default {
       this.selectedKelas = response.data.data[0].nama_kelas
       this.tampilsiswaperkelas(this.selectedKelas)
     },
-    cobain: async function (param) {
-      console.log(param)
-    },
     simpansiswa: async function () {
       var dataSiswa = {
         'email': this.inputEmail,
