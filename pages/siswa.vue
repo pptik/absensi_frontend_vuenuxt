@@ -4,8 +4,8 @@
     <md-tabs  md-sync-route>
       <md-tab id="tab-pages" md-label="List Siswa">
       <select v-model="selectedKelas" @change="tampilsiswaperkelas(selectedKelas)">
-        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">
-          {{ hasil.NAMA_KELAS }}
+        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.nama_kelas" :key="hasil._id">
+          {{ hasil.nama_kelas }}
         </option>
       </select>
       <!-- <md-field>
@@ -186,6 +186,9 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
+    },
+    cobain: function (event) {
+      console.log(event)
     },
     tampilsiswaperkelas: async function (param) {
       var arrayHasil = []
