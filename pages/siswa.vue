@@ -3,17 +3,12 @@
   <div class="mt-5">
     <md-tabs  md-sync-route>
       <md-tab id="tab-pages" md-label="List Siswa">
-      <select v-model="selectedKelas" @change="tampilsiswaperkelas(selectedKelas)">
-        <option v-for="hasil in dataJSONTampilKelas" :value="hasil.nama_kelas" :key="hasil._id">
-          {{ hasil.nama_kelas }}
-        </option>
-      </select>
-      <!-- <md-field>
-        <label>Kelas</label>
-        <md-select v-model="selectedKelas" @md-selected="cobain($event)">
-          <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id"> {{ hasil.NAMA_KELAS }} </md-option>
+      <md-field>
+        <label>Pilih kelas</label>
+        <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas)">
+          <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
         </md-select>
-      </md-field> -->
+      </md-field>
       <div>
         <md-table v-model="dataHasilTampilSiswa" md-card>
           <md-table-toolbar>
@@ -97,56 +92,6 @@ export default {
       model: {
         selectedGroup: null
       },
-      items: [
-        {
-          value1: [
-            {
-              id: 1.1,
-              text: 'sometext'
-            }
-          ],
-          value2: {
-            id: 1,
-            text: 'some primary text 1'
-          }
-        },
-        {
-          value1: [
-            {
-              id: 2.1,
-              text: 'sometext'
-            },
-            {
-              id: 2.2,
-              text: 'sometext'
-            }
-          ],
-          value2: {
-            id: 2,
-            text: 'some primary text 2'
-          }
-        },
-        {
-          value1: [
-            {
-              id: 3.1,
-              text: 'sometext'
-            },
-            {
-              id: 3.3,
-              text: 'sometext'
-            },
-            {
-              id: 3.3,
-              text: 'sometext'
-            }
-          ],
-          value2: {
-            id: 3,
-            text: 'some primary text 3'
-          }
-        }
-      ],
       dataArrayNamaKelas: [],
       allPost: [],
       post: [],
@@ -187,9 +132,6 @@ export default {
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
     },
-    cobain: function (event) {
-      console.log(event)
-    },
     tampilsiswaperkelas: async function (param) {
       var arrayHasil = []
       const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
@@ -221,9 +163,6 @@ export default {
       }
       this.selectedKelas = response.data.data[0].nama_kelas
       this.tampilsiswaperkelas(this.selectedKelas)
-    },
-    cobain: async function (param) {
-      console.log(param)
     },
     simpansiswa: async function () {
       var dataSiswa = {
