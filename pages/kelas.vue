@@ -2,15 +2,15 @@
    <section class="container">
     <div class="mt-5">
     
-    <md-tabs  md-sync-route>
-       <md-tab id="tab-pages" md-label="Tambah Kelas">
-      <div>
-        <form novalidate class="md-layout" >
-          <md-card class="md-layout-item md-size-50 md-small-size-50">
-            <md-card-header>
-              <div class="md-title">Tambah Kelas</div>
-                </md-card-header>
-                <div style="padding:25px;">
+    <md-tabs  md-active-tab>
+      <md-tab id="tab-pages" md-label="Tambah Kelas">
+        <div>
+          <form novalidate class="md-layout" >
+            <md-card class="md-layout-item md-size-50 md-small-size-50">
+              <md-card-header>
+                <div class="md-title">Tambah Kelas</div>
+              </md-card-header>
+              <div style="padding:25px;">
                 <md-field>
                   <label>Nama Kelas</label>
                   <md-input v-model="inputNamaKelas"></md-input>
@@ -24,44 +24,46 @@
                   <md-input v-model="inputJurusan"></md-input>
                 </md-field>
                 <md-field>
-                <label>Jam Masuk</label>
+                  <label>Jam Masuk</label>
                   <md-input v-model="inputJamMasuk"></md-input>
                 </md-field>
                 <md-field>
                   <label>Jam Pulang</label>
                   <md-input v-model="inputJamPulang"></md-input>
-                </md-field>
-                
+                </md-field>  
                 <md-card-actions>
                   <md-button type="submit" class="md-primary" v-on:click.prevent="simpankelas()" >Tambah Kelas</md-button>
                 </md-card-actions>
               </div>
-             </md-card>
+            </md-card>
+          </form>
+        </div>       
+      </md-tab>
+      <md-tab id="tab-list" md-label="Daftar Kelas">
+        <div class="content_kelas">
+          <form novalidate class="md-layout">
+            <md-table v-model="listDataKelasJSON" md-card class="md-layout-item md-alignment-top-center">
+              <md-table-toolbar>
+                <h1 class="md-title">Kelas </h1>
+              </md-table-toolbar>
+              <md-table-row slot="md-table-row" slot-scope="{ item }">
+                <md-table-cell md-label="Name">{{ item.NAMA_KELAS }}</md-table-cell>
+                <md-table-cell type="number" md-label="Tingkat">{{ item.Tingkat }}</md-table-cell>
+                <md-table-cell md-label="Jurusan">{{ item.Jurusan }}</md-table-cell>
+                <md-table-cell md-label="Jam Masuk">{{ item.Jam_Masuk }}</md-table-cell>
+                <md-table-cell md-label="Jam Masuk">{{ item.Jam_Pulang }}</md-table-cell>
+                <md-table-cell>
+                  <md-button class="md-primary md-raised" @click="showDialogEdit = true; editKelasFieldTampil(item);">Edit</md-button>
+                  <md-button v-on:click.prevent="deleteKelasFungsi(item._id)" class="md-accent">Delete</md-button>            
+                </md-table-cell>
+              </md-table-row>
+            </md-table>
             </form>
-      </div>       
+        </div>     
       </md-tab>
     </md-tabs>
       <!-- <md-tab id="tab-posts" md-label="List Kelas"> -->
-      <div class="content_kelas">
-        <form novalidate class="md-layout">
-          <md-table v-model="listDataKelasJSON" md-card class="md-layout-item md-alignment-top-center">
-            <md-table-toolbar>
-              <h1 class="md-title">Kelas </h1>
-            </md-table-toolbar>
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Name">{{ item.NAMA_KELAS }}</md-table-cell>
-              <md-table-cell type="number" md-label="Tingkat">{{ item.Tingkat }}</md-table-cell>
-              <md-table-cell md-label="Jurusan">{{ item.Jurusan }}</md-table-cell>
-              <md-table-cell md-label="Jam Masuk">{{ item.Jam_Masuk }}</md-table-cell>
-              <md-table-cell md-label="Jam Masuk">{{ item.Jam_Pulang }}</md-table-cell>
-              <md-table-cell>
-                <md-button class="md-primary md-raised" @click="showDialogEdit = true; editKelasFieldTampil(item);">Edit</md-button>
-                <md-button v-on:click.prevent="deleteKelasFungsi(item._id)" class="md-accent">Delete</md-button>            
-              </md-table-cell>
-            </md-table-row>
-          </md-table>
-          </form>
-      </div>
+      
     </div>
 
     <!---DIALOG BOX--->
