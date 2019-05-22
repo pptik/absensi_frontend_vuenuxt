@@ -2,34 +2,35 @@
     <!-- Navigation Menu List -->
     <md-list>
         <!-- Index Menu -->
-        <md-list-item to="dashboard">
+        <md-list-item>
             <md-icon>dashboard</md-icon>
-            <span class="md-list-item-text">Dashboard</span>
+            <nuxt-link class="md-list-item-text" to="/Dashboard"  style="color:black;">Dashboard</nuxt-link>
         </md-list-item>
 
-        <md-list-item to="monitoring">
+        <md-list-item>
             <md-icon>insert_chart_outlined</md-icon>
-            <span class="md-list-item-text">Monitoring</span>
+            <nuxt-link class="md-list-item-text" to="/Monitoring"  style="color:black;">Monitoring</nuxt-link>
+            
         </md-list-item>
 
-        <md-list-item to="siswa">
+        <md-list-item>
             <md-icon>face</md-icon>
-            <span class="md-list-item-text">Siswa</span>
+            <nuxt-link class="md-list-item-text" to="/Siswa"  style="color:black;">Siswa</nuxt-link>
         </md-list-item>
 
-        <md-list-item to="kelas">
+        <md-list-item>
             <md-icon>meeting_room</md-icon>
-            <span class="md-list-item-text">Kelas</span>
+            <nuxt-link class="md-list-item-text" to="/Kelas"  style="color:black;">Kelas</nuxt-link>
         </md-list-item>
 
-        <md-list-item to="mesin">
+        <md-list-item>
             <md-icon>developer_board</md-icon>
-            <span class="md-list-item-text">Mesin</span>
+            <nuxt-link class="md-list-item-text" to="/Mesin"  style="color:black;">Mesin</nuxt-link>
         </md-list-item>
 
-        <md-list-item to="/">
+        <md-list-item>
             <md-icon>send</md-icon>
-            <span class="md-list-item-text">Logout</span>
+            <nuxt-link class="md-list-item-text" to="/" style="color:black;">Logout</nuxt-link>
         </md-list-item>
     </md-list>
 </template>

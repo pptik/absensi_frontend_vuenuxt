@@ -1,7 +1,7 @@
 <template>
   <section class="container">
-    <div class="md-title">Sekolah {{namaSekolahLocal}}</div>
-    <div class="md-body-1">Jl.Pelajar Pejuang</div>
+    <div class="md-title">{{namaSekolahLocal}}</div>
+    <h1> </h1>
     <div class="md-layout">
       <div class="md-layout md-gutter">
       <div class="md-layout-item">
@@ -69,7 +69,7 @@
     </div>
      <div class="md-layout md-gutter">
       
-      <div class="md-layout-item">
+      <!-- <div class="md-layout-item">
         <div class="content_kelas">
           <md-table md-card v-model="tbl_DataSiswaTerbanyak" class="md-alignment-top-center">
             <md-table-toolbar>
@@ -82,7 +82,7 @@
             </md-table-row>
           </md-table>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
@@ -110,7 +110,6 @@
 <script>
 import BarChart from '@/components/charts/BarChart'
 import api from '../middleware/routes_api/routes'
-
 export default {
   layout: 'default', // layouts used
   components: {
@@ -132,7 +131,7 @@ export default {
             label: 'April',
             borderColor: '#00796B',
             backgroundColor: '#00796B',
-            data: [5, 6, 3, 1, 0, 30]
+            data: [3, 0, 0, 0, 0, 30]
           }
         ]
       },
@@ -151,19 +150,9 @@ export default {
         }
       ],
       tbl_DataSiswaTerbanyak: [
-        // {
-        //   nama_siswa: 'Dani Irawan Dani', kelas: '7A', jumlah: 15
-        // },
-        // {
-        //   nama_siswa: 'Dani Irawan Dani', kelas: '7A', jumlah: 7
-        // },
-        // {
-        //   nama_siswa: 'Irawan Dani', kelas: '7A', jumlah: 6
-        // },
-        // {
-        //   nama_siswa: 'Dani', kelas: '7A', jumlah: 4
-        // }
       ],
+
+      arrayStatusSiswa: [this.statusHadir, this.statusSakit, this.statusIzin, this.statusAlfa],
       // status_sakit: 2,
       status_izin: 6,
       status_alfa: 0,
@@ -173,8 +162,8 @@ export default {
     }
   },
   mounted () {
-    this.dashboardJSON()
     this.setItemAuth()
+    this.dashboardJSON()
     this.monitoringSiswaJSON()
     this.dataSiswaHarianJSON()
   },
@@ -199,46 +188,12 @@ export default {
       this.sekolah_id = dataAuth._id
     },
     dashboardJSON: async function (param) {
-      const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Maret', 'Juni',
-        'Juli', 'Augustus', 'September', 'October', 'November', 'December'
-      ]
+      const responses = await api.JSON_Sekolah(this.namaSekolahLocal)
 
-      const d = new Date()
-      const year = d.getFullYear().toString()
-      const dateDay = d.getDate()
-      var inputHadir = {
-        tahun: year,
-        bulan: monthNames[d.getMonth()],
-        tanggal: dateDay,
-        status: 'hadir'
-      }
-      var inputSakit = {
-        tahun: year,
-        bulan: monthNames[d.getMonth()],
-        tanggal: dateDay,
-        status: 'sakit'
-      }
-      var inputIzin = {
-        tahun: year,
-        bulan: monthNames[d.getMonth()],
-        tanggal: dateDay,
-        status: 'izin'
-      }
-      var inputAlfa = {
-        tahun: year,
-        bulan: monthNames[d.getMonth()],
-        tanggal: dateDay,
-        status: 'alfa'
-      }
-      const responseHadir = await api.requestJsonPengguna(inputHadir, 'status_harian')
-      const responseSakit = await api.requestJsonPengguna(inputSakit, 'status_harian')
-      const responseIzin = await api.requestJsonPengguna(inputIzin, 'status_harian')
-      const responseAlpha = await api.requestJsonPengguna(inputAlfa, 'status_harian')
-
-      this.statusHadir = responseHadir.data.data
-      this.statusSakit = responseSakit.data.data
-      this.statusIzin = responseIzin.data.data
-      this.statusAlfa = responseAlpha.data.data
+      this.statusHadir = responses.data[0].ABSENSI._2019.Mei.rekap_hadir
+      this.statusSakit = responses.data[0].ABSENSI._2019.Mei.rekap_sakit
+      this.statusIzin = responses.data[0].ABSENSI._2019.Mei.rekap_izin
+      this.statusAlfa = responses.data[0].ABSENSI._2019.Mei.rekap_alfa
     },
     monitoringSiswaJSON: async function (param) {
       var date = new Date()
@@ -261,8 +216,17 @@ export default {
         jam_awal: date
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'dataharian')
-      this.dataHarianSiswa = response.data.data
-      console.log(JSON.stringify(response.data.data) + 'mp')
+      var arrayKosong = []
+      for (let i = 0; i < response.data.data.length; i++) {
+        const elementResult = response.data.data[i]
+        var dataArrayResult = {
+          'nama_lengkap': elementResult.nama_lengkap,
+          'kelas': elementResult.kelas,
+          'created_at': elementResult.created_at
+        }
+        arrayKosong.push(dataArrayResult)
+      }
+      this.dataHarianSiswa = arrayKosong
     }
   }
 }

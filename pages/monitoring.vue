@@ -47,7 +47,7 @@ export default {
       console.log()
       var dataParamSend = {
         sekolah: this.namaSekolahLocal,
-        tahun: new Date().getFullYear().toString(),
+        tahun: (new Date().getFullYear() - 1) + '/' + new Date().getFullYear(),
         jam_awal: date
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'monitoring')

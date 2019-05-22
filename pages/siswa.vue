@@ -8,6 +8,12 @@
           {{ hasil.NAMA_KELAS }}
         </option>
       </select>
+      <!-- <md-field>
+        <label>Kelas</label>
+        <md-select v-model="selectedKelas" @md-selected="cobain($event)">
+          <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id"> {{ hasil.NAMA_KELAS }} </md-option>
+        </md-select>
+      </md-field> -->
       <div>
         <md-table v-model="dataHasilTampilSiswa" md-card>
           <md-table-toolbar>
@@ -88,6 +94,59 @@ export default {
   layout: 'default', // layouts used
   data () {
     return {
+      model: {
+        selectedGroup: null
+      },
+      items: [
+        {
+          value1: [
+            {
+              id: 1.1,
+              text: 'sometext'
+            }
+          ],
+          value2: {
+            id: 1,
+            text: 'some primary text 1'
+          }
+        },
+        {
+          value1: [
+            {
+              id: 2.1,
+              text: 'sometext'
+            },
+            {
+              id: 2.2,
+              text: 'sometext'
+            }
+          ],
+          value2: {
+            id: 2,
+            text: 'some primary text 2'
+          }
+        },
+        {
+          value1: [
+            {
+              id: 3.1,
+              text: 'sometext'
+            },
+            {
+              id: 3.3,
+              text: 'sometext'
+            },
+            {
+              id: 3.3,
+              text: 'sometext'
+            }
+          ],
+          value2: {
+            id: 3,
+            text: 'some primary text 3'
+          }
+        }
+      ],
       dataArrayNamaKelas: [],
       allPost: [],
       post: [],
@@ -132,7 +191,6 @@ export default {
       var arrayHasil = []
       const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
       var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
-      console.log(responTwo.data)
       for (let x = 0; x < result.length; x++) {
         for (let i = 0; i < result[x].Kelas.length; i++) {
           var kelasTahunAjaran = result[x].Kelas[i]
@@ -161,6 +219,9 @@ export default {
       this.selectedKelas = response.data.data[0].nama_kelas
       this.tampilsiswaperkelas(this.selectedKelas)
     },
+    cobain: async function (param) {
+      console.log(param)
+    },
     simpansiswa: async function () {
       var dataSiswa = {
         'email': this.inputEmail,
@@ -176,7 +237,10 @@ export default {
       await api.requestSiswa(dataSiswa, 'tambah')
     },
     DeleteSiswa: async function (params) {
-      console.log(params)
+      var dataSiswaDelete = {
+        'nama_lengkap': params
+      }
+      await api.requestJsonPengguna(dataSiswaDelete, 'delete')
     },
     tampilSiswaJSON: async function (param) {
       const response = await api.getJSONHttp(param)
@@ -186,22 +250,22 @@ export default {
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
-      var dataParseJson = JSON.parse(JSON.stringify(response.data))
-      this.dataJSONTampilKelas = dataParseJson
+      // var dataParseJson = JSON.parse(JSON.stringify(response.data))
+      this.dataJSONTampilKelas = response.data
       var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
         this.dataArrayNamaKelas.push(element)
       }
-
+      console.log(this.namaSekolahLocal)
       this.selectedKelas = this.dataArrayNamaKelas[0]
       const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
-      console.log(JSON.stringify(responTwo))
-      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+      console.log(responTwo.data)
+      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: '2018/2019', nama_kelas: this.selectedKelas }] })
       for (let x = 0; x < result.length; x++) {
         for (let i = 0; i < result[x].Kelas.length; i++) {
           var kelasTahunAjaran = result[x].Kelas[i]
-          if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
+          if (kelasTahunAjaran.tahun_ajaran === '2018/2019') {
             var hasilArrayAkhir = {
               'nama_lengkap': result[x].profil.nama_lengkap,
               'RFID': result[x].RFID.serial_number,

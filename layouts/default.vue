@@ -13,7 +13,7 @@
       <!-- Toogle Menu Visible -->
       <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
-          {{namaPengguna}} 
+          {{usernameLocal}} 
         </md-toolbar>
         <!-- Call Navigation Menu Components Here -->
         <NavigationMenu></NavigationMenu>
@@ -53,11 +53,23 @@ export default {
   components: {
     NavigationMenu // Attach Navigation Menu Components
   },
+  mounted () {
+    this.setItemAuth()
+  },
   methods: {
+    setItemAuth: async function (param) {
+      var dataAuth = JSON.parse(localStorage.getItem('auth'))
+      this.namaSekolahLocal = dataAuth.sekolah
+      this.usernameLocal = dataAuth.username
+      this.sekolah_id = dataAuth._id
+    }
   },
   data: () => ({
     menuVisible: false,
-    namaPengguna: 'ADMIN'
+    namaPengguna: 'ADMIN',
+    namaSekolahLocal: null,
+    usernameLocal: null,
+    sekolah_id: null
   })
 }
 </script>

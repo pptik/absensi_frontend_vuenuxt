@@ -194,7 +194,7 @@ export default {
       console.log(dataKelas)
     },
     deleteKelasFungsi: async function (param) {
-      // await api.requestKelas(param, 'delete')
+      await api.requestKelas(param, 'delete')
       console.log(param)
     },
     listKelasJSON: async function (param) {

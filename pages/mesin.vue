@@ -93,9 +93,9 @@ export default {
     deleteMacAddress: async function (param) {
       var dataDeleteMesin = {
         nama_sekolah: this.idsekolah,
-        address: this.address
+        mesin: this.address
       }
-      // api.requestJsonMesin('delete', dataDeleteMesin)
+      api.requestJsonSekolah(dataDeleteMesin, 'delete')
       console.log(dataDeleteMesin)
     },
     listMacAddressJSON: async function (param) {
