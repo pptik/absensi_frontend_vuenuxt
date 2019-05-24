@@ -134,23 +134,28 @@ export default {
     },
     tampilsiswaperkelas: async function (param) {
       var arrayHasil = []
-      const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
-      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
-      for (let x = 0; x < result.length; x++) {
-        for (let i = 0; i < result[x].Kelas.length; i++) {
-          var kelasTahunAjaran = result[x].Kelas[i]
-          if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
-            var hasilArrayAkhir = {
-              'nama_lengkap': result[x].profil.nama_lengkap,
-              'RFID': result[x].RFID.serial_number,
-              'jenis_kelamin': result[x].profil.jenis_kelamin,
-              'Kelas': kelasTahunAjaran.nama_kelas
+      try {
+        const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
+        console.log(responTwo)
+        var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+        for (let x = 0; x < result.length; x++) {
+          for (let i = 0; i < result[x].Kelas.length; i++) {
+            var kelasTahunAjaran = result[x].Kelas[i]
+            if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
+              var hasilArrayAkhir = {
+                'nama_lengkap': result[x].profil.nama_lengkap,
+                'RFID': result[x].RFID.serial_number,
+                'jenis_kelamin': result[x].profil.jenis_kelamin,
+                'Kelas': kelasTahunAjaran.nama_kelas
+              }
+              arrayHasil.push(hasilArrayAkhir)
             }
-            arrayHasil.push(hasilArrayAkhir)
           }
         }
+        this.dataHasilTampilSiswa = arrayHasil
+      } catch (error) {
+        console.log(error)
       }
-      this.dataHasilTampilSiswa = arrayHasil
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
@@ -176,13 +181,95 @@ export default {
         'jenis_kelamin': this.inputJenisKelamin,
         'tahun_ajaran': this.inputTahunAjaran
       }
-      await api.requestSiswa(dataSiswa, 'tambah')
+      await api.requestSiswa(dataSiswa, 'tambah').then(response => {
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Mendaftarkan Kelas baru!',
+            icon: 'success',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Mendaftarkan!',
+            icon: 'error',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      })
     },
     DeleteSiswa: async function (params) {
       var dataSiswaDelete = {
         'nama_lengkap': params
       }
-      await api.requestJsonPengguna(dataSiswaDelete, 'delete')
+      console.log(dataSiswaDelete)
+      this.$swal({
+        title: 'Hapus Siswa?',
+        text: 'Apa anda yakin akan menghapus siswa?',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true
+      })
+        .then((willDelete) => {
+          if (willDelete) {
+            api.requestJsonPengguna(dataSiswaDelete, 'delete').then(response => {
+              if (response.data.success) {
+                this.$swal({
+                  title: 'Berhasil!',
+                  text: 'Berhasil Delete!',
+                  icon: 'success',
+                  confirmButtonText: 'Yes',
+                  showLoaderOnConfirm: true
+                }).then((result) => {
+                  window.location.reload()
+                })
+              } else {
+                this.$swal('Gagal!', {
+                  title: 'Gagal',
+                  text: 'Gagal Delete, terjadi masalah!',
+                  icon: 'error',
+                  confirmButtonText: 'Yes',
+                  showLoaderOnConfirm: true
+                }).then((result) => {
+                  window.location.reload()
+                })
+              }
+            })
+          } else {
+            this.$swal('Batal di delete!')
+          }
+        })
+
+      // await api.requestJsonPengguna(dataSiswaDelete, 'delete').then(response => {
+      //   if (response.data.success) {
+      //     this.$swal({
+      //       title: 'Berhasil!',
+      //       text: 'Berhasil Mendaftarkan Kelas baru!',
+      //       icon: 'success',
+      //       confirmButtonText: 'Yes',
+      //       showLoaderOnConfirm: true
+      //     }).then((result) => {
+      //       window.location.reload()
+      //     })
+      //   } else {
+      //     this.$swal('Gagal!', {
+      //       title: 'Gagal',
+      //       text: 'Gagal Mendaftarkan!',
+      //       icon: 'error',
+      //       confirmButtonText: 'Yes',
+      //       showLoaderOnConfirm: true
+      //     }).then((result) => {
+      //       window.location.reload()
+      //     })
+      //   }
+      // })
     },
     tampilSiswaJSON: async function (param) {
       const response = await api.getJSONHttp(param)
@@ -192,14 +279,12 @@ export default {
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
-      // var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.dataJSONTampilKelas = response.data
       var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
         this.dataArrayNamaKelas.push(element)
       }
-      console.log(this.namaSekolahLocal)
       this.selectedKelas = this.dataArrayNamaKelas[0]
       const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
       console.log(responTwo.data)
