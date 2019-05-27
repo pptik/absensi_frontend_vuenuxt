@@ -11,7 +11,6 @@
                     <md-table-cell md-label="Nama Sekolah">{{ item.address }}</md-table-cell>
                     <md-table-cell md-label="Address">{{ item.deskripsi }}</md-table-cell>
                     <md-table-cell>
-                      <md-button v-on:click.prevent="editMacAddress(item.address)">Edit</md-button>
                       <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button>            
                     </md-table-cell>
                   </md-table-row>
@@ -115,13 +114,30 @@ export default {
     deleteMacAddress: async function (param) {
       var dataDeleteMesin = {
         nama_sekolah: this.idsekolah,
-        mesin: this.address
+        mesin: param
       }
-      api.requestJsonSekolah(dataDeleteMesin, 'delete')
+      this.$swal({
+        title: 'Yakin Hapus?',
+        text: 'Data mesin akan dihapus secara permanen!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true
+      })
+        .then((willDelete) => {
+          if (willDelete) {
+            api.requestJsonSekolah(dataDeleteMesin, 'delete')
+            this.$swal('berhasil di hapus!', {
+              icon: 'success'
+            })
+          } else {
+            this.$swal('Penghapusan dibatalkan!')
+          }
+        })
       console.log(dataDeleteMesin)
     },
     listMacAddressJSON: async function (param) {
       const response = await api.JSON_Sekolah(this.namaSekolahLocal)
+      console.log(response.data)
       this.dataMesinJSON = response.data[0].Mesin
       // var totalMesin = []
       // var mesin = response.data[0].mac_address_absensi

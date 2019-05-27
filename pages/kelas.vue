@@ -49,7 +49,8 @@
               <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="Name">{{ item.NAMA_KELAS }}</md-table-cell>
                 <md-table-cell type="number" md-label="Tingkat">{{ item.Tingkat }}</md-table-cell>
-                <md-table-cell md-label="Jurusan">{{ item.Jurusan }}</md-table-cell>
+                <md-table-cell md-label="Jurusan" v-if="item.Jurusan === 'undefined'">-</md-table-cell>
+                <md-table-cell md-label="Jurusan" v-else>{{ item.Jurusan }}</md-table-cell>
                 <md-table-cell md-label="Jam Masuk">{{ item.Jam_Masuk }}</md-table-cell>
                 <md-table-cell md-label="Jam Masuk">{{ item.Jam_Pulang }}</md-table-cell>
                 <md-table-cell>
@@ -162,7 +163,29 @@ export default {
         jam_pulang: this.inputJamPulang
       }
       // console.log(dataSimpanKelas)
-      var response = await api.requestJsonKelas(dataSimpanKelas, 'dev_Tambah')
+      var response = await api.requestJsonKelas(dataSimpanKelas, 'dev_Tambah').then(response => {
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Mendaftarkan Kelas baru!',
+            icon: 'success',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Mendaftarkan!',
+            icon: 'error',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      })
       console.log(response)
     },
     tampilsemuakelas: async function (param) {
@@ -176,11 +199,11 @@ export default {
       this.selectedKelas = response.data.data[0]
     },
     editKelasFieldTampil: async function (param) {
-      this.inputNamaKelasEdit = param.nama_kelas
-      this.inputTingkatEdit = param.tingkat
-      this.inputJurusanEdit = param.jurusan
-      this.inputJamMasukEdit = param.jam_masuk
-      this.inputJamPulangEdit = param.jam_pulang
+      this.inputNamaKelasEdit = param.NAMA_KELAS
+      this.inputTingkatEdit = param.Tingkat
+      this.inputJurusanEdit = param.Jurusan
+      this.inputJamMasukEdit = param.Jam_Masuk
+      this.inputJamPulangEdit = param.Jam_Pulang
     },
     editKelasFungsi: async function (param) {
       var dataKelas = {
@@ -192,17 +215,51 @@ export default {
         jam_masuk: this.inputJamMasukEdit,
         jam_pulang: this.inputJamPulangEdit
       }
-      // await api.requestKelas(dataKelas, 'edit')
+      await api.requestJsonKelas(dataKelas, 'dev_Edit').then(response => {
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Edit Kelas baru!',
+            icon: 'success'
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Mengedit!',
+            icon: 'error'
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      })
       console.log(dataKelas)
     },
     deleteKelasFungsi: async function (param) {
-      await api.requestKelas(param, 'delete')
-      console.log(param)
+      this.$swal({
+        title: 'Yakin Hapus?',
+        text: 'Data Kelas akan dihapus secara permanen!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true
+      })
+        .then((willDelete) => {
+          if (willDelete) {
+            api.requestKelas(param, 'delete')
+            this.$swal('berhasil di hapus!', {
+              icon: 'success'
+            })
+          } else {
+            this.$swal('Penghapusan dibatalkan!')
+          }
+        })
     },
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
       var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.listDataKelasJSON = dataParseJson
+      console.log(this.listDataKelasJSON)
     }
   }
 }

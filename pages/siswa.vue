@@ -20,7 +20,7 @@
             <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
             <md-table-cell md-label="Kelas">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
-              <md-button v-on:click.prevent="simpansiswa(item.nama_lengkap)">Edit</md-button>
+              <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button>
               <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
             </md-table-cell>
           </md-table-row>
@@ -39,7 +39,6 @@
                 <md-field>
                   <label>Email</label>
                   <md-input v-model="inputEmail"></md-input>
-                  <span class="md-suffix">@vidyanusa.id</span>
                 </md-field>
                 <md-field>
                   <label>Username</label>
@@ -79,7 +78,34 @@
           </md-tab>
         </md-tabs>
     </div>
+
+    <!---DIALOG BOX--->
+    <md-dialog :md-active.sync="showDialogEdit" class="md-layout-item md-size-50 md-small-size-70">
+      <md-dialog-title>Edit Siswa</md-dialog-title>
+      <md-tabs md-dynamic-height>
+        <md-tab md-label="Kelas">
+          <div style="padding:20px;">
+            <md-field>
+              <label>Nama</label>
+              <md-input v-model="EditNamaLengkap"></md-input>
+            </md-field>
+             <md-field>
+              <label>RFID</label>
+              <md-input v-model="EditKodeRFID"></md-input>
+            </md-field>
+            <md-field>
+              <label>Kelas</label>
+              <md-input v-model="EditKelas"></md-input>
+            </md-field>
+            <md-dialog-actions>
+              <md-button class="md-primary" @click="editSiswaFungsi()">Simpan</md-button>
+            </md-dialog-actions>
+          </div>
+        </md-tab>
+      </md-tabs>
+    </md-dialog>
   </section>
+  
 </template>
 
 <script>
@@ -89,6 +115,7 @@ export default {
   layout: 'default', // layouts used
   data () {
     return {
+      showDialogEdit: false,
       model: {
         selectedGroup: null
       },
@@ -117,7 +144,11 @@ export default {
       // Local Data
       namaSekolahLocal: null,
       usernameLocal: null,
-      sekolah_id: null
+      sekolah_id: null,
+      // Edit Data
+      EditNamaLengkap: null,
+      EditKodeRFID: null,
+      EditKelas: null
     }
   },
   mounted () {
@@ -132,25 +163,35 @@ export default {
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
     },
+    editSiswaFieldTampil: async function (param) {
+      this.EditNamaLengkap = param.nama_lengkap
+      this.EditKodeRFID = param.RFID
+      this.EditKelas = param.Kelas
+    },
     tampilsiswaperkelas: async function (param) {
       var arrayHasil = []
-      const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
-      var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
-      for (let x = 0; x < result.length; x++) {
-        for (let i = 0; i < result[x].Kelas.length; i++) {
-          var kelasTahunAjaran = result[x].Kelas[i]
-          if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
-            var hasilArrayAkhir = {
-              'nama_lengkap': result[x].profil.nama_lengkap,
-              'RFID': result[x].RFID.serial_number,
-              'jenis_kelamin': result[x].profil.jenis_kelamin,
-              'Kelas': kelasTahunAjaran.nama_kelas
+      try {
+        const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
+        console.log(responTwo)
+        var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+        for (let x = 0; x < result.length; x++) {
+          for (let i = 0; i < result[x].Kelas.length; i++) {
+            var kelasTahunAjaran = result[x].Kelas[i]
+            if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
+              var hasilArrayAkhir = {
+                'nama_lengkap': result[x].profil.nama_lengkap,
+                'RFID': result[x].RFID.serial_number,
+                'jenis_kelamin': result[x].profil.jenis_kelamin,
+                'Kelas': kelasTahunAjaran.nama_kelas
+              }
+              arrayHasil.push(hasilArrayAkhir)
             }
-            arrayHasil.push(hasilArrayAkhir)
           }
         }
+        this.dataHasilTampilSiswa = arrayHasil
+      } catch (error) {
+        console.log(error)
       }
-      this.dataHasilTampilSiswa = arrayHasil
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
@@ -176,13 +217,95 @@ export default {
         'jenis_kelamin': this.inputJenisKelamin,
         'tahun_ajaran': this.inputTahunAjaran
       }
-      await api.requestSiswa(dataSiswa, 'tambah')
+      await api.requestSiswa(dataSiswa, 'tambah').then(response => {
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Mendaftarkan Kelas baru!',
+            icon: 'success',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Mendaftarkan!',
+            icon: 'error',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      })
     },
     DeleteSiswa: async function (params) {
       var dataSiswaDelete = {
         'nama_lengkap': params
       }
-      await api.requestJsonPengguna(dataSiswaDelete, 'delete')
+      console.log(dataSiswaDelete)
+      this.$swal({
+        title: 'Hapus Siswa?',
+        text: 'Apa anda yakin akan menghapus siswa?',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true
+      })
+        .then((willDelete) => {
+          if (willDelete) {
+            api.requestJsonPengguna(dataSiswaDelete, 'delete').then(response => {
+              if (response.data.success) {
+                this.$swal({
+                  title: 'Berhasil!',
+                  text: 'Berhasil Delete!',
+                  icon: 'success',
+                  confirmButtonText: 'Yes',
+                  showLoaderOnConfirm: true
+                }).then((result) => {
+                  window.location.reload()
+                })
+              } else {
+                this.$swal('Gagal!', {
+                  title: 'Gagal',
+                  text: 'Gagal Delete, terjadi masalah!',
+                  icon: 'error',
+                  confirmButtonText: 'Yes',
+                  showLoaderOnConfirm: true
+                }).then((result) => {
+                  window.location.reload()
+                })
+              }
+            })
+          } else {
+            this.$swal('Batal di delete!')
+          }
+        })
+
+      // await api.requestJsonPengguna(dataSiswaDelete, 'delete').then(response => {
+      //   if (response.data.success) {
+      //     this.$swal({
+      //       title: 'Berhasil!',
+      //       text: 'Berhasil Mendaftarkan Kelas baru!',
+      //       icon: 'success',
+      //       confirmButtonText: 'Yes',
+      //       showLoaderOnConfirm: true
+      //     }).then((result) => {
+      //       window.location.reload()
+      //     })
+      //   } else {
+      //     this.$swal('Gagal!', {
+      //       title: 'Gagal',
+      //       text: 'Gagal Mendaftarkan!',
+      //       icon: 'error',
+      //       confirmButtonText: 'Yes',
+      //       showLoaderOnConfirm: true
+      //     }).then((result) => {
+      //       window.location.reload()
+      //     })
+      //   }
+      // })
     },
     tampilSiswaJSON: async function (param) {
       const response = await api.getJSONHttp(param)
@@ -192,14 +315,12 @@ export default {
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
-      // var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.dataJSONTampilKelas = response.data
       var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
         this.dataArrayNamaKelas.push(element)
       }
-      console.log(this.namaSekolahLocal)
       this.selectedKelas = this.dataArrayNamaKelas[0]
       const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
       console.log(responTwo.data)

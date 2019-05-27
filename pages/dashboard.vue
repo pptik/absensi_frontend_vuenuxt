@@ -84,7 +84,7 @@
         </div>
       </div> -->
     </div>
-    <div class="md-layout md-gutter">
+    <!-- <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div class="bar-chart grafik">
           <md-card class="innerCard">
@@ -103,7 +103,7 @@
         </div>
        
       </div>
-    </div>
+    </div> -->
   </section>
 </template>
 
