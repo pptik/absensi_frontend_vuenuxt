@@ -63,5 +63,8 @@ export default {
   },
   JSON_Sekolah (params) {
     return ApiJson().get('/data/' + params + '_sekolah.json')
+  },
+  requestMonitoring (params) {
+    return Api().post('/monitoring/editMonitoring/', params)
   }
 }
