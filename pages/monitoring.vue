@@ -10,10 +10,9 @@
             <md-table-row slot="md-table-row" slot-scope="{ item }">
               <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
               <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Status">{{ item.created_at }}</md-table-cell>
+              <md-table-cell type="number" md-label="Status">{{ item.RFID }}</md-table-cell>
               <md-table-cell>
-                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir()" >Hadir</md-button>
-                  <md-button class="md-accent">Delete</md-button>            
+                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.RFID)">Hadir</md-button>    
                 </md-table-cell>
             </md-table-row>
           </md-table>
@@ -33,7 +32,8 @@ export default {
       namaSekolahLocal: null,
       usernameLocal: null,
       sekolah_id: null,
-      listKehadiran: []
+      listKehadiran: [],
+      mac_address: []
     }
   },
   mounted () {
@@ -41,16 +41,47 @@ export default {
     this.monitoringSiswaJSON()
   },
   methods: {
-    editHadir: async function(){
+    editHadir: async function (rfidSiswa) {
+      var dt = new Date()
+      var tgl = dt.setHours(dt.getHours() + 7)
+      console.log('local ' + rfidSiswa)
+
       var dataEdit = {
-        nama
+        created_at: tgl,
+        mac_address: this.mac_address[0].address,
+        rfid: rfidSiswa
       }
+      await api.requestMonitoring(dataEdit).then(response => {
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Mendaftarkan Kelas baru!',
+            icon: 'success',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Mendaftarkan!',
+            icon: 'error',
+            confirmButtonText: 'Yes',
+            showLoaderOnConfirm: true
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      })
+      console.log(dataEdit)
     },
     setItemAuth: async function (param) {
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
+      this.mac_address = dataAuth.mac_address
     },
     monitoringSiswaJSON: async function (param) {
       var date = new Date()
