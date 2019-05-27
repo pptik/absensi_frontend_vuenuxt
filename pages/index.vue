@@ -116,7 +116,8 @@ export default {
         var dataAuth = {
           username: response.data.data.username,
           sekolah: response.data.data.sekolah,
-          _id: response.data.data._id
+          _id: response.data.data._id,
+          mac_address: response.data.data.mac_address
         }
         localStorage.setItem('auth', JSON.stringify(dataAuth))
         setTimeout(() => {

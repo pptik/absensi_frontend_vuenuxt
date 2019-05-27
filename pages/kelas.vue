@@ -215,12 +215,45 @@ export default {
         jam_masuk: this.inputJamMasukEdit,
         jam_pulang: this.inputJamPulangEdit
       }
-      await api.requestJsonKelas(dataKelas, 'dev_Edit')
+      await api.requestJsonKelas(dataKelas, 'dev_Edit').then(response => {
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Edit Kelas baru!',
+            icon: 'success'
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Mengedit!',
+            icon: 'error'
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      })
       console.log(dataKelas)
     },
     deleteKelasFungsi: async function (param) {
-      await api.requestKelas(param, 'delete')
-      console.log(param)
+      this.$swal({
+        title: 'Yakin Hapus?',
+        text: 'Data Kelas akan dihapus secara permanen!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true
+      })
+        .then((willDelete) => {
+          if (willDelete) {
+            api.requestKelas(param, 'delete')
+            this.$swal('berhasil di hapus!', {
+              icon: 'success'
+            })
+          } else {
+            this.$swal('Penghapusan dibatalkan!')
+          }
+        })
     },
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)

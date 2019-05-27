@@ -114,9 +114,25 @@ export default {
     deleteMacAddress: async function (param) {
       var dataDeleteMesin = {
         nama_sekolah: this.idsekolah,
-        mesin: this.address
+        mesin: param
       }
-      api.requestJsonSekolah(dataDeleteMesin, 'delete')
+      this.$swal({
+        title: 'Yakin Hapus?',
+        text: 'Data mesin akan dihapus secara permanen!',
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true
+      })
+        .then((willDelete) => {
+          if (willDelete) {
+            api.requestJsonSekolah(dataDeleteMesin, 'delete')
+            this.$swal('berhasil di hapus!', {
+              icon: 'success'
+            })
+          } else {
+            this.$swal('Penghapusan dibatalkan!')
+          }
+        })
       console.log(dataDeleteMesin)
     },
     listMacAddressJSON: async function (param) {
