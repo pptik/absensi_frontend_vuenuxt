@@ -12,7 +12,7 @@
               <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-label="Status">{{ item.created_at }}</md-table-cell>
               <md-table-cell>
-                  <md-button class="md-primary md-raised" >Hadir</md-button>
+                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir()" >Hadir</md-button>
                   <md-button class="md-accent">Delete</md-button>            
                 </md-table-cell>
             </md-table-row>
@@ -41,6 +41,11 @@ export default {
     this.monitoringSiswaJSON()
   },
   methods: {
+    editHadir: async function(){
+      var dataEdit = {
+        nama
+      }
+    },
     setItemAuth: async function (param) {
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
