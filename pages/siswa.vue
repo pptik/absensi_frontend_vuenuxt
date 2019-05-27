@@ -98,7 +98,7 @@
               <md-input v-model="EditKelas"></md-input>
             </md-field>
             <md-dialog-actions>
-              <md-button class="md-primary" @click="editSiswaFungsi()">Simpan</md-button>
+              <md-button class="md-primary" @click="editDataSiswa()">Simpan</md-button>
             </md-dialog-actions>
           </div>
         </md-tab>
@@ -172,8 +172,8 @@ export default {
       var arrayHasil = []
       try {
         const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
-        console.log(responTwo)
         var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+        console.log(result)
         for (let x = 0; x < result.length; x++) {
           for (let i = 0; i < result[x].Kelas.length; i++) {
             var kelasTahunAjaran = result[x].Kelas[i]
@@ -385,8 +385,20 @@ export default {
         nama_lengkap: this.inputNamaLengkap,
         jenis_kelamin: this.inputJenisKelamin
       }
-      // const response = await api.requestJsonPengguna('edit', param)
-      console.log(dataInputEditSiswa)
+      const response = await api.requestJsonPengguna('edit', param)
+      if (response.data.success === true) {
+        this.$swal({
+          title: 'Berhasil!',
+          text: 'Berhasil Membuat Pengguna baru!',
+          icon: 'success'
+        })
+      } else {
+        this.$swal('Gagal!', {
+          title: 'Gagal',
+          text: 'Gagal Membuat Pengguna baru!',
+          icon: 'error'
+        })
+      }
     }
   }
 }
