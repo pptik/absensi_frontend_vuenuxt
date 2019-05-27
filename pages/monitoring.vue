@@ -11,6 +11,10 @@
               <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
               <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-label="Status">{{ item.created_at }}</md-table-cell>
+              <md-table-cell>
+                  <md-button class="md-primary md-raised" >Hadir</md-button>
+                  <md-button class="md-accent">Delete</md-button>            
+                </md-table-cell>
             </md-table-row>
           </md-table>
         </div>
@@ -28,7 +32,8 @@ export default {
       monitoringSiswaData: [],
       namaSekolahLocal: null,
       usernameLocal: null,
-      sekolah_id: null
+      sekolah_id: null,
+      listKehadiran: []
     }
   },
   mounted () {
@@ -52,7 +57,8 @@ export default {
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'monitoring')
       this.monitoringSiswaData = response.data.data
-      console.log(response)
+      console.log('Data Monitoring')
+      console.log(response.data)
     }
   }
 }

@@ -1,0 +1,434 @@
+{
+	"info": {
+		"_postman_id": "9219d8e3-3710-4d9c-a8c9-b578bea4c1aa",
+		"name": "API VIDYANUSA ABSTEIN RADIS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Edit Pengguna",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "rifqi@gmail.comm",
+							"type": "text"
+						},
+						{
+							"key": "sandi",
+							"value": "adminn",
+							"type": "text"
+						},
+						{
+							"key": "rfid",
+							"value": "0x1 0x2 0x3 0x4 0x5",
+							"type": "text"
+						},
+						{
+							"key": "nama_kelas",
+							"value": "11 RPL C",
+							"type": "text"
+						},
+						{
+							"key": "tahun_ajaran",
+							"value": "2019",
+							"type": "text"
+						},
+						{
+							"key": "sekolah",
+							"value": "SMP Assalam",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "rifqi ",
+							"type": "text"
+						},
+						{
+							"key": "nama_lengkap",
+							"value": "rifqi riza irfansyah RIFQI",
+							"type": "text"
+						},
+						{
+							"key": "jenis_kelamin",
+							"value": "L",
+							"type": "text"
+						},
+						{
+							"key": "_id",
+							"value": "5cc7bc805f6d894d9c3537f7",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3002/pengguna/editPengguna",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"pengguna",
+						"editPengguna"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Mac",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "_id",
+							"value": "5cc54cec979a2014e77f6c52",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "3a:2f:dd:1c:4a",
+							"type": "text"
+						},
+						{
+							"key": "nama",
+							"value": "Mesin 1 test",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "nama_sekolah",
+							"value": "SMP Assalam",
+							"type": "text"
+						},
+						{
+							"key": "deskripsi",
+							"value": "test",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3002/mesin/deleteMacAddress",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"mesin",
+						"deleteMacAddress"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Monitoring",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sekolah",
+							"value": "SMP Assalam",
+							"type": "text"
+						},
+						{
+							"key": "kelas",
+							"value": "7A",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "jam_awal",
+							"value": "Tue Apr 23 2019 07:00:00 GMT+0700",
+							"description": "2019-04-23T07:00:00.000Z",
+							"type": "text"
+						},
+						{
+							"key": "tahun",
+							"value": "2018/2019",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3002/pengguna/monitoringPengguna",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"pengguna",
+						"monitoringPengguna"
+					],
+					"query": [
+						{
+							"key": "sekolah",
+							"value": "SMP ASSA",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "alvin@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "pass",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3002/pengguna/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"pengguna",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tambah Pengguna",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "rifqi@gmail.comm",
+							"type": "text"
+						},
+						{
+							"key": "sandi",
+							"value": "adminn",
+							"type": "text"
+						},
+						{
+							"key": "rfid",
+							"value": "0x1 0x2 0x3 0x4 0x5",
+							"type": "text"
+						},
+						{
+							"key": "nama_kelas",
+							"value": "11 RPL C",
+							"type": "text"
+						},
+						{
+							"key": "tahun_ajaran",
+							"value": "2019",
+							"type": "text"
+						},
+						{
+							"key": "sekolah",
+							"value": "SMP Assalam",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "rifqi ",
+							"type": "text"
+						},
+						{
+							"key": "nama_lengkap",
+							"value": "rifqi riza irfansyah RIFQI",
+							"type": "text"
+						},
+						{
+							"key": "jenis_kelamin",
+							"value": "L",
+							"type": "text"
+						},
+						{
+							"key": "_id",
+							"value": "5cc7bc805f6d894d9c3537f7",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3002/pengguna/editPengguna",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"pengguna",
+						"editPengguna"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Status Harian Dashboard",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "tahun",
+							"value": "2019",
+							"type": "text"
+						},
+						{
+							"key": "bulan",
+							"value": "April",
+							"type": "text"
+						},
+						{
+							"key": "tanggal",
+							"value": "23",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "sakit",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3002/pengguna/status_harianPengguna",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"pengguna",
+						"status_harianPengguna"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status bulanan pengguna",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "tahun",
+							"value": "2019",
+							"type": "text"
+						},
+						{
+							"key": "bulan",
+							"value": "April",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "sakit",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3002/pengguna/status_bulananPengguna",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"pengguna",
+						"status_bulananPengguna"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
