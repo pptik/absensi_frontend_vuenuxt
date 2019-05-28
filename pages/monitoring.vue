@@ -10,9 +10,9 @@
             <md-table-row slot="md-table-row" slot-scope="{ item }">
               <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
               <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Status">{{ item.RFID }}</md-table-cell>
+              <md-table-cell type="number" md-label="Status">{{ item.rfid }}</md-table-cell>
               <md-table-cell>
-                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.RFID)">Hadir</md-button>    
+                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid)">Hadir</md-button>    
                 </md-table-cell>
             </md-table-row>
           </md-table>
@@ -55,7 +55,7 @@ export default {
         if (response.data.success === true) {
           this.$swal({
             title: 'Berhasil!',
-            text: 'Berhasil Mendaftarkan Kelas baru!',
+            text: 'Berhasil',
             icon: 'success',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
@@ -65,7 +65,7 @@ export default {
         } else {
           this.$swal('Gagal!', {
             title: 'Gagal',
-            text: 'Gagal Mendaftarkan!',
+            text: 'Gagal Mengubah Status',
             icon: 'error',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
@@ -74,7 +74,6 @@ export default {
           })
         }
       })
-      console.log(dataEdit)
     },
     setItemAuth: async function (param) {
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
