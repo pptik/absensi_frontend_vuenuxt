@@ -20,7 +20,7 @@
             <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
             <md-table-cell md-label="Kelas">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
-              <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button>
+              <!-- <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button> -->
               <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
             </md-table-cell>
           </md-table-row>
@@ -94,8 +94,8 @@
               <md-input v-model="EditKodeRFID"></md-input>
             </md-field>
             <md-field>
-              <label>Kelas</label>
-              <md-input v-model="EditKelas"></md-input>
+              <label>Jenis Kelamin</label>
+              <md-input v-model="EditJenisKelamin"></md-input>
             </md-field>
             <md-dialog-actions>
               <md-button class="md-primary" @click="editDataSiswa()">Simpan</md-button>
@@ -148,7 +148,8 @@ export default {
       // Edit Data
       EditNamaLengkap: null,
       EditKodeRFID: null,
-      EditKelas: null
+      EditKelas: null,
+      EditJenisKelamin: null
     }
   },
   mounted () {
@@ -167,6 +168,7 @@ export default {
       this.EditNamaLengkap = param.nama_lengkap
       this.EditKodeRFID = param.RFID
       this.EditKelas = param.Kelas
+      this.EditJenisKelamin = param.jenis_kelamin
     },
     tampilsiswaperkelas: async function (param) {
       var arrayHasil = []
@@ -330,6 +332,7 @@ export default {
           var kelasTahunAjaran = result[x].Kelas[i]
           if (kelasTahunAjaran.tahun_ajaran === '2018/2019') {
             var hasilArrayAkhir = {
+              '_id': result[x]._id,
               'nama_lengkap': result[x].profil.nama_lengkap,
               'RFID': result[x].RFID.serial_number,
               'jenis_kelamin': result[x].profil.jenis_kelamin,
@@ -345,7 +348,7 @@ export default {
       if (this.jenis_kelamin === 'Laki-Laki') {
         this.inputKelaminConvert = 'L'
       } else {
-        this.inputJenisKelamin = 'P'
+        this.inputKelaminConvert = 'P'
       }
       var dataInputSimpanSiswa = {
         email: this.inputEmail,
@@ -356,7 +359,7 @@ export default {
         sekolah: this.namaSekolahLocal,
         username: this.inputUsername,
         nama_lengkap: this.inputNamaLengkap,
-        jenis_kelamin: this.inputJenisKelamin
+        jenis_kelamin: this.inputKelaminConvert
       }
       const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
       if (response.data.success === true) {
@@ -364,41 +367,42 @@ export default {
           title: 'Berhasil!',
           text: 'Berhasil Membuat Pengguna baru!',
           icon: 'success'
+        }).then((result) => {
+          window.location.reload()
         })
       } else {
         this.$swal('Gagal!', {
           title: 'Gagal',
           text: 'Gagal Membuat Pengguna baru!',
           icon: 'error'
+        }).then((result) => {
+          window.location.reload()
         })
       }
     },
     editDataSiswa: async function (param) {
       var dataInputEditSiswa = {
-        email: this.inputEmail,
-        sandi: this.inputSandi,
-        rfid: this.inputKodeRFID,
-        nama_kelas: this.inputKelas,
-        tahun_Ajaran: this.inputTahunAjaran,
-        sekolah: this.idSekolah,
-        username: this.inputUsername,
-        nama_lengkap: this.inputNamaLengkap,
-        jenis_kelamin: this.inputJenisKelamin
+        'nama_lengkap': this.EditNamaLengkap,
+        'rfid': this.EditKodeRFID,
+        'kelas': this.EditKelas,
+        'sekolah': this.namaSekolahLocal,
+        'jenis_kelamin': this.EditJenisKelamin
       }
-      const response = await api.requestJsonPengguna('edit', param)
-      if (response.data.success === true) {
-        this.$swal({
-          title: 'Berhasil!',
-          text: 'Berhasil Membuat Pengguna baru!',
-          icon: 'success'
-        })
-      } else {
-        this.$swal('Gagal!', {
-          title: 'Gagal',
-          text: 'Gagal Membuat Pengguna baru!',
-          icon: 'error'
-        })
-      }
+      console.log(dataInputEditSiswa)
+      // const response = await api.requestJsonPengguna(dataInputEditSiswa, 'edit')
+      // if (response.data.success === true) {
+      //   this.$swal({
+      //     title: 'Berhasil!',
+      //     text: 'Berhasil Membuat Pengguna baru!',
+      //     icon: 'success'
+      //   })
+      // } else {
+      //   this.$swal('Gagal!', {
+      //     title: 'Gagal',
+      //     text: 'Gagal Membuat Pengguna baru!',
+      //     icon: 'error'
+      //   })
+      // }
     }
   }
 }

@@ -8,8 +8,8 @@
                     <h1 class="md-title">Mesin</h1>
                   </md-table-toolbar>
                   <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Nama Sekolah">{{ item.address }}</md-table-cell>
-                    <md-table-cell md-label="Address">{{ item.deskripsi }}</md-table-cell>
+                    <md-table-cell md-label="Address">{{ item.address }}</md-table-cell>
+                    <md-table-cell md-label="Deskripsi">{{ item.deskripsi }}</md-table-cell>
                     <md-table-cell>
                       <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button>            
                     </md-table-cell>
@@ -128,12 +128,17 @@ export default {
             api.requestJsonSekolah(dataDeleteMesin, 'delete')
             this.$swal('berhasil di hapus!', {
               icon: 'success'
+            }).then((result) => {
+              window.location.reload()
             })
           } else {
-            this.$swal('Penghapusan dibatalkan!')
+            this.$swal('Penghapusan dibatalkan!', {
+              icon: 'warning'
+            }).then((result) => {
+              window.location.reload()
+            })
           }
         })
-      console.log(dataDeleteMesin)
     },
     listMacAddressJSON: async function (param) {
       const response = await api.JSON_Sekolah(this.namaSekolahLocal)

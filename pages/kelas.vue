@@ -129,6 +129,7 @@ export default {
       inputJurusanEdit: null,
       inputJamMasukEdit: null,
       inputJamPulangEdit: null,
+      inputIdKelasEdit: null,
       // JSON
       listDataKelasJSON: [],
       status_SIA: [],
@@ -199,6 +200,7 @@ export default {
       this.selectedKelas = response.data.data[0]
     },
     editKelasFieldTampil: async function (param) {
+      this.idKelasEdit = param._id
       this.inputNamaKelasEdit = param.NAMA_KELAS
       this.inputTingkatEdit = param.Tingkat
       this.inputJurusanEdit = param.Jurusan
@@ -207,8 +209,8 @@ export default {
     },
     editKelasFungsi: async function (param) {
       var dataKelas = {
-        _id: this.objectIdSekolah,
-        nama: this.inputNamaKelasEdit,
+        _id: this.idKelasEdit,
+        nama_kelas: this.inputNamaKelasEdit,
         tingkat: this.inputTingkatEdit,
         jurusan: this.inputJurusanEdit,
         sekolah: this.idSekolah,
@@ -237,6 +239,10 @@ export default {
       console.log(dataKelas)
     },
     deleteKelasFungsi: async function (param) {
+      var idKelas = {
+        _id: param,
+        sekolah: this.namaSekolahLocal
+      }
       this.$swal({
         title: 'Yakin Hapus?',
         text: 'Data Kelas akan dihapus secara permanen!',
@@ -246,12 +252,16 @@ export default {
       })
         .then((willDelete) => {
           if (willDelete) {
-            api.requestKelas(param, 'delete')
+            api.requestJsonKelas(idKelas, 'dev_Delete')
             this.$swal('berhasil di hapus!', {
               icon: 'success'
+            }).then((result) => {
+              window.location.reload()
             })
           } else {
-            this.$swal('Penghapusan dibatalkan!')
+            this.$swal('Penghapusan dibatalkan!').then((result) => {
+              window.location.reload()
+            })
           }
         })
     },

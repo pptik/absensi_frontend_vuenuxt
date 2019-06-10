@@ -47,7 +47,6 @@
     </div>
     </div>
     <div class="md-layout md-gutter">
-      
       <div class="md-layout-item">
         <div class="content_kelas">
           <md-table md-card v-model="dataHarianSiswa" class="md-alignment-top-center">
@@ -57,7 +56,7 @@
             <md-table-row slot="md-table-row" slot-scope="{ item }">
               <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
               <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Total">{{ item.created_at }}</md-table-cell>
+              <md-table-cell type="number" md-label="Status">{{ item.created_at }}</md-table-cell>
                <md-table-cell>
               <!-- <md-button v-on:click.prevent="">Edit</md-button>
               <md-button v-on:click.prevent="" class="md-accent">Delete</md-button>             -->
@@ -189,15 +188,32 @@ export default {
     },
     dashboardJSON: async function (param) {
       const responses = await api.JSON_Sekolah(this.namaSekolahLocal)
+      const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mai', 'Juni',
+        'Juli', 'Augustus', 'September', 'October', 'November', 'December'
+      ]
+      const d = new Date()
+      const getYear = d.getFullYear()
 
-      this.statusHadir = responses.data[0].ABSENSI._2019.Mei.rekap_hadir
-      this.statusSakit = responses.data[0].ABSENSI._2019.Mei.rekap_sakit
-      this.statusIzin = responses.data[0].ABSENSI._2019.Mei.rekap_izin
-      this.statusAlfa = responses.data[0].ABSENSI._2019.Mei.rekap_alfa
+        this.statusHadir = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_hadir
+      this.statusSakit = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_sakit
+      this.statusIzin = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_izin
+      this.statusAlfa = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_alfa
+
+      if (typeof this.statusHadir === 'undefined') {
+        this.statusHadir = 0
+      }
+      if (typeof this.statusSakit === 'undefined') {
+        this.statusSakit = 0
+      }
+      if (typeof this.statusIzin === 'undefined') {
+        this.statusIzin = 0
+      }
+      if (typeof this.statusAlfa === 'undefined') {
+        this.statusAlfa = 0
+      }
     },
     monitoringSiswaJSON: async function (param) {
       var date = new Date()
-      console.log()
       var dataParamSend = {
         sekolah: this.namaSekolahLocal,
         tahun: new Date().getFullYear().toString(),
