@@ -8,9 +8,13 @@
         <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas)">
           <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
         </md-select>
+       <md-button class="md-default md-raised" @click="showDate = true;">
+          Export to XLS
+        </md-button>
+         <button type="button" v-on:click="onexport">Excel download</button>
       </md-field>
       <div>
-        <md-table v-model="dataHasilTampilSiswa" md-card>
+        <md-table v-model="dataHasilTampilSiswa" md-card id="table">
           <md-table-toolbar>
             <h1 class="md-title">Siswa</h1>
           </md-table-toolbar>
@@ -27,7 +31,9 @@
         </md-table>
       </div>       
       </md-tab>
-      
+      <md-tab md-label="uwahsh">
+
+      </md-tab>
       <md-tab id="tab-posts" md-label="Tambah Siswa">
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
@@ -78,7 +84,43 @@
           </md-tab>
         </md-tabs>
     </div>
+    <!-- DOALOG REKAP --->
+    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-90 md-small-size-70">
+      <md-dialog-title>Rekap Absensi Per Bulan {{this.selectedKelas}}</md-dialog-title>
+      <div style="padding:20p">
+        <div class="md-layout md-gutter containers">
+          <div class="md-layout-item">
+            <md-field>
+              <label>Tahun</label>
+              <md-input v-model="tahunRekap" type="number"></md-input>
+            </md-field>
+          </div>
 
+        <div class="md-layout-item">
+          <md-field>
+            <md-select v-model="bulan" name="bulan" id="bulan" placeholder="Bulan">
+              <md-option value="Januari">Januari</md-option>
+              <md-option value="Februari">Februari</md-option>
+              <md-option value="Maret">Maret</md-option>
+              <md-option value="April">April</md-option>
+              <md-option value="Mei">Mei</md-option>
+              <md-option value="Juni">Juni</md-option>
+              <md-option value="Juli">Juli</md-option>
+              <md-option value="Agustus">Agustus</md-option>
+              <md-option value="September">September</md-option>
+              <md-option value="Oktober">Oktober</md-option>
+              <md-option value="November">November</md-option>
+              <md-option value="Desember">Desember</md-option>
+            </md-select>
+          </md-field>
+        </div>
+
+      </div>
+          <md-dialog-actions>
+              <md-button class="md-primary" @click="exportData()">Export</md-button>
+            </md-dialog-actions>
+      </div>
+    </md-dialog>
     <!---DIALOG BOX--->
     <md-dialog :md-active.sync="showDialogEdit" class="md-layout-item md-size-50 md-small-size-70">
       <md-dialog-title>Edit Siswa</md-dialog-title>
@@ -109,13 +151,19 @@
 </template>
 
 <script>
+// eslint-disable-line no-use-before-define
+/* eslint-disable no-console */
 import api from '../middleware/routes_api/routes'
 import load from 'lodash'
+import XLSX from 'xlsx'
 export default {
   layout: 'default', // layouts used
   data () {
     return {
+      Datas: {'Murid': [{}]
+      },
       showDialogEdit: false,
+      showDate: false,
       model: {
         selectedGroup: null
       },
@@ -148,7 +196,11 @@ export default {
       // Edit Data
       EditNamaLengkap: null,
       EditKodeRFID: null,
-      EditKelas: null
+      EditKelas: null,
+      //  Export Bulan
+
+      tahunRekap: null,
+      bulan: null
     }
   },
   mounted () {
@@ -157,6 +209,15 @@ export default {
     this.listKelasJSON()
   },
   methods: {
+    onexport () {
+      var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
+      var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons)
+      var wb = XLSX.utils.book_new()
+
+      XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+      XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')
+      XLSX.writeFile(wb, 'book.xlsx')
+    },
     setItemAuth: async function (param) {
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
@@ -311,7 +372,43 @@ export default {
       const response = await api.getJSONHttp(param)
       console.log(response.data + 'awoekoawe')
     },
+    exportData: async function (param) {
+      console.log('sss')
+      var mdata = {
+        tahun: '2019',
+        bulan: 'Mei',
+        kelas: '7A',
+        sekolah: 'SMP Assalam'
+      }
+      console.log(mdata)
+      const response = await api.requestExcelData(mdata)
+      console.log(response.data)
+      const values = response.data.data
+      var jsonStar = '{"Murid":[{}]}'
+      var objStar = JSON.parse(jsonStar)
+      for (let i = 0; i < values.length; i++) {
+        if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
+          var check = values[i].RFID
+          console.log(check.rekap_rfid._2019.Mei)
+          console.log(values[i].profil.nama_lengkap)
+          objStar['Murid'].push(check.rekap_rfid._2019.Mei)
+          objStar['Murid'].push(values[i].profil.nama_lengkap)
+          // var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
+          // var wb = XLSX.utils.book_new()
 
+          // XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+          // XLSX.writeFile(wb, 'book.xlsx')
+        } else {
+          console.log('gagal')
+        }
+        // if (!values.has('rekap_rfid')) {
+        //   console.log('Exists')
+        // } else {
+        //   console.log('Doesnt Exists')
+        // }
+      }
+      console.log(objStar)
+    },
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
@@ -373,6 +470,7 @@ export default {
         })
       }
     },
+
     editDataSiswa: async function (param) {
       var dataInputEditSiswa = {
         email: this.inputEmail,
@@ -391,6 +489,9 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
+  .containers{
+    margin-left: 5%;
+    margin-right: 5%;
+  }
 </style>

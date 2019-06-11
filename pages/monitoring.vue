@@ -12,7 +12,9 @@
               <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-label="Status">{{ item.rfid }}</md-table-cell>
               <md-table-cell>
-                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid)">Hadir</md-button>    
+                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button><br>
+                  <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'sakit')">Sakit</md-button><br>
+                  <md-button class="md-primary" v-on:click.prevent="editHadir(item.rfid,'izin')">Izin</md-button>
                 </md-table-cell>
             </md-table-row>
           </md-table>
@@ -41,21 +43,39 @@ export default {
     this.monitoringSiswaJSON()
   },
   methods: {
-    editHadir: async function (rfidSiswa) {
+    editHadir: async function (rfidSiswa, statusHadir) {
       var dt = new Date()
       var tgl = dt.setHours(dt.getHours() + 7)
       console.log('local ' + rfidSiswa)
 
-      var dataEdit = {
-        created_at: tgl,
-        mac_address: this.mac_address[0].address,
-        rfid: rfidSiswa
+      var dataEdit = {}
+      if (statusHadir === 'hadir') {
+        dataEdit = {
+          created_at: tgl,
+          mac_address: this.mac_address[0].address,
+          rfid: rfidSiswa,
+          status: 'hadir'
+        }
+      } else if (statusHadir === 'sakit') {
+        dataEdit = {
+          created_at: tgl,
+          mac_address: this.mac_address[0].address,
+          rfid: rfidSiswa,
+          status: 'sakit'
+        }
+      } else if (statusHadir === 'izin') {
+        dataEdit = {
+          created_at: tgl,
+          mac_address: this.mac_address[0].address,
+          rfid: rfidSiswa,
+          status: 'izin'
+        }
       }
       await api.requestMonitoring(dataEdit).then(response => {
         if (response.data.success === true) {
           this.$swal({
             title: 'Berhasil!',
-            text: 'Berhasil',
+            text: 'Berhasil Merubah menjadi ' + statusHadir,
             icon: 'success',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
