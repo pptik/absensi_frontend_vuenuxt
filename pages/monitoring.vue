@@ -95,7 +95,11 @@ export default {
         if (response.data.success === true) {
           this.$swal({
             title: 'Berhasil!',
+<<<<<<< HEAD
             text: 'Berhasil!',
+=======
+            text: 'Berhasil',
+>>>>>>> 92ab2637d228afad6f937baae9982790158bb6a6
             icon: 'success',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
@@ -105,7 +109,11 @@ export default {
         } else {
           this.$swal('Gagal!', {
             title: 'Gagal',
+<<<<<<< HEAD
             text: 'Gagal Mengubah Status!',
+=======
+            text: 'Gagal Mengubah Status',
+>>>>>>> 92ab2637d228afad6f937baae9982790158bb6a6
             icon: 'error',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
