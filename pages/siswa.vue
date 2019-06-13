@@ -30,9 +30,6 @@
         </md-table>
       </div>       
       </md-tab>
-      <md-tab md-label="uwahsh">
-
-      </md-tab>
       <md-tab id="tab-posts" md-label="Tambah Siswa">
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
