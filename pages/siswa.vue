@@ -11,7 +11,6 @@
        <md-button class="md-default md-raised" @click="showDate = true;">
           Export to XLS
         </md-button>
-         <button type="button" v-on:click="onexport">Excel download</button>
       </md-field>
       <div>
         <md-table v-model="dataHasilTampilSiswa" md-card id="table">
@@ -160,8 +159,7 @@ export default {
   layout: 'default', // layouts used
   data () {
     return {
-      Datas: {'Murid': [{}]
-      },
+      Datas: {},
       showDialogEdit: false,
       showDate: false,
       model: {
@@ -373,26 +371,33 @@ export default {
       console.log(response.data + 'awoekoawe')
     },
     exportData: async function (param) {
-      console.log('sss')
       var mdata = {
-        tahun: '2019',
-        bulan: 'Mei',
-        kelas: '7A',
-        sekolah: 'SMP Assalam'
+        tahun: this.tahunRekap,
+        bulan: this.bulan,
+        kelas: this.selectedKelas,
+        sekolah: this.namaSekolahLocal
       }
       console.log(mdata)
       const response = await api.requestExcelData(mdata)
-      console.log(response.data)
+      console.log(response.data.data)
       const values = response.data.data
-      var jsonStar = '{"Murid":[{}]}'
-      var objStar = JSON.parse(jsonStar)
+      var ExportData = []
       for (let i = 0; i < values.length; i++) {
         if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
           var check = values[i].RFID
-          console.log(check.rekap_rfid._2019.Mei)
-          console.log(values[i].profil.nama_lengkap)
-          objStar['Murid'].push(check.rekap_rfid._2019.Mei)
-          objStar['Murid'].push(values[i].profil.nama_lengkap)
+          for (let a = 0; a < 32; a++) {
+            if (typeof (Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]) === 'undefined') {
+              console.log('Tidak Ada Tanggal')
+            } else {
+              var tgl = Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]
+              console.log('Tanggalnya')
+              console.log(tgl)
+              ExportData.push({Tanggal: Object.keys(check.rekap_rfid._2019.Juni)[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid._2019.Juni[`${tgl}`].Datang, Pulang: check.rekap_rfid._2019.Juni[`${tgl}`].Pulang})
+            }
+          }
+
+          // objStar['Murid'].push(check.rekap_rfid._2019.Mei)
+          // objStar['Murid'].push(values[i].profil.nama_lengkap)
           // var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
           // var wb = XLSX.utils.book_new()
 
@@ -407,7 +412,14 @@ export default {
         //   console.log('Doesnt Exists')
         // }
       }
-      console.log(objStar)
+      this.Datas['kelas_' + this.selectedKelas] = ExportData
+      console.log(this.Datas)
+      console.log(ExportData)
+      var animalWS = XLSX.utils.json_to_sheet(this.Datas.kelas_8A)
+      var wb = XLSX.utils.book_new()
+
+      XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
+      XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
     },
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
