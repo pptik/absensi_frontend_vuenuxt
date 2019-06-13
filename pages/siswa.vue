@@ -5,12 +5,17 @@
       <md-tab id="tab-pages" md-label="List Siswa">
       <md-field>
         <label>Pilih kelas</label>
+         
         <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas)">
+          <md-option disabled>Pilih Kelas</md-option>
           <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
         </md-select>
+        <md-button class="md-default md-raised" @click="showDate = true;">
+          Export to XLS
+        </md-button>
       </md-field>
       <div>
-        <md-table v-model="dataHasilTampilSiswa" md-card>
+        <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
           <md-table-toolbar>
             <h1 class="md-title">Siswa</h1>
           </md-table-toolbar>
@@ -78,7 +83,40 @@
           </md-tab>
         </md-tabs>
     </div>
-
+    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-90 md-small-size-70">
+      <md-dialog-title>Rekap Absensi Per Bulan {{this.selectedKelas}}</md-dialog-title>
+      <div style="padding:20p">
+        <div class="md-layout md-gutter containers">
+          <div class="md-layout-item">
+            <md-field>
+              <label>Tahun</label>
+              <md-input v-model="tahunRekap" type="number"></md-input>
+            </md-field>
+          </div>
+        <div class="md-layout-item">
+          <md-field>
+            <md-select v-model="bulan" name="bulan" id="bulan" placeholder="Bulan">
+              <md-option value="Januari">Januari</md-option>
+              <md-option value="Februari">Februari</md-option>
+              <md-option value="Maret">Maret</md-option>
+              <md-option value="April">April</md-option>
+              <md-option value="Mei">Mei</md-option>
+              <md-option value="Juni">Juni</md-option>
+              <md-option value="Juli">Juli</md-option>
+              <md-option value="Agustus">Agustus</md-option>
+              <md-option value="September">September</md-option>
+              <md-option value="Oktober">Oktober</md-option>
+              <md-option value="November">November</md-option>
+              <md-option value="Desember">Desember</md-option>
+            </md-select>
+          </md-field>
+        </div>
+      </div>
+          <md-dialog-actions>
+              <md-button class="md-primary" @click="exportData()">Export</md-button>
+            </md-dialog-actions>
+      </div>
+    </md-dialog>
     <!---DIALOG BOX--->
     <md-dialog :md-active.sync="showDialogEdit" class="md-layout-item md-size-50 md-small-size-70">
       <md-dialog-title>Edit Siswa</md-dialog-title>
@@ -111,6 +149,8 @@
 <script>
 import api from '../middleware/routes_api/routes'
 import load from 'lodash'
+
+import XLSX from 'xlsx'
 export default {
   layout: 'default', // layouts used
   data () {
@@ -123,7 +163,7 @@ export default {
       allPost: [],
       post: [],
       dataKelas: [],
-      selectedKelas: null,
+      selectedKelas: 'Pilih Kelas',
       dataHasilTampilSiswa: [],
       date_time: Date.now(),
       idSekolah: 'SMP Assalam',
@@ -149,7 +189,11 @@ export default {
       EditNamaLengkap: null,
       EditKodeRFID: null,
       EditKelas: null,
-      EditJenisKelamin: null
+      EditJenisKelamin: null,
+      Datas: {},
+      tahunRekap: null,
+      bulan: null,
+      showDate: false
     }
   },
   mounted () {
@@ -175,7 +219,6 @@ export default {
       try {
         const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
         var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
-        console.log(result)
         for (let x = 0; x < result.length; x++) {
           for (let i = 0; i < result[x].Kelas.length; i++) {
             var kelasTahunAjaran = result[x].Kelas[i]
@@ -242,6 +285,54 @@ export default {
           })
         }
       })
+    },
+    exportData: async function (param) {
+      var mdata = {
+        tahun: this.tahunRekap,
+        bulan: this.bulan,
+        kelas: this.selectedKelas,
+        sekolah: this.namaSekolahLocal
+      }
+      console.log(mdata)
+      const response = await api.requestExcelData(mdata)
+      console.log(response.data.data)
+      const values = response.data.data
+      var ExportData = []
+      for (let i = 0; i < values.length; i++) {
+        if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
+          var check = values[i].RFID
+          for (let a = 0; a < 32; a++) {
+            if (typeof (Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]) === 'undefined') {
+              console.log('Tidak Ada Tanggal')
+            } else {
+              var tgl = Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]
+              console.log('Tanggalnya')
+              console.log(tgl)
+              ExportData.push({Tanggal: Object.keys(check.rekap_rfid._2019.Juni)[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid._2019.Juni[`${tgl}`].Datang, Pulang: check.rekap_rfid._2019.Juni[`${tgl}`].Pulang})
+            }
+          }
+          // objStar['Murid'].push(check.rekap_rfid._2019.Mei)
+          // objStar['Murid'].push(values[i].profil.nama_lengkap)
+          // var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
+          // var wb = XLSX.utils.book_new()
+          // XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+          // XLSX.writeFile(wb, 'book.xlsx')
+        } else {
+          console.log('gagal')
+        }
+        // if (!values.has('rekap_rfid')) {
+        //   console.log('Exists')
+        // } else {
+        //   console.log('Doesnt Exists')
+        // }
+      }
+      this.Datas['kelas_' + this.selectedKelas] = ExportData
+      console.log(this.Datas)
+      console.log(ExportData)
+      var animalWS = XLSX.utils.json_to_sheet(this.Datas.kelas_8A)
+      var wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
+      XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
     },
     DeleteSiswa: async function (params) {
       var dataSiswaDelete = {
@@ -323,9 +414,11 @@ export default {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
         this.dataArrayNamaKelas.push(element)
       }
+      this.selectedKelas = 'Pilih Kelas'
+      /* kalo mau tampil kelas paling awal
       this.selectedKelas = this.dataArrayNamaKelas[0]
+      */
       const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
-      console.log(responTwo.data)
       var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: '2018/2019', nama_kelas: this.selectedKelas }] })
       for (let x = 0; x < result.length; x++) {
         for (let i = 0; i < result[x].Kelas.length; i++) {
@@ -346,9 +439,9 @@ export default {
     },
     simpanDataSiswa: async function (param) {
       if (this.jenis_kelamin === 'Laki-Laki') {
-        this.inputKelaminConvert = 'L'
+        this.inputKelaminConvert = 'M'
       } else {
-        this.inputKelaminConvert = 'P'
+        this.inputKelaminConvert = 'F'
       }
       var dataInputSimpanSiswa = {
         email: this.inputEmail,

@@ -1,8 +1,8 @@
 <template>
   <section class="container">
     <div class="md-title">{{namaSekolahLocal}}</div>
-    <h1> </h1>
-    <div class="md-layout">
+    <h3><span>Tap Terakhir: {{datamesin}}</span></h3>
+    <!-- <div class="md-layout">
       <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <md-card>
@@ -45,18 +45,21 @@
       </md-card>
       </div>
     </div>
-    </div>
+    </div> -->
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div class="content_kelas">
-          <md-table md-card v-model="dataHarianSiswa" class="md-alignment-top-center">
+          <md-table md-sort="created_ed" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "450px">
             <md-table-toolbar>
               <h1 class="md-title">Data Harian Siswa</h1>
             </md-table-toolbar>
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
-              <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Status">{{ item.created_at }}</md-table-cell>
+            <md-table-row slot="md-table-row" slot-scope="{ item }" >
+              <md-table-cell md-sort-by="nama_lengkap" md-label="Name" >{{ item.nama_lengkap }}</md-table-cell>
+              <md-table-cell type="number" md-label="Kelas" md-sort-by="kelas">{{ item.kelas }}</md-table-cell>
+              <md-table-cell type="number" md-label="Waktu Datang" md-sort-by="created_at">{{ item.created_at }}</md-table-cell>
+              <md-table-cell v-if="item.created_ed === 0" type="number" md-label="Waktu Pulang" md-sort-by="created_ed" >Belum Melakukan Absen Pulang</md-table-cell>
+              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="created_ed" >{{ item.created_ed }}</md-table-cell>
+              
                <md-table-cell>
               <!-- <md-button v-on:click.prevent="">Edit</md-button>
               <md-button v-on:click.prevent="" class="md-accent">Delete</md-button>             -->
@@ -109,10 +112,25 @@
 <script>
 import BarChart from '@/components/charts/BarChart'
 import api from '../middleware/routes_api/routes'
+import momentTimeZone from 'moment-timezone'
+import mesin from '../middleware/rmq/mqtt'
+import load from 'lodash'
+
 export default {
   layout: 'default', // layouts used
   components: {
     BarChart
+  },
+  beforeCreate: function () {
+    mesin.on('connect', function () {
+      mesin.subscribe('absensi.webservice', function (err) {
+        if (!err) {
+          console.log('Subscribe to RMQ PPTIK Success')
+        } else if (err) {
+          console.log(err)
+        }
+      })
+    })
   },
   data () {
     return {
@@ -123,6 +141,7 @@ export default {
       idsekolah: 'SMP Assalam',
       monitoringSiswaData: [],
       dataHarianSiswa: [],
+      datamesin: null,
       barcollection: {
         labels: ['Hadir', 'Sakit', 'Izin', 'Alfa'],
         datasets: [
@@ -165,8 +184,29 @@ export default {
     this.dashboardJSON()
     this.monitoringSiswaJSON()
     this.dataSiswaHarianJSON()
+    this.filldata()
   },
   methods: {
+    filldata: async function () {
+      console.log('test masuk')
+      let ini = this
+      var users = [
+        { 'user': 'barney', 'age': 36, 'active': true },
+        { 'user': 'fred', 'age': 40, 'active': false },
+        { 'user': 'pebbles', 'age': 1, 'active': true }
+      ]
+      let test = load.find(users, { 'age': 1, 'active': true })
+      const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
+      let dataChecker = load.find(responTwo.data, {'RFID.serial_number': '0x40 0xd9 0x10 0x54'})
+      console.log(responTwo.data[0].RFID.serial_number)
+      console.log(test)
+      console.log(dataChecker)
+      mesin.on('message', function (topic, message) {
+        console.log(message.toString())
+        let mesinRFID = JSON.parse(message.toString())
+        ini.datamesin = mesinRFID.nama_lengkap + ' ' + mesinRFID.jam
+      })
+    },
     barchartDataKehadiran: function (sakit, izin, alfa, batasbawah) {
       return {
         labels: ['Sakit', 'Izin', 'Alfa'],
@@ -185,6 +225,8 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
+
+      console.log(momentTimeZone.tz(new Date(), 'Asia/Jakarta'))
     },
     dashboardJSON: async function (param) {
       const responses = await api.JSON_Sekolah(this.namaSekolahLocal)
@@ -193,11 +235,10 @@ export default {
       ]
       const d = new Date()
       const getYear = d.getFullYear()
-
-        this.statusHadir = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_hadir
-      this.statusSakit = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_sakit
-      this.statusIzin = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_izin
-      this.statusAlfa = responses.data.ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_alfa
+      this.statusHadir = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_hadir
+      this.statusSakit = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_sakit
+      this.statusIzin = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_izin
+      this.statusAlfa = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_alfa
 
       if (typeof this.statusHadir === 'undefined') {
         this.statusHadir = 0
@@ -221,7 +262,6 @@ export default {
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'monitoring')
       this.monitoringSiswaData = response.data.data
-      console.log(response)
     },
     dataSiswaHarianJSON: async function (param) {
       var date = new Date()
@@ -238,11 +278,17 @@ export default {
         var dataArrayResult = {
           'nama_lengkap': elementResult.nama_lengkap,
           'kelas': elementResult.kelas,
-          'created_at': elementResult.created_at
+          'created_at': elementResult.created_at,
+          'created_ed': elementResult.created_ed
         }
         arrayKosong.push(dataArrayResult)
       }
       this.dataHarianSiswa = arrayKosong
+      this.dataHarianSiswa.sort((a, b) => {
+        console.log(a.created_at)
+        return new Date(a.date) - new Date(b.date)
+      })
+      return this.dataHarianSiswa
     }
   }
 }

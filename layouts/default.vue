@@ -9,21 +9,28 @@
         </md-button>
         <span class="md-title">A B S T E I N</span>
       </md-app-toolbar>
-
       <!-- Toogle Menu Visible -->
-      <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
+       <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
           {{usernameLocal}} 
         </md-toolbar>
         <!-- Call Navigation Menu Components Here -->
         <NavigationMenu></NavigationMenu>
       </md-app-drawer>
-
       <!-- Content Section -->
       <md-app-content>
-        <!-- Nuxt Instance -->
+        <!-- Nuxt Instance --> 
         <nuxt />
+      <footer class="footer">
+      <div class="footer-notes">
+        <div class="col">
+          <div>© 2019 PPTIK, Gunakan Browser Microsoft Edge Untuk Performa Terbaik</div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </footer>  
       </md-app-content>
+      
     </md-app>
   </div>
 </template>
@@ -73,3 +80,21 @@ export default {
   })
 }
 </script>
+
+<style>
+.footer {
+  background-color: #333;
+  color: #fff;
+  font-size: 14px;
+  width: 100%;
+}
+.footer-notes {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: rgb(13, 175, 86);
+   color: white;
+   text-align: center;
+}
+</style>

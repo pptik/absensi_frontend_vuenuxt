@@ -2,19 +2,29 @@
   <section class="container">
     <div class="md-layout md-alignment-top-center">
       <div class="md-layout-item">
-        <div class="content_kelas">
-          <md-table md-card v-model="monitoringSiswaData" class="md-alignment-top-center">
+        <div class="content_kelas">         
+          
+            <!-- <md-field md-clearable class="md-toolbar-section-end">
+              <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
+            </md-field> -->
+          <md-table  md-sort="nama_lengkap" v-model="monitoringSiswaData" md-sort-order="asc" md-card md-fixed-header md-height= "550px">
             <md-table-toolbar>
               <h1 class="md-title">Monitoring Siswa Tidak Hadir</h1>
             </md-table-toolbar>
             <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
-              <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Status">{{ item.rfid }}</md-table-cell>
-              <md-table-cell> 
-                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid)">Hadir</md-button>   
+              <md-table-cell md-label="Nama" md-sort-by="nama_lengkap">{{ item.nama_lengkap }}</md-table-cell>
+              <md-table-cell type="number" md-sort-by="kelas" md-label="Kelas">{{ item.kelas }}</md-table-cell>
+              <md-table-cell type="number" md-sort-by="rfid" md-label="Rfid">{{ item.rfid }}</md-table-cell>
+              <md-table-cell>
+                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button><br>
+                  <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'sakit')">Sakit</md-button><br>
+                  <md-button class="md-primary" v-on:click.prevent="editHadir(item.rfid,'izin')">Izin</md-button>
                 </md-table-cell>
             </md-table-row>
+             <md-table-empty-state
+              md-label="User Tidak Ditemukan"
+              :md-description="`Tidak Ditemukan Data Untuk Monitoring.`">
+            </md-table-empty-state>
           </md-table>
         </div>
       </div>
@@ -24,6 +34,17 @@
 
 <script>
 import api from '../middleware/routes_api/routes'
+import moment from 'moment'
+// const toLower = text => {
+//   return text.toString().toLowerCase()
+// }
+// const searchByName = (items, term) => {
+//   if (term) {
+//     return items.filter(item => toLower(item.nama_lengkap).includes(toLower(term)))
+//   }
+//   return items
+// }
+
 export default {
   layout: 'default', // layouts used,
   data () {
@@ -33,7 +54,9 @@ export default {
       usernameLocal: null,
       sekolah_id: null,
       listKehadiran: [],
-      mac_address: []
+      mac_address: [],
+      search: null,
+      searched: []
     }
   },
   mounted () {
@@ -41,13 +64,32 @@ export default {
     this.monitoringSiswaJSON()
   },
   methods: {
-    editHadir: async function (rfidSiswa) {
+    editHadir: async function (rfidSiswa, statusHadir) {
       var dt = new Date()
-      var tgl = dt.setHours(dt.getHours() + 7)
-      var dataEdit = {
-        created_at: tgl,
-        mac_address: this.mac_address[0].address,
-        rfid: rfidSiswa
+      var tglZONEID = dt.setHours(dt.getHours())
+      var tgl = moment(tglZONEID).utcOffset('+07:00')
+      var dataEdit = {}
+      if (statusHadir === 'hadir') {
+        dataEdit = {
+          created_at: tgl,
+          mac_address: this.mac_address[0].address,
+          rfid: rfidSiswa,
+          status: 'hadir'
+        }
+      } else if (statusHadir === 'sakit') {
+        dataEdit = {
+          created_at: tgl,
+          mac_address: this.mac_address[0].address,
+          rfid: rfidSiswa,
+          status: 'sakit'
+        }
+      } else if (statusHadir === 'izin') {
+        dataEdit = {
+          created_at: tgl,
+          mac_address: this.mac_address[0].address,
+          rfid: rfidSiswa,
+          status: 'izin'
+        }
       }
       await api.requestMonitoring(dataEdit).then(response => {
         if (response.data.success === true) {
@@ -82,7 +124,6 @@ export default {
     },
     monitoringSiswaJSON: async function (param) {
       var date = new Date()
-      console.log()
       var dataParamSend = {
         sekolah: this.namaSekolahLocal,
         tahun: (new Date().getFullYear() - 1) + '/' + new Date().getFullYear(),
@@ -90,9 +131,11 @@ export default {
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'monitoring')
       this.monitoringSiswaData = response.data.data
-      console.log('Data Monitoring')
-      console.log(response.data)
+      // this.searched = this.monitoringSiswaData
     }
+    // searchOnTable () {
+    //   this.searched = searchByName(this.monitoringSiswaData, this.search)
+    // }
   }
 }
 </script>

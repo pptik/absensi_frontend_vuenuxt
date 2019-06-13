@@ -1,23 +1,23 @@
 <template>
   <section class="container">
     <md-tabs  md-active-tab>
-            <md-tab id="tab-posts" md-label="List Mesin">
-              <form novalidate class="md-layout" >
-                <md-table v-model="dataMesinJSON" md-card>
-                  <md-table-toolbar>
-                    <h1 class="md-title">Mesin</h1>
-                  </md-table-toolbar>
-                  <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell md-label="Address">{{ item.address }}</md-table-cell>
-                    <md-table-cell md-label="Deskripsi">{{ item.deskripsi }}</md-table-cell>
-                    <md-table-cell>
-                      <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button>            
-                    </md-table-cell>
-                  </md-table-row>
-                </md-table>
-                </form>
-              </md-tab>
-                    <md-tab id="tab-pages" md-label="Tambah Mesin">
+      <md-tab id="tab-posts" md-label="List Mesin">
+        <form novalidate class="md-layout">
+          <md-table v-model="dataMesinJSON" md-card class="md-layout-item md-size-100 md-small-size-100">
+            <md-table-toolbar>
+              <h1 class="md-title">Mesin</h1>
+            </md-table-toolbar>
+            <md-table-row slot="md-table-row" slot-scope="{ item }">
+              <md-table-cell md-label="Address">{{ item.address }}</md-table-cell>
+              <md-table-cell md-label="Deskripsi">{{ item.deskripsi }}</md-table-cell>
+            <md-table-cell>
+              <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button>            
+                </md-table-cell>
+              </md-table-row>
+          </md-table>
+        </form>
+      </md-tab>
+      <md-tab id="tab-pages" md-label="Tambah Mesin">
       <div>
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
@@ -82,7 +82,7 @@ export default {
     },
     simpanMacAddress: async function (param) {
       var dataInputMesin = {
-        mesin: this.inputNamaMesin,
+        mesin: this.inputAddressMesin,
         nama_sekolah: this.namaSekolahLocal,
         deskripsi: this.inputDeskripsi
       }
@@ -144,6 +144,7 @@ export default {
       const response = await api.JSON_Sekolah(this.namaSekolahLocal)
       console.log(response.data)
       this.dataMesinJSON = response.data[0].Mesin
+
       // var totalMesin = []
       // var mesin = response.data[0].mac_address_absensi
       // for (let i = 0; i < mesin.length; i++) {
