@@ -114,7 +114,6 @@ import BarChart from '@/components/charts/BarChart'
 import api from '../middleware/routes_api/routes'
 import momentTimeZone from 'moment-timezone'
 import mesin from '../middleware/rmq/mqtt'
-import load from 'lodash'
 
 export default {
   layout: 'default', // layouts used
@@ -188,23 +187,13 @@ export default {
   },
   methods: {
     filldata: async function () {
-      console.log('test masuk')
       let ini = this
-      var users = [
-        { 'user': 'barney', 'age': 36, 'active': true },
-        { 'user': 'fred', 'age': 40, 'active': false },
-        { 'user': 'pebbles', 'age': 1, 'active': true }
-      ]
-      let test = load.find(users, { 'age': 1, 'active': true })
-      const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
-      let dataChecker = load.find(responTwo.data, {'RFID.serial_number': '0x40 0xd9 0x10 0x54'})
-      console.log(responTwo.data[0].RFID.serial_number)
-      console.log(test)
-      console.log(dataChecker)
       mesin.on('message', function (topic, message) {
         console.log(message.toString())
         let mesinRFID = JSON.parse(message.toString())
-        ini.datamesin = mesinRFID.nama_lengkap + ' ' + mesinRFID.jam
+        if (this.namaSekolahLocal === mesinRFID.sekolah) {
+          ini.datamesin = mesinRFID.nama_lengkap + ' ' + mesinRFID.jam
+        }
       })
     },
     barchartDataKehadiran: function (sakit, izin, alfa, batasbawah) {
