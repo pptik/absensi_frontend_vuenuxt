@@ -2,7 +2,7 @@
   <div class="centered-container">
     <md-content class="md-elevation-5">
       <div class="title">
-        <img src="http://absensi.pptik.id/src/assets/images/shortcut-icon.1.png">
+        <img src="~/assets/shortcut-icon.1.png">
         <div class="md-title">Selamat Datang</div>
         <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
       </div>

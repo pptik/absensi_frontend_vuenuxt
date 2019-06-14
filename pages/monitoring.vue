@@ -2,8 +2,7 @@
   <section class="container">
     <div class="md-layout md-alignment-top-center">
       <div class="md-layout-item">
-        <div class="content_kelas">         
-          
+        <div class="content_kelas">
             <!-- <md-field md-clearable class="md-toolbar-section-end">
               <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
             </md-field> -->
@@ -95,11 +94,7 @@ export default {
         if (response.data.success === true) {
           this.$swal({
             title: 'Berhasil!',
-<<<<<<< HEAD
-            text: 'Berhasil!',
-=======
             text: 'Berhasil',
->>>>>>> 92ab2637d228afad6f937baae9982790158bb6a6
             icon: 'success',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
@@ -109,11 +104,7 @@ export default {
         } else {
           this.$swal('Gagal!', {
             title: 'Gagal',
-<<<<<<< HEAD
-            text: 'Gagal Mengubah Status!',
-=======
             text: 'Gagal Mengubah Status',
->>>>>>> 92ab2637d228afad6f937baae9982790158bb6a6
             icon: 'error',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true

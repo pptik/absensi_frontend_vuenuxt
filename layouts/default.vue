@@ -1,7 +1,6 @@
 <template>
-  <div class="page-container">
+  <div>
     <md-app md-waterfall md-mode="fixed">
-    
       <!-- Right Menu  Navigation Section -->
       <md-app-toolbar class="md-primary">
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
@@ -10,9 +9,9 @@
         <span class="md-title">A B S T E I N</span>
       </md-app-toolbar>
       <!-- Toogle Menu Visible -->
-       <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
+      <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
-          {{usernameLocal}} 
+          {{usernameLocal}}
         </md-toolbar>
         <!-- Call Navigation Menu Components Here -->
         <NavigationMenu></NavigationMenu>
@@ -26,7 +25,6 @@
         <div class="col">
           <div>© 2019 PPTIK, Gunakan Browser Microsoft Edge Untuk Performa Terbaik</div>
         </div>
-        <div class="clearfix"></div>
       </div>
     </footer>  
       </md-app-content>

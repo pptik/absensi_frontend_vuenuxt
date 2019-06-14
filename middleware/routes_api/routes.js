@@ -66,5 +66,8 @@ export default {
   },
   requestMonitoring (params) {
     return Api().post('/monitoring/editMonitoring/', params)
+  },
+  requestExcelData (params) {
+    return Api().post('/pengguna/rekapAbsen/', params)
   }
 }
