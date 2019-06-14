@@ -6,7 +6,7 @@
             <!-- <md-field md-clearable class="md-toolbar-section-end">
               <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
             </md-field> -->
-          <md-table  md-sort="nama_lengkap" v-model="monitoringSiswaData" md-sort-order="asc" md-card md-fixed-header md-height= "550px">
+          <md-table md-sort="nama_lengkap" v-model="monitoringSiswaData" md-sort-order="asc" md-card md-fixed-header md-height="70vh">
             <md-table-toolbar>
               <h1 class="md-title">Monitoring Siswa Tidak Hadir</h1>
             </md-table-toolbar>

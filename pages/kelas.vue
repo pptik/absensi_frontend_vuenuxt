@@ -42,7 +42,7 @@
       <md-tab id="tab-list" md-label="Daftar Kelas">
         <div class="content_kelas">
           <form novalidate class="md-layout">
-            <md-table v-model="listDataKelasJSON" md-card class="md-layout-item md-alignment-top-center">
+            <md-table v-model="listDataKelasJSON" md-card class="md-layout-item md-alignment-top-center" md-fixed-header md-height="60vh">
               <md-table-toolbar>
                 <h1 class="md-title">Kelas </h1>
               </md-table-toolbar>

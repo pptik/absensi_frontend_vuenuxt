@@ -15,7 +15,7 @@
         </md-button>
       </md-field>
       <div>
-        <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
+        <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height="60vh">
           <md-table-toolbar>
             <h1 class="md-title">Siswa</h1>
           </md-table-toolbar>

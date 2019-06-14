@@ -49,7 +49,7 @@
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div class="content_kelas">
-          <md-table md-sort="created_ed" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "450px">
+          <md-table md-sort="created_ed" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "60vh">
             <md-table-toolbar>
               <h1 class="md-title">Data Harian Siswa</h1>
             </md-table-toolbar>

@@ -11,7 +11,7 @@
       <!-- Toogle Menu Visible -->
       <md-app-drawer md-swipeable :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
-          <span>{{usernameLocal}}</span>
+          <span class="md-title">Navigation</span>
         </md-toolbar>
         <!-- Call Navigation Menu Components Here -->
         <NavigationMenu></NavigationMenu>

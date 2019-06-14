@@ -3,7 +3,7 @@
     <md-tabs  md-active-tab>
       <md-tab id="tab-posts" md-label="List Mesin">
         <form novalidate class="md-layout">
-          <md-table v-model="dataMesinJSON" md-card class="md-layout-item md-size-100 md-small-size-100">
+          <md-table v-model="dataMesinJSON" md-card md-fixed-header class="md-layout-item md-size-100 md-small-size-100" md-height="60vh">
             <md-table-toolbar>
               <h1 class="md-title">Mesin</h1>
             </md-table-toolbar>
