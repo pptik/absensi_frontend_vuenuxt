@@ -9,9 +9,9 @@
         <span class="md-title">A B S T E I N</span>
       </md-app-toolbar>
       <!-- Toogle Menu Visible -->
-      <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
+      <md-app-drawer md-swipeable :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
-          {{usernameLocal}}
+          <span>{{usernameLocal}}</span>
         </md-toolbar>
         <!-- Call Navigation Menu Components Here -->
         <NavigationMenu></NavigationMenu>
@@ -19,7 +19,7 @@
       <!-- Content Section -->
       <md-app-content>
         <!-- Nuxt Instance --> 
-        <nuxt />
+      <nuxt />
       <footer class="footer">
       <div class="footer-notes">
         <div class="col">
@@ -28,7 +28,6 @@
       </div>
     </footer>  
       </md-app-content>
-      
     </md-app>
   </div>
 </template>
