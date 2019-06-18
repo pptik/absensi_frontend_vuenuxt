@@ -214,7 +214,6 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
-
       console.log(momentTimeZone.tz(new Date(), 'Asia/Jakarta'))
     },
     dashboardJSON: async function (param) {
@@ -228,7 +227,6 @@ export default {
       this.statusSakit = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_sakit
       this.statusIzin = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_izin
       this.statusAlfa = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_alfa
-
       if (typeof this.statusHadir === 'undefined') {
         this.statusHadir = 0
       }
