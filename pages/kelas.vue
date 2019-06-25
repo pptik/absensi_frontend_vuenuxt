@@ -3,16 +3,16 @@
     <div class="mt-5">
     
     <md-tabs  md-active-tab>
-      <md-tab id="tab-pages" md-label="Tambah Kelas">
+      <md-tab id="tab-pages" md-label="Tambah Bagian">
         <div>
           <form novalidate class="md-layout" >
             <md-card class="md-layout-item md-size-50 md-small-size-50">
               <md-card-header>
-                <div class="md-title">Tambah Kelas</div>
+                <div class="md-title">Tambah Bagian</div>
               </md-card-header>
               <div style="padding:25px;">
                 <md-field>
-                  <label>Nama Kelas</label>
+                  <label>Nama Bagian</label>
                   <md-input v-model="inputNamaKelas"></md-input>
                 </md-field>
                 <md-field>
@@ -20,7 +20,7 @@
                   <md-input v-model="inputTingkat"></md-input>
                 </md-field>
                 <md-field>
-                  <label>Jurusan</label>
+                  <label>Jurusan/Divisi</label>
                   <md-input v-model="inputJurusan"></md-input>
                 </md-field>
                 <md-field>
@@ -32,25 +32,25 @@
                   <md-input v-model="inputJamPulang"></md-input>
                 </md-field>  
                 <md-card-actions>
-                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpankelas()" >Tambah Kelas</md-button>
+                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpankelas()" >Tambah Bagian</md-button>
                 </md-card-actions>
               </div>
             </md-card>
           </form>
         </div>       
       </md-tab>
-      <md-tab id="tab-list" md-label="Daftar Kelas">
+      <md-tab id="tab-list" md-label="Daftar Bagian">
         <div class="content_kelas">
           <form novalidate class="md-layout">
             <md-table v-model="listDataKelasJSON" md-card class="md-layout-item md-alignment-top-center">
               <md-table-toolbar>
-                <h1 class="md-title">Kelas </h1>
+                <h1 class="md-title">Bagian</h1>
               </md-table-toolbar>
               <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="Name">{{ item.NAMA_KELAS }}</md-table-cell>
                 <md-table-cell type="number" md-label="Tingkat">{{ item.Tingkat }}</md-table-cell>
                 <md-table-cell md-label="Jurusan" v-if="item.Jurusan === 'undefined'">-</md-table-cell>
-                <md-table-cell md-label="Jurusan" v-else>{{ item.Jurusan }}</md-table-cell>
+                <md-table-cell md-label="Jurusan/Divisi" v-else>{{ item.Jurusan }}</md-table-cell>
                 <md-table-cell md-label="Jam Masuk">{{ item.Jam_Masuk }}</md-table-cell>
                 <md-table-cell md-label="Jam Masuk">{{ item.Jam_Pulang }}</md-table-cell>
                 <md-table-cell>
@@ -149,6 +149,9 @@ export default {
   },
   methods: {
     setItemAuth: async function () {
+      if (!this.$session.exists()) {
+        this.$router.push('/')
+      }
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username

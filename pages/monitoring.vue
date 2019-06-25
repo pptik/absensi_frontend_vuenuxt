@@ -8,11 +8,11 @@
             </md-field> -->
           <md-table  md-sort="nama_lengkap" v-model="monitoringSiswaData" md-sort-order="asc" md-card md-fixed-header md-height= "550px">
             <md-table-toolbar>
-              <h1 class="md-title">Monitoring Siswa Tidak Hadir</h1>
+              <h1 class="md-title">Monitoring Personil Tidak Hadir</h1>
             </md-table-toolbar>
             <md-table-row slot="md-table-row" slot-scope="{ item }">
               <md-table-cell md-label="Nama" md-sort-by="nama_lengkap">{{ item.nama_lengkap }}</md-table-cell>
-              <md-table-cell type="number" md-sort-by="kelas" md-label="Kelas">{{ item.kelas }}</md-table-cell>
+              <md-table-cell type="number" md-sort-by="kelas" md-label="Bagian">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-sort-by="rfid" md-label="Rfid">{{ item.rfid }}</md-table-cell>
               <md-table-cell>
                   <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button><br>
@@ -115,6 +115,9 @@ export default {
       })
     },
     setItemAuth: async function (param) {
+      if (!this.$session.exists()) {
+        this.$router.push('/')
+      }
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username

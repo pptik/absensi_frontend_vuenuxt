@@ -2,12 +2,12 @@
   <section class="container">
   <div class="mt-5">
     <md-tabs  md-active-tab>
-      <md-tab id="tab-pages" md-label="List Siswa">
+      <md-tab id="tab-pages" md-label="List Personil">
       <md-field>
-        <label>Pilih kelas</label>
+        <label>Pilih Bagian</label>
          
         <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas)">
-          <md-option disabled>Pilih Kelas</md-option>
+          <md-option disabled>Pilih Bagian</md-option>
           <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
         </md-select>
         <md-button class="md-default md-raised" @click="showDate = true;">
@@ -17,13 +17,13 @@
       <div>
         <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
           <md-table-toolbar>
-            <h1 class="md-title">Siswa</h1>
+            <h1 class="md-title">Personil/Siswa</h1>
           </md-table-toolbar>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
             <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
             <md-table-cell md-label="RFID">{{ item.RFID }}</md-table-cell>
             <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
-            <md-table-cell md-label="Kelas">{{ item.Kelas }}</md-table-cell>
+            <md-table-cell md-label="Bagian">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
               <!-- <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button> -->
               <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
@@ -33,11 +33,11 @@
       </div>       
       </md-tab>
       
-      <md-tab id="tab-posts" md-label="Tambah Siswa">
+      <md-tab id="tab-posts" md-label="Tambah Personil">
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
             <md-card-header>
-              <div class="md-title">Tambah Siswa</div>
+              <div class="md-title">Tambah Personil</div>
                 </md-card-header>
 
                 <div style="padding:25px;">
@@ -66,16 +66,16 @@
                 </md-field>
                 <md-field class="md-layout-item md-size-35">
                   <label>Kode RFID</label>
-                  <md-input class="md-layout-item md-size-100" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
+                  <md-input class="md-layout-item md-size-120" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
                 </md-field>
-                <label>Kelas</label>
+                <label>Bagian</label>
                 <md-autocomplete v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
                 <md-field class="md-layout-item">
                   <label>Tahun Ajaran</label>
                   <md-input type="text" class="md-layout-item md-size-100" v-model="inputTahunAjaran" placeholder="ex: 2018/2019"  maxlength="9"></md-input>
                 </md-field>
                 <md-card-actions>
-                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpanDataSiswa()" >Tambah Siswa</md-button>
+                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpanDataSiswa()" >Tambah Personil</md-button>
                 </md-card-actions>
               </div>
              </md-card>
@@ -203,6 +203,9 @@ export default {
   },
   methods: {
     setItemAuth: async function (param) {
+      if (!this.$session.exists()) {
+        this.$router.push('/')
+      }
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
@@ -287,52 +290,63 @@ export default {
       })
     },
     exportData: async function (param) {
-      var mdata = {
-        tahun: this.tahunRekap,
-        bulan: this.bulan,
-        kelas: this.selectedKelas,
-        sekolah: this.namaSekolahLocal
-      }
-      console.log(mdata)
-      const response = await api.requestExcelData(mdata)
-      console.log(response.data.data)
-      const values = response.data.data
-      var ExportData = []
-      for (let i = 0; i < values.length; i++) {
-        if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
-          var check = values[i].RFID
-          for (let a = 0; a < 32; a++) {
-            if (typeof (Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]) === 'undefined') {
-              console.log('Tidak Ada Tanggal')
-            } else {
-              var tgl = Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]
-              console.log('Tanggalnya')
-              console.log(tgl)
-              ExportData.push({Tanggal: Object.keys(check.rekap_rfid._2019.Juni)[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid._2019.Juni[`${tgl}`].Datang, Pulang: check.rekap_rfid._2019.Juni[`${tgl}`].Pulang})
-            }
-          }
-          // objStar['Murid'].push(check.rekap_rfid._2019.Mei)
-          // objStar['Murid'].push(values[i].profil.nama_lengkap)
-          // var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
-          // var wb = XLSX.utils.book_new()
-          // XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
-          // XLSX.writeFile(wb, 'book.xlsx')
-        } else {
-          console.log('gagal')
+      try {
+        var mdata = {
+          tahun: this.tahunRekap,
+          bulan: this.bulan,
+          kelas: this.selectedKelas,
+          sekolah: this.namaSekolahLocal
         }
-        // if (!values.has('rekap_rfid')) {
-        //   console.log('Exists')
-        // } else {
-        //   console.log('Doesnt Exists')
-        // }
+        console.log(mdata)
+        const response = await api.requestExcelData(mdata)
+        console.log(response.data.data)
+        const values = response.data.data
+        var ExportData = []
+        for (let i = 0; i < values.length; i++) {
+          if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
+            var check = values[i].RFID
+            for (let a = 0; a < 32; a++) {
+              if (typeof (Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]) === 'undefined') {
+                console.log('Tidak Ada Tanggal')
+              } else {
+                var tgl = Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]
+                console.log('Tanggalnya')
+                console.log(tgl)
+                ExportData.push({Tanggal: Object.keys(check.rekap_rfid._2019.Juni)[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid._2019.Juni[`${tgl}`].Datang, Pulang: check.rekap_rfid._2019.Juni[`${tgl}`].Pulang})
+              }
+            }
+            // objStar['Murid'].push(check.rekap_rfid._2019.Mei)
+            // objStar['Murid'].push(values[i].profil.nama_lengkap)
+            // var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
+            // var wb = XLSX.utils.book_new()
+            // XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+            // XLSX.writeFile(wb, 'book.xlsx')
+          } else {
+            console.log('gagal')
+          }
+          // if (!values.has('rekap_rfid')) {
+          //   console.log('Exists')
+          // } else {
+          //   console.log('Doesnt Exists')
+          // }
+        }
+        this.Datas['kelas_' + this.selectedKelas] = ExportData
+        console.log(this.Datas)
+        console.log(ExportData)
+        var animalWS = XLSX.utils.json_to_sheet(this.Datas.kelas_8A)
+        var wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
+        XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
+      } catch (error) {
+        console.log('error nih.... ' + error)
+        this.$swal('Gagal!', {
+          title: 'Gagal',
+          text: 'Data Belum Lengkap!',
+          icon: 'error'
+        }).then((result) => {
+          window.location.reload()
+        })
       }
-      this.Datas['kelas_' + this.selectedKelas] = ExportData
-      console.log(this.Datas)
-      console.log(ExportData)
-      var animalWS = XLSX.utils.json_to_sheet(this.Datas.kelas_8A)
-      var wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
-      XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
     },
     DeleteSiswa: async function (params) {
       var dataSiswaDelete = {

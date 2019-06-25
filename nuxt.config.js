@@ -28,7 +28,8 @@ module.exports = {
   plugins: [
     { src: '~/plugins/vue-material' },
     { src: '~/plugins/vue-chart' },
-    { src: '~/plugins/vue-alert'}
+    { src: '~/plugins/vue-alert'},
+    { src: '~/plugins/vue-session', ssr: false}
   ],
   build: {
     /*

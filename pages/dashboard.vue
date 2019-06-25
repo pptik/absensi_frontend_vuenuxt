@@ -46,29 +46,29 @@
       </div>
     </div>
     </div> -->
-    <div class="md-layout md-gutter">
+    <DashboardTable></DashboardTable>
+    <!-- <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div class="content_kelas">
-          <md-table md-sort="created_ed" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "450px">
+          <md-table md-sort="created_at" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "450px">
             <md-table-toolbar>
-              <h1 class="md-title">Data Harian Siswa</h1>
+              <h1 class="md-title">Data Harian Personil</h1>
             </md-table-toolbar>
             <md-table-row slot="md-table-row" slot-scope="{ item }" >
-              <md-table-cell md-sort-by="nama_lengkap" md-label="Name" >{{ item.nama_lengkap }}</md-table-cell>
-              <md-table-cell type="number" md-label="Kelas" md-sort-by="kelas">{{ item.kelas }}</md-table-cell>
+              <md-table-cell md-sort-by="nama_lengkap" md-label="Nama" >{{ item.nama_lengkap }}</md-table-cell>
+              <md-table-cell type="number" md-label="Bagian" md-sort-by="kelas">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-label="Waktu Datang" md-sort-by="created_at">{{ item.created_at }}</md-table-cell>
-              <md-table-cell v-if="item.created_ed === 0" type="number" md-label="Waktu Pulang" md-sort-by="created_ed" >Belum Melakukan Absen Pulang</md-table-cell>
+              <md-table-cell v-if="item.created_ed === 0" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
               <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="created_ed" >{{ item.created_ed }}</md-table-cell>
-              
-               <md-table-cell>
-              <!-- <md-button v-on:click.prevent="">Edit</md-button>
-              <md-button v-on:click.prevent="" class="md-accent">Delete</md-button>             -->
-            </md-table-cell>
+              <md-table-cell>
+                <md-button v-on:click.prevent="">Edit</md-button>
+                <md-button v-on:click.prevent="" class="md-accent">Delete</md-button>            
+              </md-table-cell>
             </md-table-row>
           </md-table>
         </div>
       </div>
-    </div>
+    </div> -->
      <div class="md-layout md-gutter">
       
       <!-- <div class="md-layout-item">
@@ -114,11 +114,13 @@ import BarChart from '@/components/charts/BarChart'
 import api from '../middleware/routes_api/routes'
 import momentTimeZone from 'moment-timezone'
 import mesin from '../middleware/rmq/mqtt'
+import DashboardTable from '~/components/TableDashboard.vue' // Load Navigation Menu Components
 
 export default {
   layout: 'default', // layouts used
   components: {
-    BarChart
+    BarChart,
+    DashboardTable
   },
   beforeCreate: function () {
     mesin.on('connect', function () {
@@ -210,6 +212,9 @@ export default {
       }
     },
     setItemAuth: async function (param) {
+      if (!this.$session.exists()) {
+        this.$router.push('/')
+      }
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
@@ -272,7 +277,6 @@ export default {
       }
       this.dataHarianSiswa = arrayKosong
       this.dataHarianSiswa.sort((a, b) => {
-        console.log(a.created_at)
         return new Date(a.date) - new Date(b.date)
       })
       return this.dataHarianSiswa

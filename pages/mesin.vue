@@ -75,6 +75,9 @@ export default {
   },
   methods: {
     setItemAuth: async function () {
+      if (!this.$session.exists()) {
+        this.$router.push('/')
+      }
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username

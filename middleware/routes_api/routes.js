@@ -54,6 +54,9 @@ export default {
   requestJsonSekolah (params, type) {
     return Api().post('/general/' + type + '_MacAddress', params)
   },
+  requestSekolah (params, type) {
+    return Api().post('/general/' + type + '_Sekolah', params)
+  },
   requestLogin (params) {
     return Api().post('/pengguna/login', params)
   },

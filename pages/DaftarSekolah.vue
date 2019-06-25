@@ -5,25 +5,33 @@
       <div class="title">
         <img src="~/assets/shortcut-icon.1.png">
         <div class="md-title">Selamat Datang</div>
-        <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
+        <div class="md-body-1">Masukkan username dan password untuk membuat sekolah</div>
       </div>
       <div class="form">
         <md-field>
-          <label>E-mail</label>
-          <md-input v-model="login.email" autofocus></md-input>
-           <span v-if="login.email === 'admin'">Valid</span>
-           <span v-else-if="!login.email === 'admin'">Invalid Email</span>
+          <label>Nama Sekolah/Institusi</label>
+          <md-input v-model="login.namasekolah" autofocus></md-input>
+        </md-field>
+        <md-field>
+          <label>Username</label>
+          <md-input v-model="login.username" autofocus></md-input>
         </md-field>
         <md-field md-has-password>
           <label>Password</label>
           <md-input v-model="login.password" type="password"></md-input>
         </md-field>
+        <md-field md-has-password>
+          <label>Jenis</label>
+          <md-select v-model="login.tipe" name="Tipe">
+            <md-option value="Sekolah">Sekolah</md-option>
+            <md-option value="Institusi">Institusi</md-option>
+          </md-select>
+        </md-field>
       </div>
       <div class="actions md-layout md-alignment-center-space-between">
-        <md-button class="md-raised md-primary" @click="loginAuth()">Masuk</md-button>
+        <md-button class="md-raised md-primary" @click="daftar()">Masuk</md-button>
       </div>
       </md-content></form>
-    
     <div class="background" />
   </div>
 </template>
@@ -98,67 +106,31 @@ export default {
     return {
       loading: false,
       login: {
+        username: '',
         email: '',
         password: '',
         emailValid: '',
-        passwordValid: ''
+        passwordValid: '',
+        tipe: ''
       }
     }
   },
   layout: 'loginarea',
   methods: {
-    loginAuth: async function (param) {
-      this.loading = true
+    daftar: async function (param) {
+      var emailInput = this.login.username + '@vidyanusa.id'
       var dataLogin = {
-        email: this.login.email,
-        pass: this.login.password
+        'email': emailInput,
+        'sandi': this.login.password,
+        'sekolah': this.login.namasekolah,
+        'username': this.login.username,
+        'nama_lengkap': this.login.username,
+        'tipe': this.login.tipe
       }
-      const response = await api.requestLogin(dataLogin)
+      await api.requestSekolah(dataLogin, 'tambah')
+      const response = await api.requestJsonPengguna(dataLogin, 'tambah')
       if (response.data.success === true) {
-        var dataAuth = {
-          username: response.data.data.username,
-          sekolah: response.data.data.sekolah,
-          _id: response.data.data._id,
-          mac_address: response.data.data.mac_address,
-          peran: 'Sekolah'
-        }
-        this.$session.start()
-        this.$session.set('auth', dataAuth)
-        localStorage.setItem('auth', JSON.stringify(dataAuth))
-        setTimeout(() => {
-          this.loading = false
-          this.$router.replace('/dashboard')
-        }, 2000)
       } else {
-        this.emailValid = 'Invalid'
-        this.loading = true
-        setTimeout(() => {
-          this.loading = false
-        }, 1000)
-      }
-    },
-    auth () {
-      // your code to login user
-      // this is only for example of loading
-      if (this.login.email === 'admin') {
-        this.emailValid = 'Valid'
-        console.log(this.emailValid)
-        if (this.login.password === 'admin') {
-          this.passwordValid = 'Valid'
-          this.loading = true
-          setTimeout(() => {
-            this.loading = false
-            this.$router.replace('/dashboard')
-          }, 2000)
-        } else {
-          this.passwordValid = 'Invalid'
-        }
-      } else {
-        this.emailValid = 'Invalid'
-        this.loading = true
-        setTimeout(() => {
-          this.loading = false
-        }, 1000)
       }
     }
   }

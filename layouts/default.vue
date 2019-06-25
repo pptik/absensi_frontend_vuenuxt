@@ -1,22 +1,22 @@
 <template>
   <div>
-    <md-app md-waterfall md-mode="fixed">
       <!-- Right Menu  Navigation Section -->
-      <md-app-toolbar class="md-primary">
+      <md-toolbar class="md-primary">
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
           <md-icon>menu</md-icon>
         </md-button>
         <span class="md-title">A B S T E I N</span>
-      </md-app-toolbar>
+      </md-toolbar>
+    <md-app md-waterfall md-mode="fixed">
       <!-- Toogle Menu Visible -->
-      <md-app-drawer md-swipeable :md-active.sync="menuVisible">
+      <!-- Content Section -->
+      <md-app-drawer md-persistent="full" :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
           <span>{{usernameLocal}}</span>
         </md-toolbar>
         <!-- Call Navigation Menu Components Here -->
         <NavigationMenu></NavigationMenu>
       </md-app-drawer>
-      <!-- Content Section -->
       <md-app-content>
         <!-- Nuxt Instance --> 
       <nuxt />
@@ -69,7 +69,7 @@ export default {
     }
   },
   data: () => ({
-    menuVisible: false,
+    menuVisible: true,
     namaPengguna: 'ADMIN',
     namaSekolahLocal: null,
     usernameLocal: null,
@@ -79,6 +79,9 @@ export default {
 </script>
 
 <style>
+.toolbarColor {
+  background-color: rgb(101, 160, 105);
+}
 .footer {
   background-color: #333;
   color: #fff;
