@@ -14,7 +14,7 @@
         </md-list-item>
         <md-list-item>
             <md-icon>horizontal_split</md-icon>
-            <nuxt-link class="md-list-item-text" to="/listrfid"  style="color:black;">Monitor RFID</nuxt-link>
+            <nuxt-link class="md-list-item-text" to="/listrfid"  style="color:black;">Check Kartu</nuxt-link>
         </md-list-item>
 
         <md-list-item>

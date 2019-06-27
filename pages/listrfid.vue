@@ -1,34 +1,51 @@
 <template>
-  <div class="centered-container">
-    	<md-table v-model="dataAbsen" md-card class="md-layout-item md-size-60 md-small-size-100" style="width:100px">
-        <md-table-toolbar>
-          <h1 class="md-title">List RFID</h1>
-        </md-table-toolbar>
-        <md-table-row slot-scope="{ item }" slot="md-table-row">
-            <md-table-cell md-label="mac">{{item.mac_address}}</md-table-cell>
-            <md-table-cell md-label="rfid">{{item.rfid}}</md-table-cell>
-            <md-table-cell md-label="date">{{item.created_at}}</md-table-cell>
-        </md-table-row>
-          </md-table>
-    <div class="background" />
+  <div>
+    <md-button to="dashboard" class="md-raised md-primary">Kembali</md-button>  
+    <div class="centered-container">
+        <div class="md-layout-item md-size-50">
+        <h2><span>Tap Terakhir: {{datamesin}}</span></h2>
+        <md-table v-model="dataAbsen" md-card class="md-layout-item md-size-100 md-small-size-100">
+          <md-table-toolbar>
+            <h1 class="md-title">List RFID</h1>
+          </md-table-toolbar>
+          <md-table-row slot-scope="{ item }" slot="md-table-row">
+              <md-table-cell md-label="mac">{{item.mac_address}}</md-table-cell>
+              <md-table-cell md-label="rfid">{{item.rfid}}</md-table-cell>
+              <md-table-cell md-label="date">{{item.created_at}}</md-table-cell>
+          </md-table-row>
+            </md-table>
+            </div>
+      <div class="background" />
+    </div>
   </div>
 </template>
 
 <script>
 import mesin from '../middleware/rmq/mqtt'
+import mesinDataLengkap from '../middleware/RMQ/mqtt_Detail'
 import api from '../middleware/routes_api/routes'
 import moment from 'moment'
 import momentTZ from 'moment-timezone'
 export default {
   data () {
     return {
-      dataAbsen: []
+      dataAbsen: [],
+      datamesin: null
     }
   },
   layout: 'loginarea', // layouts used
   beforeCreate: function () {
     mesin.on('connect', function () {
       mesin.subscribe('absensi.listrfid', function (err) {
+        if (!err) {
+          console.log('Subscribe to RMQ PPTIK Success')
+        } else if (err) {
+          console.log(err)
+        }
+      })
+    })
+    mesinDataLengkap.on('connect', function () {
+      mesinDataLengkap.subscribe('absensi.webservice', function (err) {
         if (!err) {
           console.log('Subscribe to RMQ PPTIK Success')
         } else if (err) {
@@ -48,6 +65,13 @@ export default {
       mesin.on('message', function (topic, message) {
         let mesinRFID = JSON.parse(message.toString())
         ini.dataAbsen.unshift({'mac_address': mesinRFID.mac, 'rfid': mesinRFID.rfid, 'created_at': momentTZ.tz(Date.now(), 'Asia/Jakarta').format('MMMM Do, h:mm z')})
+      })
+
+      mesinDataLengkap.on('message', function (topic, message) {
+        let mesinRFID = JSON.parse(message.toString())
+        if (ini.$session.get('auth').sekolah === mesinRFID.sekolah) {
+          ini.datamesin = mesinRFID.nama_lengkap + ' ' + mesinRFID.jam
+        }
       })
     },
     dataAwal: async function () {

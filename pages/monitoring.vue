@@ -15,10 +15,10 @@
               <md-table-cell type="number" md-sort-by="kelas" md-label="Bagian">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-sort-by="rfid" md-label="Rfid">{{ item.rfid }}</md-table-cell>
               <md-table-cell>
-                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button><br>
-                  <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'sakit')">Sakit</md-button><br>
+                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button>
+                  <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'sakit')">Sakit</md-button>
                   <md-button class="md-primary" v-on:click.prevent="editHadir(item.rfid,'izin')">Izin</md-button>
-                </md-table-cell>
+              </md-table-cell>
             </md-table-row>
              <md-table-empty-state
               md-label="User Tidak Ditemukan"
@@ -90,27 +90,35 @@ export default {
           status: 'izin'
         }
       }
-      await api.requestMonitoring(dataEdit).then(response => {
-        if (response.data.success === true) {
-          this.$swal({
-            title: 'Berhasil!',
-            text: 'Berhasil',
-            icon: 'success',
-            confirmButtonText: 'Yes',
-            showLoaderOnConfirm: true
-          }).then((result) => {
-            window.location.reload()
+      this.$swal({
+        title: 'Konfirmasi',
+        text: 'Yakin akan mengubah status?',
+        icon: 'warning',
+        buttons: true,
+        confirmButtonText: 'Yes',
+        showLoaderOnConfirm: true
+      }).then((result) => {
+        if (result) {
+          api.requestMonitoring(dataEdit).then(response => {
+            if (response.data.success === true) {
+              this.$swal('Berhasil Mengubah status personil!', {
+                icon: 'success'
+              })
+              window.location.reload()
+            } else {
+              this.$swal('Gagal!', {
+                title: 'Gagal',
+                text: 'Gagal Mengubah Status',
+                icon: 'error',
+                confirmButtonText: 'Yes',
+                showLoaderOnConfirm: true
+              }).then((result) => {
+                window.location.reload()
+              })
+            }
           })
         } else {
-          this.$swal('Gagal!', {
-            title: 'Gagal',
-            text: 'Gagal Mengubah Status',
-            icon: 'error',
-            confirmButtonText: 'Yes',
-            showLoaderOnConfirm: true
-          }).then((result) => {
-            window.location.reload()
-          })
+          this.$swal('Batal mengubah status!')
         }
       })
     },

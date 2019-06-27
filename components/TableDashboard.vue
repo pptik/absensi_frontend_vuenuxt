@@ -12,10 +12,10 @@
               <md-table-cell type="number" md-label="Waktu Datang" md-sort-by="created_at">{{ item.created_at }}</md-table-cell>
               <md-table-cell v-if="item.created_ed === 0" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
               <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="created_ed" >{{ item.created_ed }}</md-table-cell>
-              <md-table-cell>
-              <!-- <md-button v-on:click.prevent="">Edit</md-button>
-              <md-button v-on:click.prevent="" class="md-accent">Delete</md-button>             -->
-            ` </md-table-cell>
+              <!-- <md-table-cell>
+              <md-button v-on:click.prevent="">Edit</md-button>
+              <md-button v-on:click.prevent="" class="md-accent">Delete</md-button>
+            </md-table-cell> -->
             </md-table-row>
           </md-table>
         </div>

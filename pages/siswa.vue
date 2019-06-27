@@ -39,16 +39,25 @@
             <md-card-header>
               <div class="md-title">Tambah Personil</div>
                 </md-card-header>
-
                 <div style="padding:25px;">
-                <md-field>
+                <md-switch class="md-primary" v-model="emailSelector">Gunakan Username @vidyanusa.id ?</md-switch>
+                <md-field v-if="emailSelector">
+                  <label>Username</label>
+                  <md-input v-model="inputEmail"></md-input>
+                  <span>@vidyanusa.id</span>
+                </md-field>
+                <md-field v-else>
                   <label>Email</label>
                   <md-input v-model="inputEmail"></md-input>
                 </md-field>
+                
                 <md-field>
-                  <label>Username</label>
-                  <md-input v-model="inputUsername"></md-input>
+                  <label>Nama</label>
+                  <md-input id="username" v-model="inputUsername"></md-input>
                 </md-field>
+                  <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
+                  <span class="md-error" v-else-if="validateBool == null"></span>
+                  <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field>
                 <label>Nama Lengkap</label>
                   <md-input v-model="inputNamaLengkap"></md-input>
@@ -83,7 +92,7 @@
           </md-tab>
         </md-tabs>
     </div>
-    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-90 md-small-size-70">
+    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-50 md-small-size-50">
       <md-dialog-title>Rekap Absensi Per Bulan {{this.selectedKelas}}</md-dialog-title>
       <div style="padding:20p">
         <div class="md-layout md-gutter containers">
@@ -114,6 +123,7 @@
       </div>
           <md-dialog-actions>
               <md-button class="md-primary" @click="exportData()">Export</md-button>
+              <md-button class="md-primary" @click="testTable()">Test</md-button>
             </md-dialog-actions>
       </div>
     </md-dialog>
@@ -193,7 +203,10 @@ export default {
       Datas: {},
       tahunRekap: null,
       bulan: null,
-      showDate: false
+      showDate: false,
+      bulanNumber: null,
+      validateBool: null,
+      emailSelector: true
     }
   },
   mounted () {
@@ -289,6 +302,61 @@ export default {
         }
       })
     },
+    testTable: async function (param) {
+      try {
+        var mdata = {
+          tahun: this.tahunRekap,
+          bulan: this.bulan,
+          kelas: this.selectedKelas,
+          sekolah: this.namaSekolahLocal
+        }
+        switch (this.bulan) {
+          case 'Januari':
+            this.bulanNumber = 1
+            break
+          case 'Febuari':
+            this.bulanNumber = 2
+            break
+          case 'Maret':
+            this.bulanNumber = 3
+            break
+          case 'April':
+            this.bulanNumber = 4
+            break
+          case 'Mei':
+            this.bulanNumber = 5
+            break
+          case 'Juni':
+            this.bulanNumber = 6
+            break
+          case 'Juli':
+            this.bulanNumber = 7
+            break
+          case 'Agustus':
+            this.bulanNumber = 8
+            break
+          case 'September':
+            this.bulanNumber = 9
+            break
+          case 'Oktober':
+            this.bulanNumber = 10
+            break
+          case 'November':
+            this.bulanNumber = 11
+            break
+          case 'Desember':
+            this.bulanNumber = 12
+            break
+          default:
+            break
+        }
+        var getJumlahHariPerbulan = getDaysInMonth(this.bulanNumber, mdata.tahun)
+        for (let i = 1; i < getJumlahHariPerbulan + 1; i++) {
+          console.log(i)
+        }
+      } catch (error) {
+      }
+    },
     exportData: async function (param) {
       try {
         var mdata = {
@@ -297,22 +365,22 @@ export default {
           kelas: this.selectedKelas,
           sekolah: this.namaSekolahLocal
         }
-        console.log(mdata)
+        // console.log(mdata)
         const response = await api.requestExcelData(mdata)
-        console.log(response.data.data)
+        // console.log(response.data.data)
         const values = response.data.data
         var ExportData = []
         for (let i = 0; i < values.length; i++) {
           if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
             var check = values[i].RFID
             for (let a = 0; a < 32; a++) {
-              if (typeof (Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]) === 'undefined') {
+              var tgl = Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]
+              if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
                 console.log('Tidak Ada Tanggal')
+                ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap, Datang: 'Belum Melakukan Absen', Pulang: 'Belum Melakukan Absen'})
               } else {
-                var tgl = Object.keys(check.rekap_rfid._2019[`${this.bulan}`])[a]
-                console.log('Tanggalnya')
-                console.log(tgl)
-                ExportData.push({Tanggal: Object.keys(check.rekap_rfid._2019.Juni)[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid._2019.Juni[`${tgl}`].Datang, Pulang: check.rekap_rfid._2019.Juni[`${tgl}`].Pulang})
+                // console.log('Tanggalnya')
+                ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang, Pulang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang})
               }
             }
             // objStar['Murid'].push(check.rekap_rfid._2019.Mei)
@@ -331,20 +399,19 @@ export default {
           // }
         }
         this.Datas['kelas_' + this.selectedKelas] = ExportData
-        console.log(this.Datas)
         console.log(ExportData)
-        var animalWS = XLSX.utils.json_to_sheet(this.Datas.kelas_8A)
+        var animalWS = XLSX.utils.json_to_sheet(this.Datas[`kelas_` + this.selectedKelas])
         var wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
         XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
       } catch (error) {
         console.log('error nih.... ' + error)
         this.$swal('Gagal!', {
-          title: 'Gagal',
-          text: 'Data Belum Lengkap!',
-          icon: 'error'
+          title: 'Data Belum Lengkap',
+          text: 'Data personil ' + this.selectedKelas + ' pada bulan ' + this.bulan + ' harus lengkap!',
+          icon: 'warning'
         }).then((result) => {
-          window.location.reload()
+          // window.location.reload()
         })
       }
     },
@@ -468,23 +535,54 @@ export default {
         nama_lengkap: this.inputNamaLengkap,
         jenis_kelamin: this.inputKelaminConvert
       }
-      const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
-      if (response.data.success === true) {
-        this.$swal({
-          title: 'Berhasil!',
-          text: 'Berhasil Membuat Pengguna baru!',
-          icon: 'success'
-        }).then((result) => {
-          window.location.reload()
-        })
+      if (this.emailSelector) {
+        dataInputSimpanSiswa = {
+          email: this.inputEmail + '@vidyanusa.id',
+          sandi: this.inputSandi,
+          rfid: this.inputKodeRFID,
+          nama_kelas: this.inputKelas,
+          tahun_Ajaran: this.inputTahunAjaran,
+          sekolah: this.namaSekolahLocal,
+          username: this.inputUsername,
+          nama_lengkap: this.inputNamaLengkap,
+          jenis_kelamin: this.inputKelaminConvert
+        }
+      }
+      var validate = validateUsername(dataInputSimpanSiswa.username)
+      if (validate) {
+        this.validateBool = true
+        console.log(validateUsername(dataInputSimpanSiswa.username))
       } else {
-        this.$swal('Gagal!', {
-          title: 'Gagal',
-          text: 'Gagal Membuat Pengguna baru!',
-          icon: 'error'
-        }).then((result) => {
-          window.location.reload()
-        })
+        this.validateBool = false
+        console.log(validateUsername(dataInputSimpanSiswa.username))
+      }
+      if (this.validateBool) {
+        console.log(dataInputSimpanSiswa)
+      //   const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
+      //   if (response.data.success === true) {
+      //     this.$swal({
+      //       title: 'Berhasil!',
+      //       text: 'Berhasil Membuat Pengguna baru!',
+      //       icon: 'success'
+      //     }).then((result) => {
+      //       window.location.reload()
+      //     })
+      //   } else {
+      //     this.$swal('Gagal!', {
+      //       title: 'Gagal',
+      //       text: 'Gagal Membuat Pengguna baru!',
+      //       icon: 'error'
+      //     }).then((result) => {
+      //       window.location.reload()
+      //     })
+      //   }
+      // } else {
+      //   this.$swal('Gagal!', {
+      //     title: 'Data personil tidak valid',
+      //     text: 'Periksa Data personil!',
+      //     icon: 'error'
+      //   }).then((result) => {
+      //   })
       }
     },
     editDataSiswa: async function (param) {
@@ -513,7 +611,13 @@ export default {
     }
   }
 }
+var getDaysInMonth = function (month, year) {
+  return new Date(year, month, 0).getDate()
+}
+function validateUsername (username) {
+  var re = /^[a-z0-9]{8,20}$/
+  return re.test(String(username))
+}
 </script>
-
 <style lang="scss" scoped>
 </style>

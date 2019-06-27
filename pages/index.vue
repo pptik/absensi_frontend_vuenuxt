@@ -9,10 +9,10 @@
       </div>
       <div class="form">
         <md-field>
-          <label>E-mail</label>
-          <md-input v-model="login.email" autofocus></md-input>
-           <span v-if="login.email === 'admin'">Valid</span>
-           <span v-else-if="!login.email === 'admin'">Invalid Email</span>
+          <label>Username</label>
+          <md-input v-model="login.username" autofocus></md-input>
+           <span v-if="login.username === 'admin'">Valid</span>
+           <span v-else-if="!login.username === 'admin'">Invalid Email</span>
         </md-field>
         <md-field md-has-password>
           <label>Password</label>
@@ -98,7 +98,7 @@ export default {
     return {
       loading: false,
       login: {
-        email: '',
+        username: '',
         password: '',
         emailValid: '',
         passwordValid: ''
@@ -108,9 +108,10 @@ export default {
   layout: 'loginarea',
   methods: {
     loginAuth: async function (param) {
+      console.log('login')
       this.loading = true
       var dataLogin = {
-        email: this.login.email,
+        email: this.login.username,
         pass: this.login.password
       }
       const response = await api.requestLogin(dataLogin)
@@ -120,7 +121,8 @@ export default {
           sekolah: response.data.data.sekolah,
           _id: response.data.data._id,
           mac_address: response.data.data.mac_address,
-          peran: 'Sekolah'
+          peran: 'Sekolah',
+          foto: response.data.data.foto
         }
         this.$session.start()
         this.$session.set('auth', dataAuth)

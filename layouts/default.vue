@@ -12,6 +12,7 @@
       <!-- Content Section -->
       <md-app-drawer md-persistent="full" :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
+          <center><img style="padding:30px;" v-bind:src="foto"></center>
           <span>{{usernameLocal}}</span>
         </md-toolbar>
         <!-- Call Navigation Menu Components Here -->
@@ -66,6 +67,7 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
+      this.foto = this.$session.get('auth').foto
     }
   },
   data: () => ({
@@ -73,7 +75,8 @@ export default {
     namaPengguna: 'ADMIN',
     namaSekolahLocal: null,
     usernameLocal: null,
-    sekolah_id: null
+    sekolah_id: null,
+    foto: null
   })
 }
 </script>
@@ -86,7 +89,7 @@ export default {
   background-color: #333;
   color: #fff;
   font-size: 14px;
-  width: 100%;
+  width: 100%
 }
 .footer-notes {
    position: fixed;

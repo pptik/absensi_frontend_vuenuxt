@@ -1,8 +1,8 @@
 <template>
   <section class="container">
     <div class="md-title">{{namaSekolahLocal}}</div>
-    <h3><span>Tap Terakhir: {{datamesin}}</span></h3>
-    <!-- <div class="md-layout">
+    <br><br>
+   <!-- <div class="md-layout">
       <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <md-card>
@@ -69,23 +69,23 @@
         </div>
       </div>
     </div> -->
-     <div class="md-layout md-gutter">
-      
-      <!-- <div class="md-layout-item">
-        <div class="content_kelas">
-          <md-table md-card v-model="tbl_DataSiswaTerbanyak" class="md-alignment-top-center">
-            <md-table-toolbar>
-              <h1 class="md-title">Siswa Tidak Masuk Terbanyak</h1>
-            </md-table-toolbar>
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Name">{{ item.nama_siswa }}</md-table-cell>
-              <md-table-cell type="number" md-label="Kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Total">{{ item.jumlah }}</md-table-cell>
-            </md-table-row>
+     <!-- <div class="md-layout md-gutter">
+        <div class="md-layout-item">
+          <div class="content_kelas">
+            <md-table v-model="dataAbsen" md-card class="md-layout-item md-size-100 md-small-size-100" style="width:100px">
+        <md-table-toolbar>
+          <h1 class="md-title">List RFID</h1>
+        </md-table-toolbar>
+        <md-table-row slot-scope="{ item }" slot="md-table-row">
+            <md-table-cell md-label="rfid">{{item.nama_pengguna}}</md-table-cell>
+            <md-table-cell md-label="rfid">{{item.rfid}}</md-table-cell>
+            <md-table-cell md-label="mac">{{item.mac}}</md-table-cell>
+            <md-table-cell md-label="date">{{item.created_at}}</md-table-cell>
+        </md-table-row>
           </md-table>
+          </div>
         </div>
       </div> -->
-    </div>
     <!-- <div class="md-layout md-gutter">
       <div class="md-layout-item">
         <div class="bar-chart grafik">
@@ -106,6 +106,9 @@
        
       </div>
     </div> -->
+    <div class="md-layout md-gutter">
+      
+    </div>
   </section>
 </template>
 
@@ -172,6 +175,7 @@ export default {
       ],
 
       arrayStatusSiswa: [this.statusHadir, this.statusSakit, this.statusIzin, this.statusAlfa],
+      dataAbsen: [],
       // status_sakit: 2,
       status_izin: 6,
       status_alfa: 0,
@@ -191,10 +195,10 @@ export default {
     filldata: async function () {
       let ini = this
       mesin.on('message', function (topic, message) {
-        console.log(message.toString())
         let mesinRFID = JSON.parse(message.toString())
-        if (this.namaSekolahLocal === mesinRFID.sekolah) {
+        if (ini.$session.get('auth').sekolah === mesinRFID.sekolah) {
           ini.datamesin = mesinRFID.nama_lengkap + ' ' + mesinRFID.jam
+          ini.dataAbsen.unshift({'nama_pengguna': mesinRFID.nama_lengkap, 'mac': mesinRFID.mac, 'rfid': mesinRFID.rfid, 'created_at': momentTimeZone.tz(Date.now(), 'Asia/Jakarta').format('MMMM Do, h:mm z')})
         }
       })
     },
@@ -299,6 +303,7 @@ export default {
   }
    .content_kelas{
     padding-top: 50px;
+    padding-bottom: 50px;
   }
   .judulGrafik{
     padding: 1em 1em 1em 1em

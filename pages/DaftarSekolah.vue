@@ -17,6 +17,10 @@
           <md-input v-model="login.username" autofocus></md-input>
         </md-field>
         <md-field md-has-password>
+          <label>Foto Profil Url</label>
+          <md-input v-model="login.foto" type="text"></md-input>
+        </md-field>
+        <md-field md-has-password>
           <label>Password</label>
           <md-input v-model="login.password" type="password"></md-input>
         </md-field>
@@ -111,7 +115,8 @@ export default {
         password: '',
         emailValid: '',
         passwordValid: '',
-        tipe: ''
+        tipe: '',
+        foto: ''
       }
     }
   },
@@ -125,12 +130,31 @@ export default {
         'sekolah': this.login.namasekolah,
         'username': this.login.username,
         'nama_lengkap': this.login.username,
-        'tipe': this.login.tipe
+        'tipe': this.login.tipe,
+        'foto': this.login.foto
       }
       await api.requestSekolah(dataLogin, 'tambah')
       const response = await api.requestJsonPengguna(dataLogin, 'tambah')
       if (response.data.success === true) {
+        this.$swal({
+          title: 'Berhasil!',
+          text: 'Berhasil Delete!',
+          icon: 'success',
+          confirmButtonText: 'Yes',
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          window.location.reload()
+        })
       } else {
+        this.$swal({
+          title: 'Terjadi Kesalahan!',
+          text: 'Terjadi Kesalahan Ketika membuat user sekolah, hubungi admin untuk info lebih lanjut!',
+          icon: 'warning',
+          confirmButtonText: 'Yes',
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          window.location.reload()
+        })
       }
     }
   }
