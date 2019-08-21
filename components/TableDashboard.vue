@@ -1,7 +1,19 @@
 <template>
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
+        
         <div class="content_kelas">
+          <div class="md-layout-item">
+             <div class="md-layout-item">
+              <md-field>
+                <label>Pilih Tahun</label>
+                <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense>
+                  <md-option disabled>Select tahun ajaran</md-option>
+                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil.pilih_tahun" :key="hasil.pilih_tahun">{{ hasil.pilih_tahun }}</md-option>
+                </md-select>
+              </md-field>
+            </div>
+          </div>
           <md-table md-sort="created_at" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "450px">
             <md-table-toolbar>
               <h1 class="md-title">Data Harian Personil</h1>
@@ -27,13 +39,22 @@ import api from '../middleware/routes_api/routes'
 export default {
   data () {
     return {
-      dataHarianSiswa: []
+      dataHarianSiswa: [],
+      selectedTahunAjaran: null,
+      dataTahunAjaran: [
+        {'pilih_tahun': '2018/2019'},
+        {'pilih_tahun': '2019/2020'}
+      ]
     }
   },
   mounted () {
+    this.pilihtahunajaran()
     this.dataSiswaHarianJSON()
   },
   methods: {
+    pilihtahunajaran: async function (param) {
+
+    },
     dataSiswaHarianJSON: async function (param) {
       var date = new Date()
       var tahunAjaran = (new Date().getFullYear().toString() - 1) + '/' + new Date().getFullYear().toString()

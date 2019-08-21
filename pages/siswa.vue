@@ -3,9 +3,17 @@
   <div class="mt-5">
     <md-tabs  md-active-tab>
       <md-tab id="tab-pages" md-label="List Personil">
-      <md-field>
-        <label>Pilih Bagian</label>
-         
+      <div style="padding: 20px;">
+      <!-- <md-field style="width: 500px; height: 64px; float:left; margin-right: 30px;">
+        <label>Pilih Tahun</label>   
+        <md-select>
+          <md-option disabled>Pilih Tahun</md-option>
+          <md-option>2018/2019</md-option>
+          <md-option>2019/2020</md-option>
+        </md-select>
+      </md-field> -->
+      <md-field style="width: 500px;">
+        <label>Pilih Bagian</label>   
         <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas)">
           <md-option disabled>Pilih Bagian</md-option>
           <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
@@ -14,6 +22,7 @@
           Export to XLS
         </md-button>
       </md-field>
+      </div>
       <div>
         <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
           <md-table-toolbar>
@@ -42,7 +51,7 @@
                 <div style="padding:25px;">
                 <md-switch class="md-primary" v-model="emailSelector">Gunakan Username @vidyanusa.id ?</md-switch>
                 <md-field v-if="emailSelector">
-                  <label>Username</label>
+                  <label>Email</label>
                   <md-input v-model="inputEmail"></md-input>
                   <span>@vidyanusa.id</span>
                 </md-field>
@@ -52,7 +61,7 @@
                 </md-field>
                 
                 <md-field>
-                  <label>Nama</label>
+                  <label>Username</label>
                   <md-input id="username" v-model="inputUsername"></md-input>
                 </md-field>
                   <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
@@ -122,8 +131,10 @@
         </div>
       </div>
           <md-dialog-actions>
-              <md-button class="md-primary" @click="exportData()">Export</md-button>
-              <md-button class="md-primary" @click="testTable()">Test</md-button>
+              <md-button class="md-primary" @click="exportData()">Export Csv</md-button>
+              <div v-if="this.namaSekolahLocal == 'SMP Assalam'">
+                <md-button class="md-primary" @click="exportGoogleSpreatSheet()">Export ke GoogleSheet</md-button>
+              </div>
             </md-dialog-actions>
       </div>
     </md-dialog>
@@ -206,7 +217,8 @@ export default {
       showDate: false,
       bulanNumber: null,
       validateBool: null,
-      emailSelector: true
+      emailSelector: true,
+      selectedTahun: null
     }
   },
   mounted () {
@@ -235,6 +247,7 @@ export default {
       try {
         const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
         var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+        console.log(result)
         for (let x = 0; x < result.length; x++) {
           for (let i = 0; i < result[x].Kelas.length; i++) {
             var kelasTahunAjaran = result[x].Kelas[i]
@@ -357,6 +370,20 @@ export default {
       } catch (error) {
       }
     },
+    exportGoogleSpreatSheet: async function (param) {
+      try {
+        var dataExport = {
+          tahun: this.tahunRekap,
+          bulan: this.bulan,
+          kelas: this.selectedKelas,
+          sekolah: this.namaSekolahLocal
+        }
+        const response = await api.requestExcelSpreatSheet(dataExport)
+        console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
+    },
     exportData: async function (param) {
       try {
         var mdata = {
@@ -365,6 +392,7 @@ export default {
           kelas: this.selectedKelas,
           sekolah: this.namaSekolahLocal
         }
+        console.log(mdata + ' export')
         // console.log(mdata)
         const response = await api.requestExcelData(mdata)
         // console.log(response.data.data)
@@ -376,8 +404,7 @@ export default {
             for (let a = 0; a < 32; a++) {
               var tgl = Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]
               if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
-                console.log('Tidak Ada Tanggal')
-                ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap, Datang: 'Belum Melakukan Absen', Pulang: 'Belum Melakukan Absen'})
+                ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap})
               } else {
                 // console.log('Tanggalnya')
                 ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang, Pulang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang})
@@ -419,7 +446,6 @@ export default {
       var dataSiswaDelete = {
         'nama_lengkap': params
       }
-      console.log(dataSiswaDelete)
       this.$swal({
         title: 'Hapus Siswa?',
         text: 'Apa anda yakin akan menghapus siswa?',
@@ -485,7 +511,10 @@ export default {
       const response = await api.getJSONHttp(param)
       console.log(response.data + 'awoekoawe')
     },
-
+    tampilTahun: async function (param) {
+      var dataTahun = [{'tahun': '2018/2019'}, {'tahun': '2019/2020'}]
+      this.selectedTahun = dataTahun
+    },
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
@@ -558,31 +587,31 @@ export default {
       }
       if (this.validateBool) {
         console.log(dataInputSimpanSiswa)
-      //   const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
-      //   if (response.data.success === true) {
-      //     this.$swal({
-      //       title: 'Berhasil!',
-      //       text: 'Berhasil Membuat Pengguna baru!',
-      //       icon: 'success'
-      //     }).then((result) => {
-      //       window.location.reload()
-      //     })
-      //   } else {
-      //     this.$swal('Gagal!', {
-      //       title: 'Gagal',
-      //       text: 'Gagal Membuat Pengguna baru!',
-      //       icon: 'error'
-      //     }).then((result) => {
-      //       window.location.reload()
-      //     })
-      //   }
-      // } else {
-      //   this.$swal('Gagal!', {
-      //     title: 'Data personil tidak valid',
-      //     text: 'Periksa Data personil!',
-      //     icon: 'error'
-      //   }).then((result) => {
-      //   })
+        const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
+        if (response.data.success === true) {
+          this.$swal({
+            title: 'Berhasil!',
+            text: 'Berhasil Membuat Pengguna baru!',
+            icon: 'success'
+          }).then((result) => {
+            window.location.reload()
+          })
+        } else {
+          this.$swal('Gagal!', {
+            title: 'Gagal',
+            text: 'Gagal Membuat Pengguna baru!',
+            icon: 'error'
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
+      } else {
+        this.$swal('Gagal!', {
+          title: 'Data personil tidak valid',
+          text: 'Periksa Data personil!',
+          icon: 'error'
+        }).then((result) => {
+        })
       }
     },
     editDataSiswa: async function (param) {

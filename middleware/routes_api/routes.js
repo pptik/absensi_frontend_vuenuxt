@@ -72,5 +72,8 @@ export default {
   },
   requestExcelData (params) {
     return Api().post('/pengguna/rekapAbsen/', params)
+  },
+  requestExcelSpreatSheet (params) {
+    return Api().post('/pengguna/rekapgooglesheet', params)
   }
 }

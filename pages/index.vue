@@ -1,29 +1,29 @@
 <template>
   <div class="centered-container">
-    <form novalidate class="md-layout">  
-    <md-content class="md-elevation-5">
-      <div class="title">
-        <img src="~/assets/shortcut-icon.1.png">
-        <div class="md-title">Selamat Datang</div>
-        <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
-      </div>
-      <div class="form">
-        <md-field>
+    <form novalidate class="md-layout" @keydown.enter="loginAuth()">  
+      <md-content class="md-elevation-5">
+        <div class="title">
+          <img src="~/assets/shortcut-icon.1.png">
+          <div class="md-title">Selamat Datang</div>
+          <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
+        </div>
+        <div class="form">
+          <md-field>
+          <md-input class="md-prefix" v-model="login.username" autofocus></md-input>
           <label>Username</label>
-          <md-input v-model="login.username" autofocus></md-input>
-           <span v-if="login.username === 'admin'">Valid</span>
-           <span v-else-if="!login.username === 'admin'">Invalid Email</span>
-        </md-field>
-        <md-field md-has-password>
-          <label>Password</label>
-          <md-input v-model="login.password" type="password"></md-input>
-        </md-field>
-      </div>
-      <div class="actions md-layout md-alignment-center-space-between">
-        <md-button class="md-raised md-primary" @click="loginAuth()">Masuk</md-button>
-      </div>
-      </md-content></form>
-    
+            <span v-if="login.username === 'admin'">Valid</span>
+            <span v-else-if="!login.username === 'admin'">Invalid Email</span>
+          </md-field>
+            <label class="md-prefix">Password</label>
+          <md-field md-has-password>
+            <md-input v-model="login.password" type="password"></md-input>
+          </md-field>
+        </div>
+        <div class="actions md-layout md-alignment-center-space-between">
+          <md-button class="md-raised md-primary" @click="loginAuth()">Masuk</md-button>
+        </div>
+        </md-content>
+      </form>
     <div class="background" />
   </div>
 </template>

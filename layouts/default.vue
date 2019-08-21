@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
       <!-- Right Menu  Navigation Section -->
       <md-toolbar class="md-primary">
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">

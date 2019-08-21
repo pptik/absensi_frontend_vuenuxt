@@ -116,7 +116,7 @@ export default {
     },
     deleteMacAddress: async function (param) {
       var dataDeleteMesin = {
-        nama_sekolah: this.idsekolah,
+        nama_sekolah: this.$session.get('auth').sekolah,
         mesin: param
       }
       this.$swal({
