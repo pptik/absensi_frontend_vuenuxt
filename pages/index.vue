@@ -3,7 +3,7 @@
     <form novalidate class="md-layout" @keydown.enter="loginAuth()">  
       <md-content class="md-elevation-5">
         <div class="title">
-          <img src="~/assets/shortcut-icon.1.png">
+          <img width="150px" src="~/assets/LogoBaru.png">
           <div class="md-title">Selamat Datang</div>
           <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
         </div>
@@ -46,7 +46,7 @@ export default {
     margin-bottom: 30px;
     img {
       margin-bottom: 16px;
-      max-width: 80px;
+      max-width: 180px;
     }
   }
   .actions {

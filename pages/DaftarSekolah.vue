@@ -3,7 +3,7 @@
     <form novalidate class="md-layout">  
     <md-content class="md-elevation-5">
       <div class="title">
-        <img src="~/assets/shortcut-icon.1.png">
+        <img src="~/assets/LogoBaru.png">
         <div class="md-title">Selamat Datang</div>
         <div class="md-body-1">Masukkan username dan password untuk membuat sekolah</div>
       </div>

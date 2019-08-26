@@ -379,7 +379,22 @@ export default {
           sekolah: this.namaSekolahLocal
         }
         const response = await api.requestExcelSpreatSheet(dataExport)
-        console.log(response)
+        if (response.data.succes === true) {
+          this.$swal('Berhasil Upload!', {
+            title: 'Data Sudah Di Upload Google Sheet',
+            text: 'Data Siswa ' + this.selectedKelas + ' Berhasil Di Export',
+            icon: 'success'
+          })
+          let url = 'https://docs.google.com/spreadsheets/d/1cyVEXruWKpr7XyzP_RSp8OnxaFoWqsKQkXM_skvuhog/edit#gid=0'
+          let win = window.open(url, '_blank')
+          win.focus()
+        } else {
+          this.$swal('Gagal Upload!', {
+            title: 'Data Gagal Di Upload Google Sheet',
+            text: 'Data Siswa ' + this.selectedKelas + ' Gagal Di Export',
+            icon: 'warning'
+          })
+        }
       } catch (error) {
         console.log(error)
       }
@@ -406,7 +421,6 @@ export default {
               if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
                 ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap})
               } else {
-                // console.log('Tanggalnya')
                 ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang, Pulang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang})
               }
             }
