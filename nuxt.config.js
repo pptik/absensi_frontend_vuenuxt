@@ -10,7 +10,7 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'ABSTEIN adalah sebuah platform absensi berbasis web dan android application. Platform ini dapat diakses oleh siswa dan guru. Guru dapat melihat monitoring siswa yang tidak hadir dan jumlahnya sekaligus.' }
     ],
     link: [
-      { rel: 'icon', type: 'image/png', href: 'http://abstein.pptik.id/LogoBaru.png' },
+      { rel: 'icon', type: 'image/png', href: 'http://abstein.pptik.id/logobaruvidyanusa.png' },
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,700,400italic|Material+Icons' }
     ]
   },
