@@ -385,7 +385,7 @@ export default {
             text: 'Data Siswa ' + this.selectedKelas + ' Berhasil Di Export',
             icon: 'success'
           })
-          let url = 'https://docs.google.com/spreadsheets/d/1cyVEXruWKpr7XyzP_RSp8OnxaFoWqsKQkXM_skvuhog/edit#gid=0'
+          let url = 'https://drive.google.com/open?id=1cyVEXruWKpr7XyzP_RSp8OnxaFoWqsKQkXM_skvuhog'
           let win = window.open(url, '_blank')
           win.focus()
         } else {
@@ -433,11 +433,6 @@ export default {
           } else {
             console.log('gagal')
           }
-          // if (!values.has('rekap_rfid')) {
-          //   console.log('Exists')
-          // } else {
-          //   console.log('Doesnt Exists')
-          // }
         }
         this.Datas['kelas_' + this.selectedKelas] = ExportData
         console.log(ExportData)
