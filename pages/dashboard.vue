@@ -2,112 +2,8 @@
   <section class="container">
     <div class="md-title">{{namaSekolahLocal}}</div>
     <br><br>
-   <!-- <div class="md-layout">
-      <div class="md-layout md-gutter">
-      <div class="md-layout-item">
-        <md-card>
-        <md-card-header>
-          <div class="md-title md-alignment-top-center">Hadir</div>
-        </md-card-header>
-        <md-card-content class="md-content">
-          {{statusHadir}}
-        </md-card-content>
-      </md-card>
-      </div>
-      <div class="md-layout-item">
-        <md-card>
-        <md-card-header>
-          <div class="md-title">Sakit</div>
-        </md-card-header>
-        <md-card-content class="md-content">
-          {{statusSakit}}
-        </md-card-content>
-      </md-card>
-      </div>
-      <div class="md-layout-item">
-        <md-card>
-        <md-card-header>
-          <div class="md-title">Izin</div>
-        </md-card-header>
-        <md-card-content class="md-content">
-          {{statusIzin}}
-        </md-card-content>
-      </md-card>
-      </div>
-      <div class="md-layout-item">
-         <md-card>
-        <md-card-header>
-          <div class="md-title">Alfa</div>
-        </md-card-header>
-        <md-card-content class="md-content"> 
-          {{statusAlfa}}
-        </md-card-content>
-      </md-card>
-      </div>
-    </div>
-    </div> -->
     <DashboardTable></DashboardTable>
-    <!-- <div class="md-layout md-gutter">
-      <div class="md-layout-item">
-        <div class="content_kelas">
-          <md-table md-sort="created_at" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "450px">
-            <md-table-toolbar>
-              <h1 class="md-title">Data Harian Personil</h1>
-            </md-table-toolbar>
-            <md-table-row slot="md-table-row" slot-scope="{ item }" >
-              <md-table-cell md-sort-by="nama_lengkap" md-label="Nama" >{{ item.nama_lengkap }}</md-table-cell>
-              <md-table-cell type="number" md-label="Bagian" md-sort-by="kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Waktu Datang" md-sort-by="created_at">{{ item.created_at }}</md-table-cell>
-              <md-table-cell v-if="item.created_ed === 0" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
-              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="created_ed" >{{ item.created_ed }}</md-table-cell>
-              <md-table-cell>
-                <md-button v-on:click.prevent="">Edit</md-button>
-                <md-button v-on:click.prevent="" class="md-accent">Delete</md-button>            
-              </md-table-cell>
-            </md-table-row>
-          </md-table>
-        </div>
-      </div>
-    </div> -->
-     <!-- <div class="md-layout md-gutter">
-        <div class="md-layout-item">
-          <div class="content_kelas">
-            <md-table v-model="dataAbsen" md-card class="md-layout-item md-size-100 md-small-size-100" style="width:100px">
-        <md-table-toolbar>
-          <h1 class="md-title">List RFID</h1>
-        </md-table-toolbar>
-        <md-table-row slot-scope="{ item }" slot="md-table-row">
-            <md-table-cell md-label="rfid">{{item.nama_pengguna}}</md-table-cell>
-            <md-table-cell md-label="rfid">{{item.rfid}}</md-table-cell>
-            <md-table-cell md-label="mac">{{item.mac}}</md-table-cell>
-            <md-table-cell md-label="date">{{item.created_at}}</md-table-cell>
-        </md-table-row>
-          </md-table>
-          </div>
-        </div>
-      </div> -->
-    <!-- <div class="md-layout md-gutter">
-      <div class="md-layout-item">
-        <div class="bar-chart grafik">
-          <md-card class="innerCard">
-          <h4 class="md-title">Data Bulan Ini</h4>
-          <BarChart :data="barcollection"/>
-          </md-card>
-        </div>
-      </div>
-      <div class="md-layout-item">
-        
-        <div class="bar-chart grafik">
-          <md-card class="innerCard">
-            <h4 class="md-title">Data Tahun Ini</h4>
-            <BarChart :data="barcollection"/>
-           </md-card>
-        </div>
-       
-      </div>
-    </div> -->
     <div class="md-layout md-gutter">
-      
     </div>
   </section>
 </template>
@@ -129,7 +25,7 @@ export default {
     mesin.on('connect', function () {
       mesin.subscribe('absensi.webservice', function (err) {
         if (!err) {
-          console.log('Subscribe to RMQ PPTIK Success')
+          // console.log('Subscribe to RMQ PPTIK Success')
         } else if (err) {
           console.log(err)
         }
@@ -223,30 +119,34 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
-      console.log(momentTimeZone.tz(new Date(), 'Asia/Jakarta'))
+      // console.log(momentTimeZone.tz(new Date(), 'Asia/Jakarta'))
     },
     dashboardJSON: async function (param) {
-      const responses = await api.JSON_Sekolah(this.namaSekolahLocal)
-      const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mai', 'Juni',
-        'Juli', 'Augustus', 'September', 'October', 'November', 'December'
-      ]
-      const d = new Date()
-      const getYear = d.getFullYear()
-      this.statusHadir = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_hadir
-      this.statusSakit = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_sakit
-      this.statusIzin = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_izin
-      this.statusAlfa = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_alfa
-      if (typeof this.statusHadir === 'undefined') {
-        this.statusHadir = 0
-      }
-      if (typeof this.statusSakit === 'undefined') {
-        this.statusSakit = 0
-      }
-      if (typeof this.statusIzin === 'undefined') {
-        this.statusIzin = 0
-      }
-      if (typeof this.statusAlfa === 'undefined') {
-        this.statusAlfa = 0
+      try {
+        const responses = await api.JSON_Sekolah(this.namaSekolahLocal)
+        const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mai', 'Juni',
+          'Juli', 'Augustus', 'September', 'October', 'November', 'December'
+        ]
+        const d = new Date()
+        const getYear = d.getFullYear()
+        this.statusHadir = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_hadir
+        this.statusSakit = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_sakit
+        this.statusIzin = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_izin
+        this.statusAlfa = responses.data[0].ABSENSI[`_${getYear}`][`${monthNames[d.getMonth()]}`].rekap_alfa
+        if (typeof this.statusHadir === 'undefined') {
+          this.statusHadir = 0
+        }
+        if (typeof this.statusSakit === 'undefined') {
+          this.statusSakit = 0
+        }
+        if (typeof this.statusIzin === 'undefined') {
+          this.statusIzin = 0
+        }
+        if (typeof this.statusAlfa === 'undefined') {
+          this.statusAlfa = 0
+        }
+      } catch (error) {
+        // console.log(error)
       }
     },
     monitoringSiswaJSON: async function (param) {

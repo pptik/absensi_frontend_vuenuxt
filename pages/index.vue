@@ -3,7 +3,7 @@
     <form novalidate class="md-layout" @keydown.enter="loginAuth()">  
       <md-content class="md-elevation-5">
         <div class="title">
-          <img width="150px" src="~/assets/logobaruvidyanusa.png">
+          <img width="150px" src="~/assets/VidyaRossa Putih-01.png">
           <div class="md-title">Selamat Datang</div>
           <div class="md-body-1">Masukkan username dan password untuk melanjutkan</div>
         </div>
@@ -108,7 +108,7 @@ export default {
   layout: 'loginarea',
   methods: {
     loginAuth: async function (param) {
-      console.log('login')
+      // console.log('login')
       this.loading = true
       var dataLogin = {
         email: this.login.username,
@@ -144,7 +144,7 @@ export default {
       // this is only for example of loading
       if (this.login.email === 'admin') {
         this.emailValid = 'Valid'
-        console.log(this.emailValid)
+        // console.log(this.emailValid)
         if (this.login.password === 'admin') {
           this.passwordValid = 'Valid'
           this.loading = true

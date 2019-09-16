@@ -3,14 +3,14 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'A B S T E I N',
+    title: 'Rekap Olah Presensi',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=0.1' },
       { hid: 'description', name: 'description', content: 'ABSTEIN adalah sebuah platform absensi berbasis web dan android application. Platform ini dapat diakses oleh siswa dan guru. Guru dapat melihat monitoring siswa yang tidak hadir dan jumlahnya sekaligus.' }
     ],
     link: [
-      { rel: 'icon', type: 'image/png', href: 'http://abstein.pptik.id/logobaruvidyanusa.png' },
+      { rel: 'icon', type: 'image/png', href: 'http://abstein.pptik.id/VidyaRossa Putih-01.png' },
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,700,400italic|Material+Icons' }
     ]
   },

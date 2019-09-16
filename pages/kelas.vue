@@ -167,30 +167,29 @@ export default {
         jam_pulang: this.inputJamPulang
       }
       // console.log(dataSimpanKelas)
-      var response = await api.requestJsonKelas(dataSimpanKelas, 'dev_Tambah').then(response => {
-        if (response.data.success === true) {
-          this.$swal({
-            title: 'Berhasil!',
-            text: 'Berhasil Mendaftarkan Kelas baru!',
-            icon: 'success',
-            confirmButtonText: 'Yes',
-            showLoaderOnConfirm: true
-          }).then((result) => {
-            window.location.reload()
-          })
-        } else {
-          this.$swal('Gagal!', {
-            title: 'Gagal',
-            text: 'Gagal Mendaftarkan!',
-            icon: 'error',
-            confirmButtonText: 'Yes',
-            showLoaderOnConfirm: true
-          }).then((result) => {
-            window.location.reload()
-          })
-        }
-      })
-      console.log(response)
+      var response = await api.requestJsonKelas(dataSimpanKelas, 'dev_Tambah')
+      if (response.data.success === true) {
+        this.$swal({
+          title: 'Berhasil!',
+          text: 'Berhasil Mendaftarkan Kelas baru!',
+          icon: 'success',
+          confirmButtonText: 'Yes',
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          window.location.reload()
+        })
+      } else {
+        this.$swal('Gagal!', {
+          title: 'Gagal',
+          text: 'Gagal Mendaftarkan!',
+          icon: 'error',
+          confirmButtonText: 'Yes',
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          window.location.reload()
+        })
+      }
+      // console.log(response)
     },
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(this.namaSekolahLocal)
@@ -199,7 +198,7 @@ export default {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)
       }
-      console.log(this.dataKelas)
+      // console.log(this.dataKelas)
       this.selectedKelas = response.data.data[0]
     },
     editKelasFieldTampil: async function (param) {
@@ -239,7 +238,7 @@ export default {
           })
         }
       })
-      console.log(dataKelas)
+      // console.log(dataKelas)
     },
     deleteKelasFungsi: async function (param) {
       var idKelas = {
@@ -272,7 +271,7 @@ export default {
       const response = await api.getJSONKelas(this.namaSekolahLocal)
       var dataParseJson = JSON.parse(JSON.stringify(response.data))
       this.listDataKelasJSON = dataParseJson
-      console.log(this.listDataKelasJSON)
+      // console.log(this.listDataKelasJSON)
     }
   }
 }

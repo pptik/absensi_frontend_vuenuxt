@@ -112,7 +112,7 @@ export default {
           })
         }
       })
-      console.log(dataInputMesin)
+      // console.log(dataInputMesin)
     },
     deleteMacAddress: async function (param) {
       var dataDeleteMesin = {
@@ -145,7 +145,7 @@ export default {
     },
     listMacAddressJSON: async function (param) {
       const response = await api.JSON_Sekolah(this.namaSekolahLocal)
-      console.log(response.data)
+      // console.log(response.data)
       this.dataMesinJSON = response.data[0].Mesin
 
       // var totalMesin = []

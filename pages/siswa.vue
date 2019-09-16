@@ -247,7 +247,7 @@ export default {
       try {
         const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
         var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
-        console.log(result)
+        // console.log(result)
         for (let x = 0; x < result.length; x++) {
           for (let i = 0; i < result[x].Kelas.length; i++) {
             var kelasTahunAjaran = result[x].Kelas[i]
@@ -271,7 +271,7 @@ export default {
       const response = await api.getKelas(param)
       this.dataKelas = response.data.data
 
-      console.log(this.dataKelas)
+      // console.log(this.dataKelas)
       for (let i = 0; i < this.dataKelas.length; i++) {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)
@@ -365,7 +365,7 @@ export default {
         }
         var getJumlahHariPerbulan = getDaysInMonth(this.bulanNumber, mdata.tahun)
         for (let i = 1; i < getJumlahHariPerbulan + 1; i++) {
-          console.log(i)
+          // console.log(i)
         }
       } catch (error) {
       }
@@ -407,7 +407,7 @@ export default {
           kelas: this.selectedKelas,
           sekolah: this.namaSekolahLocal
         }
-        console.log(mdata + ' export')
+        // console.log(mdata + ' export')
         // console.log(mdata)
         const response = await api.requestExcelData(mdata)
         // console.log(response.data.data)
@@ -435,13 +435,13 @@ export default {
           }
         }
         this.Datas['kelas_' + this.selectedKelas] = ExportData
-        console.log(ExportData)
+        // console.log(ExportData)
         var animalWS = XLSX.utils.json_to_sheet(this.Datas[`kelas_` + this.selectedKelas])
         var wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
         XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
       } catch (error) {
-        console.log('error nih.... ' + error)
+        // console.log('error nih.... ' + error)
         this.$swal('Gagal!', {
           title: 'Data Belum Lengkap',
           text: 'Data personil ' + this.selectedKelas + ' pada bulan ' + this.bulan + ' harus lengkap!',
@@ -517,8 +517,7 @@ export default {
       // })
     },
     tampilSiswaJSON: async function (param) {
-      const response = await api.getJSONHttp(param)
-      console.log(response.data + 'awoekoawe')
+      await api.getJSONHttp(param)
     },
     tampilTahun: async function (param) {
       var dataTahun = [{'tahun': '2018/2019'}, {'tahun': '2019/2020'}]
@@ -589,13 +588,10 @@ export default {
       var validate = validateUsername(dataInputSimpanSiswa.username)
       if (validate) {
         this.validateBool = true
-        console.log(validateUsername(dataInputSimpanSiswa.username))
       } else {
         this.validateBool = false
-        console.log(validateUsername(dataInputSimpanSiswa.username))
       }
       if (this.validateBool) {
-        console.log(dataInputSimpanSiswa)
         const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
         if (response.data.success === true) {
           this.$swal({
@@ -624,14 +620,13 @@ export default {
       }
     },
     editDataSiswa: async function (param) {
-      var dataInputEditSiswa = {
-        'nama_lengkap': this.EditNamaLengkap,
-        'rfid': this.EditKodeRFID,
-        'kelas': this.EditKelas,
-        'sekolah': this.namaSekolahLocal,
-        'jenis_kelamin': this.EditJenisKelamin
-      }
-      console.log(dataInputEditSiswa)
+      // var dataInputEditSiswa = {
+      //   'nama_lengkap': this.EditNamaLengkap,
+      //   'rfid': this.EditKodeRFID,
+      //   'kelas': this.EditKelas,
+      //   'sekolah': this.namaSekolahLocal,
+      //   'jenis_kelamin': this.EditJenisKelamin
+      // }
       // const response = await api.requestJsonPengguna(dataInputEditSiswa, 'edit')
       // if (response.data.success === true) {
       //   this.$swal({

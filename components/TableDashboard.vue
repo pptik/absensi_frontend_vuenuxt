@@ -7,9 +7,9 @@
              <div class="md-layout-item">
               <md-field>
                 <label>Pilih Tahun</label>
-                <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense>
+                <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="dataSiswaHarianJSON(selectedTahunAjaran)">
                   <md-option disabled>Select tahun ajaran</md-option>
-                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil.pilih_tahun" :key="hasil.pilih_tahun">{{ hasil.pilih_tahun }}</md-option>
+                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil">{{ hasil }}</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -42,8 +42,6 @@ export default {
       dataHarianSiswa: [],
       selectedTahunAjaran: null,
       dataTahunAjaran: [
-        {'pilih_tahun': '2018/2019'},
-        {'pilih_tahun': '2019/2020'}
       ]
     }
   },
@@ -53,11 +51,18 @@ export default {
   },
   methods: {
     pilihtahunajaran: async function (param) {
-
+      var dataParamSend =
+      {
+        'sekolah': this.$session.get('auth').sekolah
+      }
+      const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
+      // console.log(response)
+      this.dataTahunAjaran = response.data.data
     },
     dataSiswaHarianJSON: async function (param) {
       var date = new Date()
-      var tahunAjaran = (new Date().getFullYear().toString() - 1) + '/' + new Date().getFullYear().toString()
+      // var tahunAjaran = (new Date().getFullYear().toString() - 1) + '/' + new Date().getFullYear().toString()
+      var tahunAjaran = param
       var dataParamSend = {
         sekolah: this.$session.get('auth').sekolah,
         tahun: tahunAjaran,
@@ -77,7 +82,7 @@ export default {
       }
       this.dataHarianSiswa = arrayKosong
       this.dataHarianSiswa.sort((a, b) => {
-        console.log(a.created_at)
+        // console.log(a.created_at)
         return new Date(a.date) - new Date(b.date)
       })
       return this.dataHarianSiswa
