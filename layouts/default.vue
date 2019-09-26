@@ -5,7 +5,7 @@
         <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
           <md-icon>menu</md-icon>
         </md-button>
-        <span class="md-title">A B S T E I N</span>
+        <span class="md-title">Rekap Olah Presensi</span>
       </md-toolbar>
     <md-app md-waterfall md-mode="fixed">
       <!-- Toogle Menu Visible -->

@@ -105,6 +105,7 @@
 <script>
 
 import api from '../middleware/routes_api/routes'
+import apiGet from '../middleware/routes_api/routes_get_data'
 
 export default {
   layout: 'default', // layouts used,
@@ -268,10 +269,11 @@ export default {
         })
     },
     listKelasJSON: async function (param) {
-      const response = await api.getJSONKelas(this.namaSekolahLocal)
-      var dataParseJson = JSON.parse(JSON.stringify(response.data))
-      this.listDataKelasJSON = dataParseJson
-      // console.log(this.listDataKelasJSON)
+      var sendKelas = {
+        sekolah: this.namaSekolahLocal
+      }
+      const response = await apiGet.requestListKelas(sendKelas)
+      this.listDataKelasJSON = response.data.data
     }
   }
 }

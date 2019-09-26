@@ -1,5 +1,15 @@
-[{
-    "created_at": "AlFA",
-    "nama_lengkap": "radis",
-    "rfid": "ssad:123 asd:123 asd:127"
-}]
+[
+    {
+        "Class_data" :{
+            "kelas": "8A"
+        },
+        "RFID_card" : {
+            "serial_number": "ssad:123 asd:123 asd:123",
+            "status": "-"
+        },
+        "profile": {
+            "jenis_kelamin": "L",
+            "nama_lengkap" : "alvin"
+        }
+    }
+]

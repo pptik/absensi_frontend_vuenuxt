@@ -20,9 +20,9 @@
           <md-dialog-prompt
                 :md-active.sync="active"
                 v-model="editDesktipsi"
-                md-title="Edit Deskripsi Mesin"
+                md-title="What's your name?"
                 md-input-maxlength="30"
-                md-input-placeholder="Deskripsi"
+                md-input-placeholder="Type your name..."
                 md-confirm-text="Agree"
                 md-cancel-text="Disagree"
                 @md-cancel="onCancel"
@@ -69,7 +69,6 @@
 
 <script>
 import api from '../middleware/routes_api/routes'
-import apiGetData from '../middleware/routes_api/routes_get_data'
 // import connectionRMQ from '../middleware/RMQ/setup_rmq'
 export default {
   layout: 'default', // layouts used
@@ -126,7 +125,7 @@ export default {
       }
     },
     onCancel () {
-      // console.log('dde')
+      console.log('dde')
     },
     setItemAuth: async function () {
       if (!this.$session.exists()) {
@@ -198,16 +197,10 @@ export default {
         })
     },
     listMacAddressJSON: async function (param) {
-      var dataPost = {
-        'sekolah': this.namaSekolahLocal
-      }
-      const response = await apiGetData.requestListMesin(dataPost)
-      this.dataMesinJSON = response.data.data.Mesin
-      console.log(this.dataMesinJSON)
-      // PAKAI JSON
-      // const response = await api.JSON_Sekolah(this.namaSekolahLocal)
-      // this.dataMesinJSON = response.data[0].Mesin
+      const response = await api.JSON_Sekolah(this.namaSekolahLocal)
       // console.log(response.data)
+      this.dataMesinJSON = response.data[0].Mesin
+
       // var totalMesin = []
       // var mesin = response.data[0].mac_address_absensi
       // for (let i = 0; i < mesin.length; i++) {

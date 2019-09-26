@@ -3,25 +3,26 @@
   <div class="mt-5">
     <md-tabs  md-active-tab>
       <md-tab id="tab-pages" md-label="List Personil">
-      <div style="padding: 20px;">
-      <!-- <md-field style="width: 500px; height: 64px; float:left; margin-right: 30px;">
-        <label>Pilih Tahun</label>   
-        <md-select>
-          <md-option disabled>Pilih Tahun</md-option>
-          <md-option>2018/2019</md-option>
-          <md-option>2019/2020</md-option>
-        </md-select>
-      </md-field> -->
-      <md-field style="width: 500px;">
-        <label>Pilih Bagian</label>   
-        <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas)">
-          <md-option disabled>Pilih Bagian</md-option>
-          <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
-        </md-select>
-        <md-button class="md-default md-raised" @click="showDate = true;">
-          Export to XLS
-        </md-button>
-      </md-field>
+      <div style="padding-top: 20px;padding-left: 20px;">
+        <div class="md-layout md-gutter">
+        <md-field style="width: 500px;">
+          <label>Pilih Bagian</label>   
+          <md-select v-model="selectedKelas">
+            <md-option disabled>Pilih Bagian</md-option>
+            <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
+          </md-select>
+          <md-button class="md-default md-raised" @click="showDate = true;">
+            Export to XLS
+          </md-button>
+        </md-field>
+          <md-field style="width: 500px; margin-left: 40px;">
+            <label>Pilih Tahun</label>
+            <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
+              <md-option disabled>Select tahun ajaran</md-option>
+              <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+            </md-select>
+          </md-field>
+        </div>
       </div>
       <div>
         <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
@@ -52,17 +53,17 @@
                 <md-switch class="md-primary" v-model="emailSelector">Gunakan Username @vidyanusa.id ?</md-switch>
                 <md-field v-if="emailSelector">
                   <label>Email</label>
-                  <md-input v-model="inputEmail"></md-input>
+                  <md-input v-model="inputEmail" required></md-input>
                   <span>@vidyanusa.id</span>
                 </md-field>
                 <md-field v-else>
                   <label>Email</label>
-                  <md-input v-model="inputEmail"></md-input>
+                  <md-input v-model="inputEmail" required></md-input>
                 </md-field>
                 
                 <md-field>
                   <label>Username</label>
-                  <md-input id="username" v-model="inputUsername"></md-input>
+                  <md-input id="username" v-model="inputUsername" required></md-input>
                 </md-field>
                   <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
                   <span class="md-error" v-else-if="validateBool == null"></span>
@@ -71,23 +72,38 @@
                 <label>Nama Lengkap</label>
                   <md-input v-model="inputNamaLengkap"></md-input>
                 </md-field>
+                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
+                <span class="md-error" v-else-if="validateBool == null"></span>
+                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field>
                   <label>Jenis Kelamin</label>
-                  <md-select v-model="inputJenisKelamin">
+                  <md-select v-model="inputJenisKelamin" required>
                     <md-option value="P">Laki-Laki</md-option>
-                    <md-option value="W">Prempuan</md-option>
+                    <md-option value="W">Perempuan</md-option>
                   </md-select>
                 </md-field>
+                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
+                <span class="md-error" v-else-if="validateBool == null"></span>
+                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field>
                   <label>Sandi</label>
-                  <md-input type="password" v-model="inputSandi" ></md-input>
+                  <md-input type="password" v-model="inputSandi" required></md-input>
                 </md-field>
+                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
+                <span class="md-error" v-else-if="validateBool == null"></span>
+                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field class="md-layout-item md-size-35">
                   <label>Kode RFID</label>
-                  <md-input class="md-layout-item md-size-120" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
+                  <md-input required class="md-layout-item md-size-120" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
                 </md-field>
+                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
+                <span class="md-error" v-else-if="validateBool == null"></span>
+                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <label>Bagian</label>
-                <md-autocomplete v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
+                <md-autocomplete required v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
+                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
+                <span class="md-error" v-else-if="validateBool == null"></span>
+                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field class="md-layout-item">
                   <label>Tahun Ajaran</label>
                   <md-input type="text" class="md-layout-item md-size-100" v-model="inputTahunAjaran" placeholder="ex: 2018/2019"  maxlength="9"></md-input>
@@ -170,8 +186,10 @@
 <script>
 import api from '../middleware/routes_api/routes'
 import load from 'lodash'
-
+import moment from 'moment'
 import XLSX from 'xlsx'
+// import api_service from '../middleware/api_service'
+import apiGetData from '../middleware/routes_api/routes_get_data'
 export default {
   layout: 'default', // layouts used
   data () {
@@ -218,15 +236,28 @@ export default {
       bulanNumber: null,
       validateBool: null,
       emailSelector: true,
-      selectedTahun: null
+      selectedTahun: null,
+      dataTahunAjaran: [],
+      selectedTahunAjaran: null
+      //
     }
   },
   mounted () {
     // this.tampilsemuakelas({'sekolah': this.idSekolah})
     this.setItemAuth()
+    this.pilihtahunajaran()
     this.listKelasJSON()
   },
   methods: {
+    pilihtahunajaran: async function (param) {
+      var dataParamSend =
+      {
+        'sekolah': this.$session.get('auth').sekolah
+      }
+      const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
+      // console.log(response)
+      this.dataTahunAjaran = response.data.data
+    },
     setItemAuth: async function (param) {
       if (!this.$session.exists()) {
         this.$router.push('/')
@@ -242,16 +273,20 @@ export default {
       this.EditKelas = param.Kelas
       this.EditJenisKelamin = param.jenis_kelamin
     },
-    tampilsiswaperkelas: async function (param) {
+    tampilsiswaperkelas: async function (param, paramTahunAjaran) {
       var arrayHasil = []
       try {
-        const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
-        var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: this.tahun_ini, nama_kelas: this.selectedKelas }] })
+        var sendSekolah = {
+          sekolah: this.namaSekolahLocal
+        }
+        const responTwo = await apiGetData.requestListPengguna(sendSekolah)
+        // console.log(responTwo)
+        var result = load.filter(responTwo.data.data, { Kelas: [{ tahun_ajaran: paramTahunAjaran, nama_kelas: this.selectedKelas }] })
         // console.log(result)
         for (let x = 0; x < result.length; x++) {
           for (let i = 0; i < result[x].Kelas.length; i++) {
             var kelasTahunAjaran = result[x].Kelas[i]
-            if (kelasTahunAjaran.tahun_ajaran === this.tahun_ini) {
+            if (kelasTahunAjaran.tahun_ajaran === paramTahunAjaran) {
               var hasilArrayAkhir = {
                 'nama_lengkap': result[x].profil.nama_lengkap,
                 'RFID': result[x].RFID.serial_number,
@@ -401,6 +436,7 @@ export default {
     },
     exportData: async function (param) {
       try {
+        moment.locale('id')
         var mdata = {
           tahun: this.tahunRekap,
           bulan: this.bulan,
@@ -417,11 +453,12 @@ export default {
           if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
             var check = values[i].RFID
             for (let a = 0; a < 32; a++) {
+              // console.log(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a])
               var tgl = Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]
               if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
                 ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap})
               } else {
-                ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a], Nama: values[i].profil.nama_lengkap, Datang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang, Pulang: check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang})
+                ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a].replace('_', ''), Nama: values[i].profil.nama_lengkap, Datang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang).format('MMMM Do YYYY, h:mm:ss'), Pulang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang).format('MMMM Do YYYY, h:mm:ss')})
               }
             }
             // objStar['Murid'].push(check.rekap_rfid._2019.Mei)
@@ -525,8 +562,11 @@ export default {
     },
     // TAHAP PENGGUNAAN JSON
     listKelasJSON: async function (param) {
-      const response = await api.getJSONKelas(this.namaSekolahLocal)
-      this.dataJSONTampilKelas = response.data
+      var dataSendKelas = {
+        sekolah: this.namaSekolahLocal
+      }
+      const response = await apiGetData.requestListKelas(dataSendKelas)
+      this.dataJSONTampilKelas = response.data.data
       var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
@@ -536,7 +576,7 @@ export default {
       /* kalo mau tampil kelas paling awal
       this.selectedKelas = this.dataArrayNamaKelas[0]
       */
-      const responTwo = await api.getJSONSiswa(this.namaSekolahLocal)
+      const responTwo = await apiGetData.requestListPengguna(dataSendKelas)
       var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: '2018/2019', nama_kelas: this.selectedKelas }] })
       for (let x = 0; x < result.length; x++) {
         for (let i = 0; i < result[x].Kelas.length; i++) {

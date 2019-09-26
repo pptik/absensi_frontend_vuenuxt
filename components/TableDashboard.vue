@@ -9,7 +9,7 @@
                 <label>Pilih Tahun</label>
                 <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="dataSiswaHarianJSON(selectedTahunAjaran)">
                   <md-option disabled>Select tahun ajaran</md-option>
-                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil">{{ hasil }}</md-option>
+                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="'A' + hasil">{{ hasil }}</md-option>
                 </md-select>
               </md-field>
             </div>
