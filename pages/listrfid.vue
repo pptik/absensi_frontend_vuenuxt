@@ -66,10 +66,10 @@ export default {
         let mesinRFID = JSON.parse(message.toString())
         ini.dataAbsen.unshift({'mac_address': mesinRFID.mac, 'rfid': mesinRFID.rfid, 'created_at': momentTZ.tz(Date.now(), 'Asia/Jakarta').format('MMMM Do, h:mm z')})
       })
-
+      var dataAuth = JSON.parse(localStorage.getItem('auth'))
       mesinDataLengkap.on('message', function (topic, message) {
         let mesinRFID = JSON.parse(message.toString())
-        if (ini.$session.get('auth').sekolah === mesinRFID.sekolah) {
+        if (dataAuth.sekolah === mesinRFID.sekolah) {
           ini.datamesin = mesinRFID.nama_lengkap + ' ' + mesinRFID.jam
         }
       })

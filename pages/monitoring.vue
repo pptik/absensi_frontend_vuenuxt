@@ -3,10 +3,14 @@
     <div class="md-layout md-alignment-top-center">
       <div class="md-layout-item">
         <div class="content_kelas">
-            <!-- <md-field md-clearable class="md-toolbar-section-end">
-              <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
-            </md-field> -->
-          <md-table  md-sort="nama_lengkap" v-model="monitoringSiswaData" md-sort-order="asc" md-card md-fixed-header md-height= "550px">
+          <md-field style="width: 500px; margin-left: 40px;">
+            <label>Pilih Tahun</label>
+            <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="monitoringSiswaJSON(selectedTahunAjaran)">
+              <md-option disabled>Select tahun ajaran</md-option>
+              <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+            </md-select>
+          </md-field>
+          <md-table  md-sort="nama_lengkap" v-model="monitoringSiswaData" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
             <md-table-toolbar>
               <h1 class="md-title">Monitoring Personil Tidak Hadir</h1>
             </md-table-toolbar>
@@ -34,20 +38,13 @@
 <script>
 import api from '../middleware/routes_api/routes'
 import moment from 'moment'
-// const toLower = text => {
-//   return text.toString().toLowerCase()
-// }
-// const searchByName = (items, term) => {
-//   if (term) {
-//     return items.filter(item => toLower(item.nama_lengkap).includes(toLower(term)))
-//   }
-//   return items
-// }
 
 export default {
   layout: 'default', // layouts used,
   data () {
     return {
+      selectedTahunAjaran: null,
+      dataTahunAjaran: [],
       monitoringSiswaData: [],
       namaSekolahLocal: null,
       usernameLocal: null,
@@ -61,8 +58,17 @@ export default {
   mounted () {
     this.setItemAuth()
     this.monitoringSiswaJSON()
+    this.pilihtahunajaran()
   },
   methods: {
+    pilihtahunajaran: async function (param) {
+      var dataParamSend =
+      {
+        'sekolah': this.$session.get('auth').sekolah
+      }
+      const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
+      this.dataTahunAjaran = response.data.data
+    },
     editHadir: async function (rfidSiswa, statusHadir) {
       var dt = new Date()
       var tglZONEID = dt.setHours(dt.getHours())
@@ -133,19 +139,16 @@ export default {
       this.mac_address = dataAuth.mac_address
     },
     monitoringSiswaJSON: async function (param) {
+      // console.log((new Date().getFullYear() - 1) + '/' + new Date().getFullYear())
       var date = new Date()
       var dataParamSend = {
         sekolah: this.namaSekolahLocal,
-        tahun: (new Date().getFullYear() - 1) + '/' + new Date().getFullYear(),
+        tahun: param,
         jam_awal: date
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'monitoring')
       this.monitoringSiswaData = response.data.data
-      // this.searched = this.monitoringSiswaData
     }
-    // searchOnTable () {
-    //   this.searched = searchByName(this.monitoringSiswaData, this.search)
-    // }
   }
 }
 </script>

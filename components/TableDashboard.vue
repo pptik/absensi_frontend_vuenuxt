@@ -9,7 +9,7 @@
                 <label>Pilih Tahun</label>
                 <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="dataSiswaHarianJSON(selectedTahunAjaran)">
                   <md-option disabled>Select tahun ajaran</md-option>
-                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="'A' + hasil">{{ hasil }}</md-option>
+                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -58,6 +58,8 @@ export default {
       const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
       // console.log(response)
       this.dataTahunAjaran = response.data.data
+      // Selected tahun ajaran pertama load
+      this.selectedTahunAjaran = this.dataTahunAjaran[0]
     },
     dataSiswaHarianJSON: async function (param) {
       var date = new Date()

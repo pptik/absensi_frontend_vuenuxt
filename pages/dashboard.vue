@@ -82,10 +82,10 @@ export default {
   },
   mounted () {
     this.setItemAuth()
-    this.dashboardJSON()
-    this.monitoringSiswaJSON()
-    this.dataSiswaHarianJSON()
-    this.filldata()
+    // this.dashboardJSON()
+    // this.monitoringSiswaJSON()
+    // this.dataSiswaHarianJSON()
+    // this.filldata()
   },
   methods: {
     filldata: async function () {
@@ -124,6 +124,7 @@ export default {
     dashboardJSON: async function (param) {
       try {
         const responses = await api.JSON_Sekolah(this.namaSekolahLocal)
+        // console.log(responses)
         const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mai', 'Juni',
           'Juli', 'Augustus', 'September', 'October', 'November', 'December'
         ]

@@ -31,6 +31,11 @@
             <md-icon>developer_board</md-icon>
             <nuxt-link class="md-list-item-text" to="/Mesin"  style="color:black;">Mesin</nuxt-link>
         </md-list-item>
+
+        <md-list-item>
+            <md-icon>check_circle_outline</md-icon>
+            <nuxt-link class="md-list-item-text" to="/tutorial"  style="color:black;">Tutorial</nuxt-link>
+        </md-list-item>
         <!-- <md-list-item>
             <md-icon>perm_data_setting</md-icon>
             <nuxt-link class="md-list-item-text" to="/setting"  style="color:black;">Pengaturan</nuxt-link>

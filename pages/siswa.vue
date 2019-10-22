@@ -7,7 +7,7 @@
         <div class="md-layout md-gutter">
         <md-field style="width: 500px;">
           <label>Pilih Bagian</label>   
-          <md-select v-model="selectedKelas">
+          <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
             <md-option disabled>Pilih Bagian</md-option>
             <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
           </md-select>
@@ -119,7 +119,7 @@
     </div>
     <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-50 md-small-size-50">
       <md-dialog-title>Rekap Absensi Per Bulan {{this.selectedKelas}}</md-dialog-title>
-      <div style="padding:20p">
+      <div style="padding:20px">
         <div class="md-layout md-gutter containers">
           <div class="md-layout-item">
             <md-field>
@@ -188,6 +188,7 @@ import api from '../middleware/routes_api/routes'
 import load from 'lodash'
 import moment from 'moment'
 import XLSX from 'xlsx'
+import downloadexcel from 'vue-json-excel'
 // import api_service from '../middleware/api_service'
 import apiGetData from '../middleware/routes_api/routes_get_data'
 export default {
@@ -202,7 +203,7 @@ export default {
       allPost: [],
       post: [],
       dataKelas: [],
-      selectedKelas: 'Pilih Kelas',
+      selectedKelas: null,
       dataHasilTampilSiswa: [],
       date_time: Date.now(),
       idSekolah: 'SMP Assalam',
@@ -242,11 +243,14 @@ export default {
       //
     }
   },
+  components: {
+    downloadexcel
+  },
   mounted () {
     // this.tampilsemuakelas({'sekolah': this.idSekolah})
     this.setItemAuth()
-    this.pilihtahunajaran()
     this.listKelasJSON()
+    this.pilihtahunajaran()
   },
   methods: {
     pilihtahunajaran: async function (param) {
@@ -257,6 +261,9 @@ export default {
       const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
       // console.log(response)
       this.dataTahunAjaran = response.data.data
+      // load tahun ajaran pertama load
+      // this.selectedTahunAjaran = this.dataTahunAjaran[0]
+      // console.log('second')
     },
     setItemAuth: async function (param) {
       if (!this.$session.exists()) {
@@ -434,6 +441,9 @@ export default {
         console.log(error)
       }
     },
+    exportDataBaru: async function (param) {
+
+    },
     exportData: async function (param) {
       try {
         moment.locale('id')
@@ -448,37 +458,33 @@ export default {
         const response = await api.requestExcelData(mdata)
         // console.log(response.data.data)
         const values = response.data.data
+        // console.log(values)
         var ExportData = []
         for (let i = 0; i < values.length; i++) {
-          if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
-            var check = values[i].RFID
-            for (let a = 0; a < 32; a++) {
-              // console.log(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a])
-              var tgl = Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]
-              if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
-                ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap})
-              } else {
-                ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a].replace('_', ''), Nama: values[i].profil.nama_lengkap, Datang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang).format('MMMM Do YYYY, h:mm:ss'), Pulang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang).format('MMMM Do YYYY, h:mm:ss')})
-              }
+          // if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
+          var check = values[i].RFID
+          for (let a = 0; a < 32; a++) {
+            // console.log(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a])
+            var tgl = Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]
+            if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
+              // ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap})
+              console.log(tgl)
+            } else {
+              ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a].replace('_', ''), Nama: values[i].profil.nama_lengkap, Datang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang).format('MMMM Do YYYY, h:mm:ss'), Pulang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang).format('MMMM Do YYYY, h:mm:ss')})
             }
-            // objStar['Murid'].push(check.rekap_rfid._2019.Mei)
-            // objStar['Murid'].push(values[i].profil.nama_lengkap)
-            // var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
-            // var wb = XLSX.utils.book_new()
-            // XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
-            // XLSX.writeFile(wb, 'book.xlsx')
-          } else {
-            console.log('gagal')
           }
+          // } else {
+          //   console.log('gagal')
+          // }
         }
         this.Datas['kelas_' + this.selectedKelas] = ExportData
-        // console.log(ExportData)
+        console.log(ExportData)
         var animalWS = XLSX.utils.json_to_sheet(this.Datas[`kelas_` + this.selectedKelas])
         var wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
         XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
       } catch (error) {
-        // console.log('error nih.... ' + error)
+        console.log('error nih.... ' + error)
         this.$swal('Gagal!', {
           title: 'Data Belum Lengkap',
           text: 'Data personil ' + this.selectedKelas + ' pada bulan ' + this.bulan + ' harus lengkap!',
@@ -567,12 +573,17 @@ export default {
       }
       const response = await apiGetData.requestListKelas(dataSendKelas)
       this.dataJSONTampilKelas = response.data.data
+      this.selectedKelas = this.dataJSONTampilKelas[0].NAMA_KELAS
+      // console.log(this.dataJSONTampilKelas[0].NAMA_KELAS)
+      // console.log('first')
+      // this.selectedKelas = this.dataJSONTampilKelas[0].NAMA_KELAS
+
       var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
         this.dataArrayNamaKelas.push(element)
       }
-      this.selectedKelas = 'Pilih Kelas'
+      // LOAD BAGIAN NAMA KELAS PERTAMA KALI LOAD
       /* kalo mau tampil kelas paling awal
       this.selectedKelas = this.dataArrayNamaKelas[0]
       */
@@ -596,7 +607,7 @@ export default {
       this.dataHasilTampilSiswa = arrayHasil
     },
     simpanDataSiswa: async function (param) {
-      if (this.jenis_kelamin === 'Laki-Laki') {
+      if (this.inputJenisKelamin === 'P') {
         this.inputKelaminConvert = 'M'
       } else {
         this.inputKelaminConvert = 'F'
