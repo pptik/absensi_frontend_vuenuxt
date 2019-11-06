@@ -73,8 +73,14 @@ export default {
   requestExcelData (params) {
     return Api().post('/pengguna/rekapAbsen/', params)
   },
+  requestExcelDataV2 (params) {
+    return Api().post('/pengguna/rekapAbsenV2', params)
+  },
   requestExcelSpreatSheet (params) {
     return Api().post('/pengguna/rekapgooglesheet', params)
-  }
+  },
   // DASHBOARD
+  requestUpdateProfilPengguna (params) {
+    return Api().post('/pengguna/editProfilePengguna', params)
+  }
 }

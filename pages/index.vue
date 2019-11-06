@@ -126,24 +126,24 @@ export default {
         }
         this.$session.start()
         this.$session.set('auth', dataAuth)
+        this.$router.replace('/dashboard')
         localStorage.setItem('auth', JSON.stringify(dataAuth))
-        this.$swal({
-          icon: 'success',
-          title: 'Berhasil Login',
-          showConfirmButton: false,
-          timer: 1500
-        })
-        setTimeout(() => {
-          this.loading = false
-          this.$router.replace('/dashboard')
-        }, 2000)
+        // this.$swal({
+        //   icon: 'success',
+        //   title: 'Berhasil Login',
+        //   showConfirmButton: false,
+        //   timer: 1500
+        // })
+        // setTimeout(() => {
+        //   this.loading = false
+        // }, 2000)
       } else {
-        this.$swal('Gagal Login!', response.data.data, 'error')
-        this.emailValid = 'Invalid'
-        this.loading = true
-        setTimeout(() => {
-          this.loading = false
-        }, 1000)
+        // this.$swal('Gagal Login!', response.data.data, 'error')
+        // this.emailValid = 'Invalid'
+        // this.loading = true
+        // setTimeout(() => {
+        //   this.loading = false
+        // }, 1000)
       }
     },
     auth () {

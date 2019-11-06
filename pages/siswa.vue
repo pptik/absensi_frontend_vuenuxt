@@ -25,6 +25,16 @@
         </div>
       </div>
       <div>
+        <table id="sheetjs">
+          <tbody>
+            <tr>
+              <td>First Name</td>
+            </tr>
+            <tr>
+              Cek
+            </tr>
+          </tbody>
+        </table>
         <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
           <md-table-toolbar>
             <h1 class="md-title">Personil/Siswa</h1>
@@ -147,7 +157,7 @@
         </div>
       </div>
           <md-dialog-actions>
-              <md-button class="md-primary" @click="exportData()">Export Csv</md-button>
+              <md-button class="md-primary" @click="exportDataBaru()">Export Csv</md-button>
               <div v-if="this.namaSekolahLocal == 'SMP Assalam'">
                 <md-button class="md-primary" @click="exportGoogleSpreatSheet()">Export ke GoogleSheet</md-button>
               </div>
@@ -188,6 +198,7 @@ import api from '../middleware/routes_api/routes'
 import load from 'lodash'
 import moment from 'moment'
 import XLSX from 'xlsx'
+import TableExport from 'tableexport'
 import downloadexcel from 'vue-json-excel'
 // import api_service from '../middleware/api_service'
 import apiGetData from '../middleware/routes_api/routes_get_data'
@@ -442,7 +453,31 @@ export default {
       }
     },
     exportDataBaru: async function (param) {
-
+      // var FileSaver = require('file-saver')
+      // var blob = new Blob(['Hello, world!'], {type: 'text/plain;charset=utf-8'})
+      // FileSaver.saveAs(blob, 'hello world.txt')
+      try {
+        var postData = {
+          sekolah: 'Magang',
+          tahun: '2019/2020',
+          jam_awal: new Date('2019-11-01'),
+          jam_akhir: new Date('2019-12-01')
+        }
+        const response = await api.requestExcelDataV2(postData)
+        TableExport(document.getElementById('sheetjs'))
+        console.log(response)
+        // var wb = XLSX.utils.table_to_book(document.getElementById('sheetjs'))
+        // var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'})
+        // FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    s2ab: function (s) {
+      var buf = new ArrayBuffer(s.length)
+      var view = new Uint8Array(buf)
+      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) && 0xff
+      return buf
     },
     exportData: async function (param) {
       try {

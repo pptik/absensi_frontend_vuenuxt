@@ -14,6 +14,7 @@ module.exports = {
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,700,400italic|Material+Icons' }
     ]
   },
+  
   /*
   ** Customize the progress bar color
   */
@@ -28,7 +29,7 @@ module.exports = {
   plugins: [
     { src: '~/plugins/vue-material' },
     { src: '~/plugins/vue-chart' },
-    { src: '~/plugins/vue-alert'},
+    // { src: '~/plugins/vue-alert'},
     { src: '~/plugins/vue-session', ssr: false}
   ],
   build: {

@@ -1,71 +1,37 @@
 <template>
-  <section class="container">
-    <md-tabs  md-active-tab>
-      <md-tab id="tab-posts" md-label="List Mesin">
-        <form novalidate class="md-layout">
-          <md-table v-model="dataMesinJSON" md-card class="md-layout-item md-size-100 md-small-size-100">
-            <md-table-toolbar>
-              <h1 class="md-title">Mesin</h1>
-            </md-table-toolbar>
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Address">{{ item.address }}</md-table-cell>
-              <md-table-cell md-label="Deskripsi">{{ item.deskripsi }}</md-table-cell>
-              <md-table-cell>
-                <md-button v-on:click.prevent="deleteMacAddress(item.address)" class="md-accent">Delete</md-button> 
-                <!-- <md-button v-on:click.prevent="editMacAddress(item.address)" class="md-accent">Edit</md-button>  -->
-                <md-button class="md-primary md-raised" @click="active = true, AddressEditMesin = item.address">Edit</md-button>
-              </md-table-cell>
-            </md-table-row>
-          </md-table>
-          <md-dialog-prompt
-                :md-active.sync="active"
-                v-model="editDesktipsi"
-                md-title="What's your name?"
-                md-input-maxlength="30"
-                md-input-placeholder="Type your name..."
-                md-confirm-text="Agree"
-                md-cancel-text="Disagree"
-                @md-cancel="onCancel"
-                @md-confirm="onConfirm" />
-        </form>
-      </md-tab>
-      <md-tab id="tab-pages" md-label="Tambah Mesin">
-      <div>
-        <form novalidate class="md-layout" >
-          <md-card class="md-layout-item md-size-50 md-small-size-50">
-            <md-card-header>
-              <div class="md-title">Tambah Mesin</div>
-                </md-card-header>
-                <div style="padding:25px;">
-                <md-field>
-                  <label>Address Mesin</label>
-                  <md-input v-model="inputAddressMesin"></md-input>
-                </md-field>
-                <md-field>
-                  <label>Nama Mesin</label>
-                  <md-input v-model="inputNamaMesin"></md-input>
-                </md-field>
-                <md-field>
-                  <label>Deskripsi</label>
-                  <md-input v-model="inputDeskripsi"></md-input>
-                </md-field>
-                <md-card-actions>
-                  <md-button type="submit" class="md-primary" v-on:click.prevent="simpanMacAddress()" >Tambah Mesin</md-button>
-                </md-card-actions>
-              </div>
-             </md-card>
-            </form>
-            </div>       
-            </md-tab>
-          </md-tabs>
-          <template>
-            <div>
-            <template>
-            </template>
-            </div>            
-          </template>
-        </section>
-      </template>
+  <div>
+    <md-card style="width: 500px;">
+      <md-card-header>
+          <div class="md-title"><b>Pengaturan Akun</b></div>
+        </md-card-header>
+        <md-card-content>
+          <md-field>
+            <label>Nama Sekolah</label>
+            <md-input v-model="initialSekolahPengguna" readonly></md-input>
+          </md-field>
+          <md-field>
+            <label>Nama Pengguna</label>
+            <md-input v-model="initialNamaPengguna"></md-input>
+          </md-field>
+          <md-field>
+            <label>Password</label>
+            <md-input v-model="password" type="password"></md-input>
+          </md-field>
+          <md-field>
+            <label>Konfirmasi Password</label>
+            <md-input v-model="passwordConfirm" type="password"></md-input>
+          </md-field>
+           <h5>Upload Foto Profile</h5>
+          <md-field>
+            <input type="file" id="image" ref="image" accept="image/*" v-on:change="onChangeImageUpload()"/>
+          </md-field>
+          <md-card-actions>
+            <md-button type="submit" class="md-primary" v-on:click.prevent="simpanUpdate()" >Simpan</md-button>
+          </md-card-actions>
+        </md-card-content>
+    </md-card>
+  </div>
+</template>
 
 <script>
 import api from '../middleware/routes_api/routes'
@@ -75,58 +41,26 @@ export default {
   data () {
     return {
       dataMesin: [],
-      inputAddressMesin: null,
-      inputNamaMesin: null,
-      inputLokasi: null,
-      inputDeskripsi: null,
-      dataMesinJSON: [],
-      // DATA LOCAL
       namaSekolahLocal: null,
       usernameLocal: null,
       sekolah_id: null,
-      active: false,
-      editDesktipsi: null,
-      AddressEditMesin: null
+      inputName: null,
+      form: {
+        idPengguna: null,
+        newusername: null
+      },
+      initialNamaPengguna: null,
+      image: null,
+      initialEmailPengguna: 'magang@vidyanusa.id',
+      initialSekolahPengguna: null,
+      password: null,
+      passwordConfirm: null
     }
   },
   mounted () {
     this.setItemAuth()
-    this.listMacAddressJSON()
   },
   methods: {
-    async onConfirm () {
-      var dataEditDeskripsi = {
-        sekolah: this.namaSekolahLocal,
-        mesin: this.AddressEditMesin,
-        deskripsi: this.editDesktipsi
-      }
-      // console.log(dataEditDeskripsi)
-      let update = await api.requestJsonMesin(dataEditDeskripsi, 'update')
-      if (update.data.success === true) {
-        this.$swal({
-          title: 'Berhasil!',
-          text: 'Berhasil Update Mesin!',
-          icon: 'success',
-          confirmButtonText: 'Yes',
-          showLoaderOnConfirm: true
-        }).then((result) => {
-          window.location.reload()
-        })
-      } else {
-        this.$swal('Gagal!', {
-          title: 'Gagal',
-          text: 'Gagal Update Mesin!',
-          icon: 'error',
-          confirmButtonText: 'Yes',
-          showLoaderOnConfirm: true
-        }).then((result) => {
-          window.location.reload()
-        })
-      }
-    },
-    onCancel () {
-      console.log('dde')
-    },
     setItemAuth: async function () {
       if (!this.$session.exists()) {
         this.$router.push('/')
@@ -135,83 +69,44 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
+      this.initialSekolahPengguna = dataAuth.sekolah
+      this.initialNamaPengguna = dataAuth.username
     },
-    simpanMacAddress: async function (param) {
-      var dataInputMesin = {
-        mesin: this.inputAddressMesin,
-        nama_sekolah: this.namaSekolahLocal,
-        deskripsi: this.inputDeskripsi
-      }
-      await api.requestJsonSekolah(dataInputMesin, 'create').then(response => {
-        if (response.data.success === true) {
-          this.$swal({
-            title: 'Berhasil!',
-            text: 'Berhasil Mendaftarkan Mesin baru!',
-            icon: 'success',
-            confirmButtonText: 'Yes',
-            showLoaderOnConfirm: true
-          }).then((result) => {
-            window.location.reload()
-          })
-        } else {
-          this.$swal('Gagal!', {
-            title: 'Gagal',
-            text: 'Gagal Mendaftarkan baru!',
-            icon: 'error',
-            confirmButtonText: 'Yes',
-            showLoaderOnConfirm: true
-          }).then((result) => {
-            window.location.reload()
-          })
-        }
-      })
-      // console.log(dataInputMesin)
-    },
-    deleteMacAddress: async function (param) {
-      var dataDeleteMesin = {
-        nama_sekolah: this.$session.get('auth').sekolah,
-        mesin: param
-      }
-      this.$swal({
-        title: 'Yakin Hapus?',
-        text: 'Data mesin akan dihapus secara permanen!',
-        icon: 'warning',
-        buttons: true,
-        dangerMode: true
-      })
-        .then((willDelete) => {
-          if (willDelete) {
-            api.requestJsonSekolah(dataDeleteMesin, 'delete')
-            this.$swal('berhasil di hapus!', {
-              icon: 'success'
-            }).then((result) => {
-              window.location.reload()
-            })
-          } else {
-            this.$swal('Penghapusan dibatalkan!', {
-              icon: 'warning'
-            }).then((result) => {
-              window.location.reload()
-            })
-          }
+    simpanUpdate: async function () {
+      if (this.password && this.passwordConfirm !== null) {
+        this.$swal({
+          title: 'Apa Anda Yakin Update Profil?',
+          text: 'Update Profil Akan Merubah Data Anda',
+          icon: 'warning',
+          buttons: true,
+          dangerMode: true
         })
-    },
-    listMacAddressJSON: async function (param) {
-      const response = await api.JSON_Sekolah(this.namaSekolahLocal)
-      // console.log(response.data)
-      this.dataMesinJSON = response.data[0].Mesin
+          .then((willDelete) => {
+            if (willDelete) {
+              let formData = new FormData()
+              formData.append('idPengguna', this.sekolah_id)
+              formData.append('file', this.image)
+              formData.append('newusername', this.initialNamaPengguna)
+              formData.append('newsandi', this.passwordConfirm) // d59029a3752db08f206781e4275741cf
 
-      // var totalMesin = []
-      // var mesin = response.data[0].mac_address_absensi
-      // for (let i = 0; i < mesin.length; i++) {
-      //   const elementMesin = mesin[i]
-      //   var dataMesinObj = {
-      //     nama_sekolah: response.data[0].nama_sekolah,
-      //     mac_address_absensi: elementMesin
-      //   }
-      //   totalMesin.push(dataMesinObj)
-      // }
-      // this.dataMesinJSON = totalMesin
+              api.requestUpdateProfilPengguna(formData).then(response => {
+                this.$swal({
+                  title: 'Berhasil Di Update!',
+                  text: 'Update Profil Akan Terlihat Ketika Anda Logout',
+                  icon: 'success',
+                  buttons: true
+                })
+              })
+            } else {
+              this.$swal('Batal Update')
+            }
+          })
+      } else {
+        this.$swal('Gagal', 'Password Tidak Sama Atau Kosong!', 'warning')
+      }
+    },
+    onChangeImageUpload () {
+      this.image = this.$refs.image.files[0]
     }
   }
 }
