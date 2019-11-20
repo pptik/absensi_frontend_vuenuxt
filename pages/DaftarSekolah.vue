@@ -139,7 +139,7 @@ export default {
         this.$swal({
           title: 'Berhasil!',
           text: 'Berhasil Delete!',
-          icon: 'success',
+          type: 'success',
           confirmButtonText: 'Yes',
           showLoaderOnConfirm: true
         }).then((result) => {
@@ -149,7 +149,7 @@ export default {
         this.$swal({
           title: 'Terjadi Kesalahan!',
           text: 'Terjadi Kesalahan Ketika membuat user sekolah, hubungi admin untuk info lebih lanjut!',
-          icon: 'warning',
+          type: 'warning',
           confirmButtonText: 'Yes',
           showLoaderOnConfirm: true
         }).then((result) => {

@@ -88,6 +88,14 @@ export default {
     // this.filldata()
   },
   methods: {
+    showalert: async function () {
+      this.$swal({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+        footer: '<a href>Why do I have this issue?</a>'
+      })
+    },
     filldata: async function () {
       let ini = this
       mesin.on('message', function (topic, message) {

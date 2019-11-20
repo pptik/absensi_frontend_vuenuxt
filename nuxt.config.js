@@ -23,8 +23,12 @@ module.exports = {
   ** Build configuration
   */
   css: [
+    { src: 'sweetalert2/dist/sweetalert2.min.css', lang: 'css'},
     { src: 'vue-material/dist/vue-material.min.css', lang: 'css' },
     { src: '~/assets/theme.scss', lang: 'scss' } // include vue-material theme engine
+  ],
+  modules: [
+    'vue-sweetalert2/nuxt'
   ],
   plugins: [
     { src: '~/plugins/vue-material' },

@@ -25,16 +25,12 @@
         </div>
       </div>
       <div>
-        <table id="sheetjs">
-          <tbody>
-            <tr>
-              <td>First Name</td>
-            </tr>
-            <tr>
-              Cek
-            </tr>
-          </tbody>
-        </table>
+      <!-- <table id="mytable" border="1">
+        <tr v-for="data in dataTampilanRecord" :key="data._id">
+          <td v-for="(value) in data" :key="value._id"> {{ value }}</td>
+          <td v-for="(value) in data.tap" :key="value._id">{{ value }}</td>
+        </tr>
+      </table> -->
         <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
           <md-table-toolbar>
             <h1 class="md-title">Personil/Siswa</h1>
@@ -82,9 +78,6 @@
                 <label>Nama Lengkap</label>
                   <md-input v-model="inputNamaLengkap"></md-input>
                 </md-field>
-                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
-                <span class="md-error" v-else-if="validateBool == null"></span>
-                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field>
                   <label>Jenis Kelamin</label>
                   <md-select v-model="inputJenisKelamin" required>
@@ -92,28 +85,16 @@
                     <md-option value="W">Perempuan</md-option>
                   </md-select>
                 </md-field>
-                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
-                <span class="md-error" v-else-if="validateBool == null"></span>
-                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field>
                   <label>Sandi</label>
                   <md-input type="password" v-model="inputSandi" required></md-input>
                 </md-field>
-                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
-                <span class="md-error" v-else-if="validateBool == null"></span>
-                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field class="md-layout-item md-size-35">
                   <label>Kode RFID</label>
                   <md-input required class="md-layout-item md-size-120" placeholder="ex: 0x40 0xde 0x68 0x51"  maxlength="19" v-model="inputKodeRFID"></md-input>
                 </md-field>
-                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
-                <span class="md-error" v-else-if="validateBool == null"></span>
-                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <label>Bagian</label>
                 <md-autocomplete required v-model="inputKelas" :md-options="dataArrayNamaKelas" :md-open-on-focus="false"></md-autocomplete>
-                <span class="md-error" style="color:green" v-if="validateBool">Valid</span>
-                <span class="md-error" v-else-if="validateBool == null"></span>
-                <span class="md-error" style="color:red" v-else>Input min 8 huruf, tidak boleh menggunakan spasi, kapital, dan simbol</span>
                 <md-field class="md-layout-item">
                   <label>Tahun Ajaran</label>
                   <md-input type="text" class="md-layout-item md-size-100" v-model="inputTahunAjaran" placeholder="ex: 2018/2019"  maxlength="9"></md-input>
@@ -198,8 +179,7 @@ import api from '../middleware/routes_api/routes'
 import load from 'lodash'
 import moment from 'moment'
 import XLSX from 'xlsx'
-import TableExport from 'tableexport'
-import downloadexcel from 'vue-json-excel'
+// import downloadexcel from 'vue-json-excel'
 // import api_service from '../middleware/api_service'
 import apiGetData from '../middleware/routes_api/routes_get_data'
 export default {
@@ -216,6 +196,7 @@ export default {
       dataKelas: [],
       selectedKelas: null,
       dataHasilTampilSiswa: [],
+      dataTampilanRecord: [],
       date_time: Date.now(),
       idSekolah: 'SMP Assalam',
       tahun_ini: (new Date().getFullYear().toString() - 1) + '/' + new Date().getFullYear().toString(),
@@ -255,13 +236,14 @@ export default {
     }
   },
   components: {
-    downloadexcel
+    // downloadexcel
   },
   mounted () {
     // this.tampilsemuakelas({'sekolah': this.idSekolah})
     this.setItemAuth()
     this.listKelasJSON()
     this.pilihtahunajaran()
+    this.exportDataBaru()
   },
   methods: {
     pilihtahunajaran: async function (param) {
@@ -349,7 +331,7 @@ export default {
           this.$swal({
             title: 'Berhasil!',
             text: 'Berhasil Mendaftarkan Kelas baru!',
-            icon: 'success',
+            type: 'success',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
           }).then((result) => {
@@ -359,7 +341,7 @@ export default {
           this.$swal('Gagal!', {
             title: 'Gagal',
             text: 'Gagal Mendaftarkan!',
-            icon: 'error',
+            type: 'error',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
           }).then((result) => {
@@ -436,7 +418,7 @@ export default {
           this.$swal('Berhasil Upload!', {
             title: 'Data Sudah Di Upload Google Sheet',
             text: 'Data Siswa ' + this.selectedKelas + ' Berhasil Di Export',
-            icon: 'success'
+            type: 'success'
           })
           let url = 'https://drive.google.com/open?id=1cyVEXruWKpr7XyzP_RSp8OnxaFoWqsKQkXM_skvuhog'
           let win = window.open(url, '_blank')
@@ -445,7 +427,7 @@ export default {
           this.$swal('Gagal Upload!', {
             title: 'Data Gagal Di Upload Google Sheet',
             text: 'Data Siswa ' + this.selectedKelas + ' Gagal Di Export',
-            icon: 'warning'
+            type: 'warning'
           })
         }
       } catch (error) {
@@ -453,9 +435,6 @@ export default {
       }
     },
     exportDataBaru: async function (param) {
-      // var FileSaver = require('file-saver')
-      // var blob = new Blob(['Hello, world!'], {type: 'text/plain;charset=utf-8'})
-      // FileSaver.saveAs(blob, 'hello world.txt')
       try {
         var postData = {
           sekolah: 'Magang',
@@ -464,10 +443,11 @@ export default {
           jam_akhir: new Date('2019-12-01')
         }
         const response = await api.requestExcelDataV2(postData)
-        TableExport(document.getElementById('sheetjs'))
-        console.log(response)
-        // var wb = XLSX.utils.table_to_book(document.getElementById('sheetjs'))
-        // var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'})
+        this.dataTampilanRecord = response.data.data
+        console.log(this.dataTampilanRecord)
+        // var FileSaver = require('file-saver')
+        // var ws2 = XLSX.utils.table_to_book(document.getElementById('mytable'), {sheet: 'Sheet JS'})
+        // var wbout = XLSX.write(ws2, {bookType: 'xlsx', bookSST: true, type: 'binary'})
         // FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
       } catch (error) {
         console.log(error)
@@ -476,7 +456,7 @@ export default {
     s2ab: function (s) {
       var buf = new ArrayBuffer(s.length)
       var view = new Uint8Array(buf)
-      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) && 0xff
+      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF
       return buf
     },
     exportData: async function (param) {
@@ -523,7 +503,7 @@ export default {
         this.$swal('Gagal!', {
           title: 'Data Belum Lengkap',
           text: 'Data personil ' + this.selectedKelas + ' pada bulan ' + this.bulan + ' harus lengkap!',
-          icon: 'warning'
+          type: 'warning'
         }).then((result) => {
           // window.location.reload()
         })
@@ -536,7 +516,7 @@ export default {
       this.$swal({
         title: 'Hapus Siswa?',
         text: 'Apa anda yakin akan menghapus siswa?',
-        icon: 'warning',
+        type: 'warning',
         buttons: true,
         dangerMode: true
       })
@@ -547,7 +527,7 @@ export default {
                 this.$swal({
                   title: 'Berhasil!',
                   text: 'Berhasil Delete!',
-                  icon: 'success',
+                  type: 'success',
                   confirmButtonText: 'Yes',
                   showLoaderOnConfirm: true
                 }).then((result) => {
@@ -557,7 +537,7 @@ export default {
                 this.$swal('Gagal!', {
                   title: 'Gagal',
                   text: 'Gagal Delete, terjadi masalah!',
-                  icon: 'error',
+                  type: 'error',
                   confirmButtonText: 'Yes',
                   showLoaderOnConfirm: true
                 }).then((result) => {
@@ -683,7 +663,7 @@ export default {
           this.$swal({
             title: 'Berhasil!',
             text: 'Berhasil Membuat Pengguna baru!',
-            icon: 'success'
+            type: 'success'
           }).then((result) => {
             window.location.reload()
           })
@@ -691,7 +671,7 @@ export default {
           this.$swal('Gagal!', {
             title: 'Gagal',
             text: 'Gagal Membuat Pengguna baru!',
-            icon: 'error'
+            type: 'error'
           }).then((result) => {
             window.location.reload()
           })
@@ -700,7 +680,7 @@ export default {
         this.$swal('Gagal!', {
           title: 'Data personil tidak valid',
           text: 'Periksa Data personil!',
-          icon: 'error'
+          type: 'error'
         }).then((result) => {
         })
       }

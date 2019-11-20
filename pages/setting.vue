@@ -77,7 +77,7 @@ export default {
         this.$swal({
           title: 'Apa Anda Yakin Update Profil?',
           text: 'Update Profil Akan Merubah Data Anda',
-          icon: 'warning',
+          type: 'warning',
           buttons: true,
           dangerMode: true
         })
@@ -93,7 +93,7 @@ export default {
                 this.$swal({
                   title: 'Berhasil Di Update!',
                   text: 'Update Profil Akan Terlihat Ketika Anda Logout',
-                  icon: 'success',
+                  type: 'success',
                   buttons: true
                 })
               })

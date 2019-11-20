@@ -128,41 +128,18 @@ export default {
         this.$session.set('auth', dataAuth)
         this.$router.replace('/dashboard')
         localStorage.setItem('auth', JSON.stringify(dataAuth))
-        // this.$swal({
-        //   icon: 'success',
-        //   title: 'Berhasil Login',
-        //   showConfirmButton: false,
-        //   timer: 1500
-        // })
-        // setTimeout(() => {
-        //   this.loading = false
-        // }, 2000)
+        this.$swal({
+          type: 'success',
+          title: 'Berhasil Login',
+          text: 'Masuk Ke Halaman Dashboard',
+          showConfirmButton: false,
+          timer: 1500
+        })
+        setTimeout(() => {
+          this.loading = false
+        }, 2000)
       } else {
-        // this.$swal('Gagal Login!', response.data.data, 'error')
-        // this.emailValid = 'Invalid'
-        // this.loading = true
-        // setTimeout(() => {
-        //   this.loading = false
-        // }, 1000)
-      }
-    },
-    auth () {
-      // your code to login user
-      // this is only for example of loading
-      if (this.login.email === 'admin') {
-        this.emailValid = 'Valid'
-        // console.log(this.emailValid)
-        if (this.login.password === 'admin') {
-          this.passwordValid = 'Valid'
-          this.loading = true
-          setTimeout(() => {
-            this.loading = false
-            this.$router.replace('/dashboard')
-          }, 2000)
-        } else {
-          this.passwordValid = 'Invalid'
-        }
-      } else {
+        this.$swal('Gagal Login!', response.data.data, 'error')
         this.emailValid = 'Invalid'
         this.loading = true
         setTimeout(() => {

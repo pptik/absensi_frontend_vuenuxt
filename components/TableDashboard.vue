@@ -1,7 +1,6 @@
 <template>
     <div class="md-layout md-gutter">
       <div class="md-layout-item">
-        
         <div class="content_kelas">
           <div class="md-layout-item">
              <div class="md-layout-item">

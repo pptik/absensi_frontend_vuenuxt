@@ -173,7 +173,7 @@ export default {
         this.$swal({
           title: 'Berhasil!',
           text: 'Berhasil Mendaftarkan Kelas baru!',
-          icon: 'success',
+          type: 'success',
           confirmButtonText: 'Yes',
           showLoaderOnConfirm: true
         }).then((result) => {
@@ -183,7 +183,7 @@ export default {
         this.$swal('Gagal!', {
           title: 'Gagal',
           text: 'Gagal Mendaftarkan!',
-          icon: 'error',
+          type: 'error',
           confirmButtonText: 'Yes',
           showLoaderOnConfirm: true
         }).then((result) => {
@@ -225,7 +225,7 @@ export default {
           this.$swal({
             title: 'Berhasil!',
             text: 'Berhasil Edit Kelas baru!',
-            icon: 'success'
+            type: 'success'
           }).then((result) => {
             window.location.reload()
           })
@@ -233,7 +233,7 @@ export default {
           this.$swal('Gagal!', {
             title: 'Gagal',
             text: 'Gagal Mengedit!',
-            icon: 'error'
+            type: 'error'
           }).then((result) => {
             window.location.reload()
           })
@@ -249,7 +249,7 @@ export default {
       this.$swal({
         title: 'Yakin Hapus?',
         text: 'Data Kelas akan dihapus secara permanen!',
-        icon: 'warning',
+        type: 'warning',
         buttons: true,
         dangerMode: true
       })
@@ -257,7 +257,7 @@ export default {
           if (willDelete) {
             api.requestJsonKelas(idKelas, 'dev_Delete')
             this.$swal('berhasil di hapus!', {
-              icon: 'success'
+              type: 'success'
             }).then((result) => {
               window.location.reload()
             })

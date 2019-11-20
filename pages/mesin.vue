@@ -107,7 +107,7 @@ export default {
         this.$swal({
           title: 'Berhasil!',
           text: 'Berhasil Update Mesin!',
-          icon: 'success',
+          type: 'success',
           confirmButtonText: 'Yes',
           showLoaderOnConfirm: true
         }).then((result) => {
@@ -117,7 +117,7 @@ export default {
         this.$swal('Gagal!', {
           title: 'Gagal',
           text: 'Gagal Update Mesin!',
-          icon: 'error',
+          type: 'error',
           confirmButtonText: 'Yes',
           showLoaderOnConfirm: true
         }).then((result) => {
@@ -148,7 +148,7 @@ export default {
           this.$swal({
             title: 'Berhasil!',
             text: 'Berhasil Mendaftarkan Mesin baru!',
-            icon: 'success',
+            type: 'success',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
           }).then((result) => {
@@ -158,7 +158,7 @@ export default {
           this.$swal('Gagal!', {
             title: 'Gagal',
             text: 'Gagal Mendaftarkan baru!',
-            icon: 'error',
+            type: 'error',
             confirmButtonText: 'Yes',
             showLoaderOnConfirm: true
           }).then((result) => {
@@ -176,7 +176,7 @@ export default {
       this.$swal({
         title: 'Yakin Hapus?',
         text: 'Data mesin akan dihapus secara permanen!',
-        icon: 'warning',
+        type: 'warning',
         buttons: true,
         dangerMode: true
       })
@@ -184,13 +184,13 @@ export default {
           if (willDelete) {
             api.requestJsonSekolah(dataDeleteMesin, 'delete')
             this.$swal('berhasil di hapus!', {
-              icon: 'success'
+              type: 'success'
             }).then((result) => {
               window.location.reload()
             })
           } else {
             this.$swal('Penghapusan dibatalkan!', {
-              icon: 'warning'
+              type: 'warning'
             }).then((result) => {
               window.location.reload()
             })

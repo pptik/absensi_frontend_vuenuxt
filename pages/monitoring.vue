@@ -79,27 +79,33 @@ export default {
           created_at: tgl,
           mac_address: this.mac_address[0].address,
           rfid: rfidSiswa,
-          status: 'hadir'
+          status: 'hadir',
+          tahun: this.selectedTahunAjaran,
+          sekolah: this.namaSekolahLocal
         }
       } else if (statusHadir === 'sakit') {
         dataEdit = {
           created_at: tgl,
           mac_address: this.mac_address[0].address,
           rfid: rfidSiswa,
-          status: 'sakit'
+          status: 'sakit',
+          tahun: this.selectedTahunAjaran,
+          sekolah: this.namaSekolahLocal
         }
       } else if (statusHadir === 'izin') {
         dataEdit = {
           created_at: tgl,
           mac_address: this.mac_address[0].address,
           rfid: rfidSiswa,
-          status: 'izin'
+          status: 'izin',
+          tahun: this.selectedTahunAjaran,
+          sekolah: this.namaSekolahLocal
         }
       }
       this.$swal({
         title: 'Konfirmasi',
         text: 'Yakin akan mengubah status?',
-        icon: 'warning',
+        type: 'warning',
         buttons: true,
         confirmButtonText: 'Yes',
         showLoaderOnConfirm: true
@@ -108,14 +114,14 @@ export default {
           api.requestMonitoring(dataEdit).then(response => {
             if (response.data.success === true) {
               this.$swal('Berhasil Mengubah status personil!', {
-                icon: 'success'
+                type: 'success'
               })
               window.location.reload()
             } else {
               this.$swal('Gagal!', {
                 title: 'Gagal',
                 text: 'Gagal Mengubah Status',
-                icon: 'error',
+                type: 'error',
                 confirmButtonText: 'Yes',
                 showLoaderOnConfirm: true
               }).then((result) => {

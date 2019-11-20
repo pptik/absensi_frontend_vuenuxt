@@ -1,9 +1,4 @@
-// import Vue from 'vue'
-// import VueSwal from 'vue-swal'
-// import VueRouter from 'vue-router'
-// Vue.use(VueSwal)
-// Vue.use(VueRouter)
+import Vue from 'vue'
+import VueSweetalert2 from 'vue-sweetalert2'
 
-// Vue.component('router-link', Vue.options.components.RouterLink)
-
-
+Vue.use(VueSweetalert2)
