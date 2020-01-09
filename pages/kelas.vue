@@ -1,7 +1,6 @@
 <template>
    <section class="container">
     <div class="mt-5">
-    
     <md-tabs  md-active-tab>
       <md-tab id="tab-pages" md-label="Tambah Bagian">
         <div>

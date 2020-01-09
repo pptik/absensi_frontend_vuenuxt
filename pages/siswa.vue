@@ -25,12 +25,118 @@
         </div>
       </div>
       <div>
-      <!-- <table id="mytable" border="1">
-        <tr v-for="data in dataTampilanRecord" :key="data._id">
-          <td v-for="(value) in data" :key="value._id"> {{ value }}</td>
-          <td v-for="(value) in data.tap" :key="value._id">{{ value }}</td>
-        </tr>
-      </table> -->
+
+      <table id="mytable" border="1" hidden>
+        <tbody>
+          <tr>
+            <th rowspan="2">Nama</th>
+            <th colspan="2" v-for="data in dayIn1Month" :key="data._id" style="background-color: red;"> {{data}}</th>
+          </tr>
+          <!-- <tr v-html="htmlContent">
+          </tr> -->
+          <tr>
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+            
+            <th>Datang</th>
+            <th>Pulang</th>
+          </tr>
+          
+          <tr v-for="data in dataTampilanRecord" :key="data._id">
+            <td> {{ data._id }}</td>
+            <td v-for="(value) in data.tap" :key="value._id"> {{ value.date_datang }} </td>
+            <td v-for="(value) in data.tap" :key="value._id"> {{ value.date_pulang }} </td>
+          </tr>
+        </tbody>
+      </table>
         <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card md-fixed-header md-height= "400px">
           <md-table-toolbar>
             <h1 class="md-title">Personil/Siswa</h1>
@@ -179,6 +285,7 @@ import api from '../middleware/routes_api/routes'
 import load from 'lodash'
 import moment from 'moment'
 import XLSX from 'xlsx'
+/* eslint-disable import/first */
 // import downloadexcel from 'vue-json-excel'
 // import api_service from '../middleware/api_service'
 import apiGetData from '../middleware/routes_api/routes_get_data'
@@ -197,6 +304,7 @@ export default {
       selectedKelas: null,
       dataHasilTampilSiswa: [],
       dataTampilanRecord: [],
+      cobaHeader: 5,
       date_time: Date.now(),
       idSekolah: 'SMP Assalam',
       tahun_ini: (new Date().getFullYear().toString() - 1) + '/' + new Date().getFullYear().toString(),
@@ -231,8 +339,10 @@ export default {
       emailSelector: true,
       selectedTahun: null,
       dataTahunAjaran: [],
-      selectedTahunAjaran: null
-      //
+      selectedTahunAjaran: null,
+      // Rekap 1 Month
+      dayIn1Month: 31,
+      htmlContent: ``
     }
   },
   components: {
@@ -243,9 +353,14 @@ export default {
     this.setItemAuth()
     this.listKelasJSON()
     this.pilihtahunajaran()
-    this.exportDataBaru()
+    // this.exportDataBaru()
+    this.loadTableTest()
   },
   methods: {
+    loadHeaderRekap: async function () {
+      this.htmlContent = fillContentByMonth()
+      console.log(fillContentByMonth())
+    },
     pilihtahunajaran: async function (param) {
       var dataParamSend =
       {
@@ -434,21 +549,33 @@ export default {
         console.log(error)
       }
     },
+    loadTableTest: async function () {
+      var postData = {
+        sekolah: 'Magang',
+        tahun: '2019/2020',
+        jam_awal: new Date('2019-11-01'),
+        jam_akhir: new Date('2019-12-01')
+      }
+      const response = await api.requestExcelDataV2(postData)
+      this.dataTampilanRecord = response.data.data
+      console.log(this.dataTampilanRecord)
+    },
     exportDataBaru: async function (param) {
       try {
-        var postData = {
-          sekolah: 'Magang',
-          tahun: '2019/2020',
-          jam_awal: new Date('2019-11-01'),
-          jam_akhir: new Date('2019-12-01')
-        }
-        const response = await api.requestExcelDataV2(postData)
-        this.dataTampilanRecord = response.data.data
-        console.log(this.dataTampilanRecord)
-        // var FileSaver = require('file-saver')
-        // var ws2 = XLSX.utils.table_to_book(document.getElementById('mytable'), {sheet: 'Sheet JS'})
-        // var wbout = XLSX.write(ws2, {bookType: 'xlsx', bookSST: true, type: 'binary'})
-        // FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+        // Workbook
+        var wb2 = XLSX.utils.table_to_book(document.getElementById('mytable'), {sheet: 'Sheet JS'})
+        var FileSaver = require('file-saver')
+        var firstSheetName = wb2.SheetNames[0]
+        var addressofcell = 'A1'
+        // WorkSheet
+        var worksheet = wb2.Sheets[firstSheetName]
+        var desiredCell = worksheet[addressofcell]
+        var desiredValue = (desiredCell ? desiredCell.v : undefined)
+        console.log(desiredValue)
+        /* Write file */
+        var wbout = XLSX.write(wb2, {bookType: 'xlsx', bookSST: true, type: 'binary'})
+        // Save File
+        FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
       } catch (error) {
         console.log(error)
       }
@@ -549,30 +676,6 @@ export default {
             this.$swal('Batal di delete!')
           }
         })
-
-      // await api.requestJsonPengguna(dataSiswaDelete, 'delete').then(response => {
-      //   if (response.data.success) {
-      //     this.$swal({
-      //       title: 'Berhasil!',
-      //       text: 'Berhasil Mendaftarkan Kelas baru!',
-      //       icon: 'success',
-      //       confirmButtonText: 'Yes',
-      //       showLoaderOnConfirm: true
-      //     }).then((result) => {
-      //       window.location.reload()
-      //     })
-      //   } else {
-      //     this.$swal('Gagal!', {
-      //       title: 'Gagal',
-      //       text: 'Gagal Mendaftarkan!',
-      //       icon: 'error',
-      //       confirmButtonText: 'Yes',
-      //       showLoaderOnConfirm: true
-      //     }).then((result) => {
-      //       window.location.reload()
-      //     })
-      //   }
-      // })
     },
     tampilSiswaJSON: async function (param) {
       await api.getJSONHttp(param)
@@ -709,6 +812,16 @@ export default {
       // }
     }
   }
+}
+function fillContentByMonth () {
+  let content = `<tr>
+    <th>Datang</th>
+    <th>Pulang</th>
+  </tr>`
+  for (let i = 0; i < 20; i++) {
+    content += content
+  }
+  return content
 }
 var getDaysInMonth = function (month, year) {
   return new Date(year, month, 0).getDate()
