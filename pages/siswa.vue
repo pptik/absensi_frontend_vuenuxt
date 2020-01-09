@@ -359,7 +359,6 @@ export default {
   methods: {
     loadHeaderRekap: async function () {
       this.htmlContent = fillContentByMonth()
-      console.log(fillContentByMonth())
     },
     pilihtahunajaran: async function (param) {
       var dataParamSend =
@@ -610,7 +609,6 @@ export default {
             var tgl = Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]
             if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
               // ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap})
-              console.log(tgl)
             } else {
               ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a].replace('_', ''), Nama: values[i].profil.nama_lengkap, Datang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang).format('MMMM Do YYYY, h:mm:ss'), Pulang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang).format('MMMM Do YYYY, h:mm:ss')})
             }

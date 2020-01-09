@@ -100,7 +100,6 @@ export default {
         var worksheet = wb2.Sheets[firstSheetName]
         var desiredCell = worksheet[addressofcell]
         var desiredValue = (desiredCell ? desiredCell.v : undefined)
-        console.log(desiredValue)
         /* Write file */
         var wbout = XLSX.write(wb2, {bookType: 'xlsx', bookSST: true, type: 'binary'})
         // Save File
