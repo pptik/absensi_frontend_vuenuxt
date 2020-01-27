@@ -25,15 +25,12 @@
         </div>
       </div>
       <div>
-
-      <table id="mytable" border="1" hidden>
+      <table  id="mytable"  border="1" hidden>
         <tbody>
           <tr>
             <th rowspan="2">Nama</th>
             <th colspan="2" v-for="data in dayIn1Month" :key="data._id" style="background-color: red;"> {{data}}</th>
           </tr>
-          <!-- <tr v-html="htmlContent">
-          </tr> -->
           <tr>
             <th>Datang</th>
             <th>Pulang</th>
@@ -132,8 +129,26 @@
           
           <tr v-for="data in dataTampilanRecord" :key="data._id">
             <td> {{ data._id }}</td>
-            <td v-for="(value) in data.tap" :key="value._id"> {{ value.date_datang }} </td>
-            <td v-for="(value) in data.tap" :key="value._id"> {{ value.date_pulang }} </td>
+            <td v-for="(value) in data.tap" :key="value._id"> {{ value }} </td>
+            <!-- <td v-for="(value) in data.tap" :key="value._id"> {{ value.date_pulang }} </td> -->
+          </tr>
+          <tr>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="4">Total Rekap Bulanan</td>
+          </tr>
+          <tr>
+            <td>Hadir</td>
+            <td>Sakit</td>
+            <td>Izin</td>
+            <td>Alfa</td>
+          </tr>
+          <tr>
+            <td>{{ totalRekapBulanan.hadir }}</td>
+            <td>{{ totalRekapBulanan.sakit }}</td>
+            <td>{{ totalRekapBulanan.izin }}</td>
+            <td>{{ totalRekapBulanan.alfa }}</td>
           </tr>
         </tbody>
       </table>
@@ -244,7 +259,7 @@
         </div>
       </div>
           <md-dialog-actions>
-              <md-button class="md-primary" @click="exportDataBaru()">Export Csv</md-button>
+              <md-button class="md-primary" @click="loadTableTest()">Export Excel</md-button>
               <div v-if="this.namaSekolahLocal == 'SMP Assalam'">
                 <md-button class="md-primary" @click="exportGoogleSpreatSheet()">Export ke GoogleSheet</md-button>
               </div>
@@ -285,6 +300,7 @@ import api from '../middleware/routes_api/routes'
 import load from 'lodash'
 import moment from 'moment'
 import XLSX from 'xlsx'
+// import JsonExcel from 'vue-json-excel'
 /* eslint-disable import/first */
 // import downloadexcel from 'vue-json-excel'
 // import api_service from '../middleware/api_service'
@@ -342,10 +358,18 @@ export default {
       selectedTahunAjaran: null,
       // Rekap 1 Month
       dayIn1Month: 31,
-      htmlContent: ``
+      htmlContent: ``,
+      totalRekapBulanan: {
+        hadir: 0,
+        sakit: 0,
+        izin: 0,
+        alfa: 0
+      }
+      // Fields
     }
   },
   components: {
+    // 'downloadExcel': JsonExcel
     // downloadexcel
   },
   mounted () {
@@ -353,8 +377,7 @@ export default {
     this.setItemAuth()
     this.listKelasJSON()
     this.pilihtahunajaran()
-    // this.exportDataBaru()
-    this.loadTableTest()
+    // this.loadTableTest()
   },
   methods: {
     loadHeaderRekap: async function () {
@@ -464,57 +487,45 @@ export default {
         }
       })
     },
-    testTable: async function (param) {
+    getNumberMonth: async function (param) {
       try {
-        var mdata = {
-          tahun: this.tahunRekap,
-          bulan: this.bulan,
-          kelas: this.selectedKelas,
-          sekolah: this.namaSekolahLocal
-        }
-        switch (this.bulan) {
+        switch (param) {
           case 'Januari':
+            this.bulanNumber = 0
+            break
+          case 'Februari':
             this.bulanNumber = 1
             break
-          case 'Febuari':
+          case 'Maret':
             this.bulanNumber = 2
             break
-          case 'Maret':
+          case 'April':
             this.bulanNumber = 3
             break
-          case 'April':
+          case 'Mei':
             this.bulanNumber = 4
             break
-          case 'Mei':
+          case 'Juni':
             this.bulanNumber = 5
             break
-          case 'Juni':
+          case 'Juli':
             this.bulanNumber = 6
             break
-          case 'Juli':
+          case 'Agustus':
             this.bulanNumber = 7
             break
-          case 'Agustus':
+          case 'September':
             this.bulanNumber = 8
             break
-          case 'September':
+          case 'Oktober':
             this.bulanNumber = 9
             break
-          case 'Oktober':
+          case 'November':
             this.bulanNumber = 10
             break
-          case 'November':
+          case 'Desember':
             this.bulanNumber = 11
             break
-          case 'Desember':
-            this.bulanNumber = 12
-            break
-          default:
-            break
-        }
-        var getJumlahHariPerbulan = getDaysInMonth(this.bulanNumber, mdata.tahun)
-        for (let i = 1; i < getJumlahHariPerbulan + 1; i++) {
-          // console.log(i)
         }
       } catch (error) {
       }
@@ -549,35 +560,75 @@ export default {
       }
     },
     loadTableTest: async function () {
-      var postData = {
-        sekolah: 'Magang',
-        tahun: '2019/2020',
-        jam_awal: new Date('2019-11-01'),
-        jam_akhir: new Date('2019-12-01')
+      this.getNumberMonth(this.bulan)
+      var date = new Date(this.tahunRekap, this.bulanNumber)
+      var firstDay = new Date(date.getFullYear(), date.getMonth(), 2)
+      var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+      let postData = {
+        sekolah: this.namaSekolahLocal,
+        tahun: this.selectedTahunAjaran,
+        jam_awal: new Date(firstDay),
+        jam_akhir: new Date(lastDay),
+        kelas: this.selectedKelas
       }
-      const response = await api.requestExcelDataV2(postData)
-      this.dataTampilanRecord = response.data.data
-      console.log(this.dataTampilanRecord)
-    },
-    exportDataBaru: async function (param) {
-      try {
-        // Workbook
-        var wb2 = XLSX.utils.table_to_book(document.getElementById('mytable'), {sheet: 'Sheet JS'})
-        var FileSaver = require('file-saver')
-        var firstSheetName = wb2.SheetNames[0]
-        var addressofcell = 'A1'
-        // WorkSheet
-        var worksheet = wb2.Sheets[firstSheetName]
-        var desiredCell = worksheet[addressofcell]
-        var desiredValue = (desiredCell ? desiredCell.v : undefined)
-        console.log(desiredValue)
-        /* Write file */
-        var wbout = XLSX.write(wb2, {bookType: 'xlsx', bookSST: true, type: 'binary'})
-        // Save File
-        FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
-      } catch (error) {
-        console.log(error)
+      let postRekapBulanan = {
+        year: this.tahunRekap,
+        month: this.bulan,
+        kelas: this.selectedKelas
       }
+      const responseTotalRekap = await api.requestTotalRekapBulanan(postRekapBulanan)
+      let dataTotal = {
+        hadir: responseTotalRekap.data.data.hadir,
+        sakit: responseTotalRekap.data.data.sakit,
+        izin: responseTotalRekap.data.data.izin,
+        alfa: responseTotalRekap.data.data.alfa
+      }
+      this.totalRekapBulanan = dataTotal
+      api.requestExcelDataV2(postData).then(response => {
+        let getResponse = response.data.data
+        this.dataTampilanRecord = getResponse
+        try {
+          if (getResponse.length > 0) {
+            this.$swal({
+              title: 'Build Excel Berhasil',
+              text: 'Klik tombol unduh untuk menyimpan',
+              type: 'success',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Unduh',
+              cancelButtonText: 'Batal'
+            }).then((result) => {
+              // Workbook
+              if (!result.value) {
+              } else {
+                var wb2 = XLSX.utils.table_to_book(document.getElementById('mytable'), {sheet: this.selectedKelas + '-' + this.tahunRekap})
+                var FileSaver = require('file-saver')
+                var firstSheetName = wb2.SheetNames[0]
+                var addressofcell = 'A1'
+                // WorkSheet
+                var worksheet = wb2.Sheets[firstSheetName]
+                var desiredCell = worksheet[addressofcell]
+                var desiredValue = (desiredCell ? desiredCell.v : undefined)
+                console.log(desiredValue)
+                /* Write file */
+                var wbout = XLSX.write(wb2, {bookType: 'xlsx', bookSST: true, type: 'binary'})
+                // Save File
+                FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), this.namaSekolahLocal + '/' + this.bulan + '/' + this.selectedKelas + '.xlsx')
+              }
+            })
+          } else {
+            this.$swal({
+              type: 'info',
+              title: 'Data Bulan Tidak Tersedia',
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      })
     },
     s2ab: function (s) {
       var buf = new ArrayBuffer(s.length)
@@ -820,9 +871,6 @@ function fillContentByMonth () {
     content += content
   }
   return content
-}
-var getDaysInMonth = function (month, year) {
-  return new Date(year, month, 0).getDate()
 }
 function validateUsername (username) {
   var re = /^[a-z0-9]{8,20}$/

@@ -19,9 +19,10 @@
               <md-table-cell type="number" md-sort-by="kelas" md-label="Bagian">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-sort-by="rfid" md-label="Rfid">{{ item.rfid }}</md-table-cell>
               <md-table-cell>
-                  <md-button class="md-primary md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button>
+                  <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button>
                   <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'sakit')">Sakit</md-button>
-                  <md-button class="md-primary" v-on:click.prevent="editHadir(item.rfid,'izin')">Izin</md-button>
+                  <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'izin')">Izin</md-button>
+                  <md-button class="md-raised md-accent" v-on:click.prevent="editHadir(item.rfid,'alfa')">Alfa</md-button>
               </md-table-cell>
             </md-table-row>
              <md-table-empty-state
@@ -98,6 +99,15 @@ export default {
           mac_address: this.mac_address[0].address,
           rfid: rfidSiswa,
           status: 'izin',
+          tahun: this.selectedTahunAjaran,
+          sekolah: this.namaSekolahLocal
+        }
+      } else if (statusHadir === 'alfa') {
+        dataEdit = {
+          created_at: tgl,
+          mac_address: this.mac_address[0].address,
+          rfid: rfidSiswa,
+          status: 'alfa',
           tahun: this.selectedTahunAjaran,
           sekolah: this.namaSekolahLocal
         }

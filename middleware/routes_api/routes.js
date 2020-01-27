@@ -82,5 +82,8 @@ export default {
   // DASHBOARD
   requestUpdateProfilPengguna (params) {
     return Api().post('/pengguna/editProfilePengguna', params)
+  },
+  requestTotalRekapBulanan (params) {
+    return Api().post('/pengguna/rekaptotal', params)
   }
 }
