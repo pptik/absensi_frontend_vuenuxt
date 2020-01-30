@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <div class="md-layout md-alignment-top-center">
+    <div class="md-layout">
       <div class="md-layout-item">
         <div class="content_kelas">
           <md-field style="width: 500px; margin-left: 40px;">
@@ -19,10 +19,12 @@
               <md-table-cell type="number" md-sort-by="kelas" md-label="Bagian">{{ item.kelas }}</md-table-cell>
               <md-table-cell type="number" md-sort-by="rfid" md-label="Rfid">{{ item.rfid }}</md-table-cell>
               <md-table-cell>
+                <div class="md-layout">
                   <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'hadir')">Hadir</md-button>
                   <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'sakit')">Sakit</md-button>
                   <md-button class="md-default md-raised" v-on:click.prevent="editHadir(item.rfid,'izin')">Izin</md-button>
                   <md-button class="md-raised md-accent" v-on:click.prevent="editHadir(item.rfid,'alfa')">Alfa</md-button>
+                </div>
               </md-table-cell>
             </md-table-row>
              <md-table-empty-state

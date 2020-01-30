@@ -10,7 +10,7 @@
     <md-app md-waterfall md-mode="fixed">
       <!-- Toogle Menu Visible -->
       <!-- Content Section -->
-      <md-app-drawer md-persistent="full" :md-active.sync="menuVisible">
+      <md-app-drawer md-permanent="clipped" :md-active.sync="menuVisible">
         <md-toolbar class="md-transparent" md-elevation="0">
           <center><img style="padding:30px;" v-bind:src="foto"></center>
           <span>{{usernameLocal}}</span>

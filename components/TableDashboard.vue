@@ -34,12 +34,14 @@
             </div>
           </div>
           <table id="tableHarian" border="1" hidden>
+            <thead>
             <tr>
               <td> Nama Lengkap </td>
               <td> Kelas </td>
               <td> Datang </td>
               <td> Pulang </td>
             </tr>
+            </thead>
             <tbody>
             <tr v-for="data in dataHarianSiswa" :key= data._id>
               <td>{{ data.nama_lengkap }}</td>
