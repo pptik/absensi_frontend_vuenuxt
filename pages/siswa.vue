@@ -572,6 +572,7 @@ export default {
         kelas: this.selectedKelas
       }
       let postRekapBulanan = {
+        sekolah: this.namaSekolahLocal,
         year: this.tahunRekap,
         month: this.bulan,
         kelas: this.selectedKelas
