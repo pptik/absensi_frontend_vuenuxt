@@ -563,7 +563,7 @@ export default {
       this.getNumberMonth(this.bulan)
       var date = new Date(this.tahunRekap, this.bulanNumber)
       var firstDay = new Date(date.getFullYear(), date.getMonth(), 2)
-      var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+      var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
       let postData = {
         sekolah: this.namaSekolahLocal,
         tahun: this.selectedTahunAjaran,
@@ -571,6 +571,7 @@ export default {
         jam_akhir: new Date(lastDay),
         kelas: this.selectedKelas
       }
+
       let postRekapBulanan = {
         sekolah: this.namaSekolahLocal,
         year: this.tahunRekap,
@@ -670,7 +671,6 @@ export default {
           // }
         }
         this.Datas['kelas_' + this.selectedKelas] = ExportData
-        console.log(ExportData)
         var animalWS = XLSX.utils.json_to_sheet(this.Datas[`kelas_` + this.selectedKelas])
         var wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
