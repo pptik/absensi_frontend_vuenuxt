@@ -7,7 +7,7 @@
               <md-field>
                 <md-icon>date_range</md-icon>
                 <label>Pilih Tahun Ajaran</label>
-                <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="dataSiswaHarianJSON(selectedTahunAjaran)">
+                <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="dataRekapHarian(selectedTahunAjaran)">
                   <md-option disabled>Select tahun ajaran</md-option>
                   <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
                 </md-select>
@@ -22,10 +22,10 @@
               </md-select>
             </md-field>
             <div class="md-layout-item" style="display: flex;">
-              <md-datepicker v-model="selectedDate">
+              <md-datepicker v-model="selectedDate" md-immediately>
                 <label>Pilih Tanggal</label>
               </md-datepicker>
-              <md-button class="md-accent md-raised" @click="dataSiswaHarianJSON(selectedTahunAjaran)">
+              <md-button class="md-accent md-raised" @click="dataRekapHarian(selectedTahunAjaran)">
                 Cari
               </md-button>
               <md-button @click="exportData()" class="md-default md-raised" :disabled="disabledExport">
@@ -40,27 +40,32 @@
               <td> Kelas </td>
               <td> Datang </td>
               <td> Pulang </td>
+              <td> Status </td>
             </tr>
             </thead>
             <tbody>
             <tr v-for="data in dataHarianSiswa" :key= data._id>
               <td>{{ data.nama_lengkap }}</td>
-              <td>{{ data.kelas }}</td>
-              <td>{{ data.created_at }}</td>
-              <td>{{ data.created_ed }}</td>
+              <td>{{ data.kelas.nama_kelas }}</td>
+              <td>{{ data.date_datang }}</td>
+              <td>{{ data.date_pulang }}</td>
+              <td v-if="data.status == '-' && data.date_datang != '-'" > hadir </td>
+              <td v-else >{{ data.status }}</td>
             </tr>
             </tbody>
           </table>
-          <md-table md-sort="created_at" md-sort-order="asc" md-card md-fixed-header v-model="dataHarianSiswa" md-height= "450px">
+          <md-table slot="md-table-row" md-sort="date_datang" md-sort-order="asc" md-card v-model="dataHarianSiswa" md-height= "450px">
             <md-table-toolbar>
               <h1 class="md-title">Data Harian Personil</h1>
             </md-table-toolbar>
             <md-table-row slot="md-table-row" slot-scope="{ item }" >
               <md-table-cell md-sort-by="nama_lengkap" md-label="Nama" >{{ item.nama_lengkap }}</md-table-cell>
-              <md-table-cell type="number" md-label="Bagian" md-sort-by="kelas">{{ item.kelas }}</md-table-cell>
-              <md-table-cell type="number" md-label="Waktu Datang" md-sort-by="created_at">{{ item.created_at }}</md-table-cell>
-              <md-table-cell v-if="item.created_ed === 0" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
-              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="created_ed" >{{ item.created_ed }}</md-table-cell>
+              <md-table-cell v-if="item.status == '-' && item.date_datang != '-'" type="text" md-label="Status" md-sort-by="status"> hadir </md-table-cell>
+              <md-table-cell v-else type="text" md-label="Status" md-sort-by="status">  {{item.status}} </md-table-cell>
+              <md-table-cell v-if="item.date_datang === '-'" type="number" md-label="Waktu Datang" md-sort-by="date_datang">Belum Melakukan Absen Pulang</md-table-cell>
+              <md-table-cell v-else type="number" md-label="Waktu Datang" md-sort-by="date_datang">{{ item.date_datang }}</md-table-cell>
+              <md-table-cell v-if="item.date_pulang === '-'" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
+              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="date_pulang" >{{ item.date_pulang }}</md-table-cell>
             </md-table-row>
           </md-table>
         </div>
@@ -88,7 +93,9 @@ export default {
   mounted () {
     this.pilihtahunajaran()
     this.listKelasJSON()
-    this.dataSiswaHarianJSON()
+    this.dataRekapHarian()
+    // this.dataSiswaHarianJSON()
+    // this.dataRekapHarian()
   },
   methods: {
     exportData: async function () {
@@ -135,6 +142,23 @@ export default {
       const response = await apiGetData.requestListKelas(dataSendKelas)
       this.dataJSONTampilKelas = response.data.data
       this.selectedKelas = this.dataJSONTampilKelas[0].NAMA_KELAS
+    },
+    dataRekapHarian: async function (tahunAjaran) {
+      let date = this.selectedDate
+      let selectedTahun = tahunAjaran
+      let dataParamSend = {
+        sekolah: this.$session.get('auth').sekolah,
+        tahun: selectedTahun,
+        jam_awal: date,
+        kelas: this.selectedKelas
+      }
+      let response = await api.requestHarianDataSiswa(dataParamSend, 'dataharian')
+      if (response.data.data.length > 0) {
+        this.disabledExport = false
+      } else {
+        this.disabledExport = true
+      }
+      this.dataHarianSiswa = response.data.data
     },
     dataSiswaHarianJSON: async function (param) {
       var date = this.selectedDate

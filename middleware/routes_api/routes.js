@@ -51,6 +51,9 @@ export default {
   requestJsonPengguna (params, type) {
     return Api().post('/pengguna/' + type + 'Pengguna', params)
   },
+  requestHarianDataSiswa (params, type) {
+    return Api().post('/pengguna/' + type + 'PenggunaV2', params)
+  },
   requestJsonSekolah (params, type) {
     return Api().post('/general/' + type + '_MacAddress', params)
   },

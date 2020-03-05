@@ -12,5 +12,8 @@ export default {
   // Pengguna
   requestListPengguna (param) {
     return Api().post('/pengguna/getDaftarPengguna', param)
+  },
+  requestListPenggunaHarian (param) {
+    return Api().post('/pengguna/dataharianPenggunaV2', param)
   }
 }
