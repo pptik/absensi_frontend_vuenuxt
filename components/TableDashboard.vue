@@ -9,7 +9,7 @@
                 <label>Pilih Tahun Ajaran</label>
                 <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="dataRekapHarian(selectedTahunAjaran)">
                   <md-option disabled>Select tahun ajaran</md-option>
-                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+                  <md-option v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil">{{ hasil }}</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -39,7 +39,9 @@
               <td> Nama Lengkap </td>
               <td> Kelas </td>
               <td> Datang </td>
+              <td> Mesin Datang</td>
               <td> Pulang </td>
+              <td> Mesin Pulang</td>
               <td> Status </td>
             </tr>
             </thead>
@@ -48,7 +50,9 @@
               <td>{{ data.nama_lengkap }}</td>
               <td>{{ data.kelas.nama_kelas }}</td>
               <td>{{ data.date_datang }}</td>
+              <td>{{ data.mac_datang }}</td>
               <td>{{ data.date_pulang }}</td>
+              <td>{{ data.mac_pulang }}</td>
               <td v-if="data.status == '-' && data.date_datang != '-'" > hadir </td>
               <td v-else >{{ data.status }}</td>
             </tr>
@@ -64,8 +68,10 @@
               <md-table-cell v-else type="text" md-label="Status" md-sort-by="status">  {{item.status}} </md-table-cell>
               <md-table-cell v-if="item.date_datang === '-'" type="number" md-label="Waktu Datang" md-sort-by="date_datang">Belum Melakukan Absen Pulang</md-table-cell>
               <md-table-cell v-else type="number" md-label="Waktu Datang" md-sort-by="date_datang">{{ item.date_datang }}</md-table-cell>
+              <md-table-cell md-sort-by="mesin_datang" md-label="Mesin Datang" >{{ item.mac_datang }}</md-table-cell>
               <md-table-cell v-if="item.date_pulang === '-'" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
               <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="date_pulang" >{{ item.date_pulang }}</md-table-cell>
+              <md-table-cell md-sort-by="mesin_pulang" md-label="Mesin Pulang" >{{ item.mac_pulang }}</md-table-cell>
             </md-table-row>
           </md-table>
         </div>
