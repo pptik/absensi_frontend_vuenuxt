@@ -88,5 +88,9 @@ export default {
   },
   requestTotalRekapBulanan (params) {
     return Api().post('/pengguna/rekaptotal', params)
+  },
+  // IMPORT PENGGUNA
+  importExcelPengguna (params) {
+    return Api().post('/pengguna/importPengguna', params)
   }
 }

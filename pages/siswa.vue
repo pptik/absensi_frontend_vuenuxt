@@ -169,7 +169,6 @@
         </md-table>
       </div>       
       </md-tab>
-      
       <md-tab id="tab-posts" md-label="Tambah Personil">
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
@@ -226,6 +225,37 @@
               </div>
              </md-card>
             </form>
+          </md-tab>  
+          <md-tab id="tab-import" md-label="Import Personil">
+            <md-card>
+              <md-card-header>
+                <div class="md-title">Upload Excel</div>
+              </md-card-header>
+              <md-card-content>
+                <div class="md-accent" style="background-color: #c0edf1; width: 100%; height: 120px; display: block; padding: 10px;">
+                  <h3>Perhatian!</h3>
+                  <p>Format harus dalam format <b>.xlsx</b>. Unduh format template xlsx <b><a href="http://abstein.pptik.id/data/import/template_import_pengguna.xlsx">disini</a></b></p>
+                </div>
+                <md-field>
+                  <label> Pilih Bagian </label>
+                  <md-select v-model="selectedKelas">
+                    <md-option disabled>Pilih Bagian</md-option>
+                    <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
+                  </md-select>
+                </md-field>
+                <md-field>
+                  <label> Tahun Ajaran </label>
+                  <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense>
+                    <md-option disabled>Select tahun ajaran</md-option>
+                    <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+                  </md-select>
+                </md-field>
+                <md-field>
+                  <input type="file" id="files" ref="files" accept="xlsx/*" v-on:change="handleFileUpload()"/>
+                </md-field>
+                <md-button :disabled="this.selectedTahunAjaran === null && this.uploadPenggunaExcel === undefined || this.uploadPenggunaExcel === null" class="md-raised md-primary" v-on:click.prevent="importExcelPengguna()">Import Pengguna</md-button>
+              </md-card-content>
+            </md-card>
           </md-tab>
         </md-tabs>
     </div>
@@ -364,8 +394,9 @@ export default {
         sakit: 0,
         izin: 0,
         alfa: 0
-      }
-      // Fields
+      },
+      // Import Siswa
+      uploadPenggunaExcel: null
     }
   },
   components: {
@@ -837,6 +868,33 @@ export default {
         }).then((result) => {
         })
       }
+    },
+    importExcelPengguna: async function () {
+      let formData = new FormData()
+      formData.append('kelas', this.selectedKelas)
+      formData.append('tahun_ajaran', this.selectedTahunAjaran)
+      formData.append('sekolah', this.namaSekolahLocal)
+      formData.append('file', this.uploadPenggunaExcel)
+      this.$swal({
+        title: 'Konfirmasi Import Pengguna',
+        type: 'info',
+        html: `Anda yakin akan mengimport pengguna untuk bagian <b>${this.selectedKelas}</b> dengan tahun ajaran <b>${this.selectedTahunAjaran}</b> ?`,
+        showCancelButton: true,
+        confirmButtonText: `Konfirmasi`
+      }).then((result) => {
+        if (result.value) {
+          api.importExcelPengguna(formData).then((response) => {
+            this.$swal('Import Success!', '', 'success')
+          }, (error) => {
+            this.$swal('Fetch Excel Failed!', error, 'danger')
+          })
+        } else {
+          this.$swal('Import Failed!')
+        }
+      })
+    },
+    handleFileUpload () {
+      this.uploadPenggunaExcel = this.$refs.files.files[0]
     },
     editDataSiswa: async function (param) {
       // var dataInputEditSiswa = {
