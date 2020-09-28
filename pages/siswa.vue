@@ -234,7 +234,7 @@
               <md-card-content>
                 <div class="md-accent" style="background-color: #c0edf1; width: 100%; height: 120px; display: block; padding: 10px;">
                   <h3>Perhatian!</h3>
-                  <p>Format harus dalam format <b>.xlsx</b>. Unduh format template xlsx <b><a href="http://abstein.pptik.id/data/import/template_import_pengguna.xlsx">disini</a></b></p>
+                  <p>Format harus dalam format <b>.xlsx</b>. Unduh format template xlsx <b><a href="http://abstein.pptik.id/data/template/template_import_pengguna.xlsx">disini</a></b></p>
                 </div>
                 <md-field>
                   <label> Pilih Bagian </label>
