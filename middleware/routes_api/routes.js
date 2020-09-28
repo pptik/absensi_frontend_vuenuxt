@@ -54,6 +54,9 @@ export default {
   requestHarianDataSiswa (params, type) {
     return Api().post('/pengguna/' + type + 'PenggunaV2', params)
   },
+  requestSekolahPengguna (params, type) {
+    return Api().post('/general/tambah_akun_sekolah', params)
+  },
   requestJsonSekolah (params, type) {
     return Api().post('/general/' + type + '_MacAddress', params)
   },
