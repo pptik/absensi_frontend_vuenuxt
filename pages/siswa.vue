@@ -244,13 +244,6 @@
                   </md-select>
                 </md-field>
                 <md-field>
-                  <label> Tahun Ajaran </label>
-                  <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense>
-                    <md-option disabled>Select tahun ajaran</md-option>
-                    <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
-                  </md-select>
-                </md-field>
-                <md-field>
                   <input type="file" id="files" ref="files" accept="xlsx/*" v-on:change="handleFileUpload()"/>
                 </md-field>
                 <md-button :disabled="this.selectedTahunAjaran === null && this.uploadPenggunaExcel === undefined || this.uploadPenggunaExcel === null" class="md-raised md-primary" v-on:click.prevent="importExcelPengguna()">Import Pengguna</md-button>
