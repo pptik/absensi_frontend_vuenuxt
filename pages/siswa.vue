@@ -163,7 +163,7 @@
             <md-table-cell md-label="Bagian">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
               <!-- <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button> -->
-              <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
+              <md-button v-on:click.prevent="DeleteSiswa(item._id)" class="md-accent">Delete</md-button>            
             </md-table-cell>
           </md-table-row>
         </md-table>
@@ -252,7 +252,7 @@
           </md-tab>
         </md-tabs>
     </div>
-    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-50 md-small-size-50">
+    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-100 md-small-size-50">
       <md-dialog-title>Rekap Absensi Per Bulan {{this.selectedKelas}}</md-dialog-title>
       <div style="padding:20px">
         <div class="md-layout md-gutter containers">
@@ -290,7 +290,7 @@
       </div>
     </md-dialog>
     <!---DIALOG BOX--->
-    <md-dialog :md-active.sync="showDialogEdit" class="md-layout-item md-size-50 md-small-size-70">
+    <md-dialog :md-active.sync="showDialogEdit">
       <md-dialog-title>Edit Siswa</md-dialog-title>
       <md-tabs md-dynamic-height>
         <md-tab md-label="Kelas">
@@ -449,6 +449,7 @@ export default {
             var kelasTahunAjaran = result[x].Kelas[i]
             if (kelasTahunAjaran.tahun_ajaran === paramTahunAjaran) {
               var hasilArrayAkhir = {
+                '_id': result[x]._id,
                 'nama_lengkap': result[x].profil.nama_lengkap,
                 'RFID': result[x].RFID.serial_number,
                 'jenis_kelamin': result[x].profil.jenis_kelamin,
@@ -586,13 +587,15 @@ export default {
     loadTableTest: async function () {
       this.getNumberMonth(this.bulan)
       var date = new Date(this.tahunRekap, this.bulanNumber)
-      var firstDay = new Date(date.getFullYear(), date.getMonth(), 2)
+      var firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
       var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+      firstDay.setHours(0, 0, 0, 0)
+      lastDay.setHours(23, 59, 59, 999)
       let postData = {
         sekolah: this.namaSekolahLocal,
         tahun: this.selectedTahunAjaran,
-        jam_awal: new Date(firstDay),
-        jam_akhir: new Date(lastDay),
+        jam_awal: firstDay,
+        jam_akhir: lastDay,
         kelas: this.selectedKelas
       }
 
@@ -712,7 +715,7 @@ export default {
     },
     DeleteSiswa: async function (params) {
       var dataSiswaDelete = {
-        'nama_lengkap': params
+        '_id': params
       }
       this.$swal({
         title: 'Hapus Siswa?',
