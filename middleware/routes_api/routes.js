@@ -89,6 +89,9 @@ export default {
   requestUpdateProfilPengguna (params) {
     return Api().post('/pengguna/editProfilePengguna', params)
   },
+  requestUpdateProfilPenggunaByAdmin (params) {
+    return Api().post('/pengguna/editProfilePenggunaByAdmin', params)
+  },
   requestTotalRekapBulanan (params) {
     return Api().post('/pengguna/rekaptotal', params)
   },

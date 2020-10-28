@@ -162,7 +162,7 @@
             <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
             <md-table-cell md-label="Bagian">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
-              <!-- <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button> -->
+              <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button>
               <md-button v-on:click.prevent="DeleteSiswa(item._id)" class="md-accent">Delete</md-button>            
             </md-table-cell>
           </md-table-row>
@@ -290,29 +290,23 @@
       </div>
     </md-dialog>
     <!---DIALOG BOX--->
-    <md-dialog :md-active.sync="showDialogEdit">
+    <md-dialog :md-active.sync="showDialogEdit" class="md-size-15">
       <md-dialog-title>Edit Siswa</md-dialog-title>
-      <md-tabs md-dynamic-height>
-        <md-tab md-label="Kelas">
           <div style="padding:20px;">
             <md-field>
               <label>Nama</label>
-              <md-input v-model="EditNamaLengkap"></md-input>
+              <md-input v-model="EditNamaLengkap" readonly></md-input>
             </md-field>
              <md-field>
               <label>RFID</label>
               <md-input v-model="EditKodeRFID"></md-input>
             </md-field>
-            <md-field>
-              <label>Jenis Kelamin</label>
-              <md-input v-model="EditJenisKelamin"></md-input>
-            </md-field>
+              <md-radio v-model="EditJenisKelamin" value="M">Laki-laki</md-radio>
+              <md-radio v-model="EditJenisKelamin" value="F">Prempuan</md-radio>
             <md-dialog-actions>
-              <md-button class="md-primary" @click="editDataSiswa()">Simpan</md-button>
+              <md-button class="md-primary" @click="editDataSiswa(EditId)">Simpan</md-button>
             </md-dialog-actions>
           </div>
-        </md-tab>
-      </md-tabs>
     </md-dialog>
   </section>
   
@@ -365,6 +359,7 @@ export default {
       usernameLocal: null,
       sekolah_id: null,
       // Edit Data
+      EditId: null,
       EditNamaLengkap: null,
       EditKodeRFID: null,
       EditKelas: null,
@@ -429,6 +424,7 @@ export default {
       this.sekolah_id = dataAuth._id
     },
     editSiswaFieldTampil: async function (param) {
+      this.EditId = param._id
       this.EditNamaLengkap = param.nama_lengkap
       this.EditKodeRFID = param.RFID
       this.EditKelas = param.Kelas
@@ -893,27 +889,25 @@ export default {
       this.uploadPenggunaExcel = this.$refs.files.files[0]
     },
     editDataSiswa: async function (param) {
-      // var dataInputEditSiswa = {
-      //   'nama_lengkap': this.EditNamaLengkap,
-      //   'rfid': this.EditKodeRFID,
-      //   'kelas': this.EditKelas,
-      //   'sekolah': this.namaSekolahLocal,
-      //   'jenis_kelamin': this.EditJenisKelamin
-      // }
-      // const response = await api.requestJsonPengguna(dataInputEditSiswa, 'edit')
-      // if (response.data.success === true) {
-      //   this.$swal({
-      //     title: 'Berhasil!',
-      //     text: 'Berhasil Membuat Pengguna baru!',
-      //     icon: 'success'
-      //   })
-      // } else {
-      //   this.$swal('Gagal!', {
-      //     title: 'Gagal',
-      //     text: 'Gagal Membuat Pengguna baru!',
-      //     icon: 'error'
-      //   })
-      // }
+      var dataInputEditSiswa = {
+        'id': this.EditId,
+        'rfid': this.EditKodeRFID,
+        'jenis_kelamin': this.EditJenisKelamin
+      }
+      const response = await api.requestUpdateProfilPenggunaByAdmin(dataInputEditSiswa)
+      if (response.data.success === true) {
+        this.$swal({
+          title: 'Berhasil!',
+          text: 'Berhasil Edit Pengguna!',
+          icon: 'success'
+        })
+      } else {
+        this.$swal('Gagal!', {
+          title: 'Gagal',
+          text: 'Gagal Membuat Pengguna baru!',
+          icon: 'error'
+        })
+      }
     }
   }
 }
