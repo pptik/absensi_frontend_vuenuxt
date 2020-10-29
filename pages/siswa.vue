@@ -127,10 +127,9 @@
             <th>Pulang</th>
           </tr>
           
-          <tr v-for="data in dataTampilanRecord" :key="data._id">
-            <td> {{ data._id }}</td>
-            <td v-for="(value) in data.tap" :key="value._id"> {{ value }} </td>
-            <!-- <td v-for="(value) in data.tap" :key="value._id"> {{ value.date_pulang }} </td> -->
+          <tr v-for="data in dataTampilanRecord" :key="data.nama_lengkap">
+            <td> {{ data.nama_lengkap }}</td>
+            <td v-for="(value) in data.tap" :key="value.nama_lengkap"> {{ value }} </td>
           </tr>
           <tr>
             <td></td>
@@ -158,6 +157,7 @@
           </md-table-toolbar>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
             <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
+            <md-table-cell md-label="Email">{{ item.email }}</md-table-cell>
             <md-table-cell md-label="RFID">{{ item.RFID }}</md-table-cell>
             <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
             <md-table-cell md-label="Bagian">{{ item.Kelas }}</md-table-cell>
@@ -282,7 +282,7 @@
         </div>
       </div>
           <md-dialog-actions>
-              <md-button class="md-primary" @click="loadTableTest()">Export Excel</md-button>
+              <md-button class="md-primary" @click="loadTableExport()">Export Excel</md-button>
               <div v-if="this.namaSekolahLocal == 'SMP Assalam'">
                 <md-button class="md-primary" @click="exportGoogleSpreatSheet()">Export ke GoogleSheet</md-button>
               </div>
@@ -290,23 +290,30 @@
       </div>
     </md-dialog>
     <!---DIALOG BOX--->
-    <md-dialog :md-active.sync="showDialogEdit" class="md-size-15">
+    <md-dialog :md-active.sync="showDialogEdit">
       <md-dialog-title>Edit Siswa</md-dialog-title>
-          <div style="padding:20px;">
-            <md-field>
-              <label>Nama</label>
-              <md-input v-model="EditNamaLengkap" readonly></md-input>
-            </md-field>
-             <md-field>
-              <label>RFID</label>
-              <md-input v-model="EditKodeRFID"></md-input>
-            </md-field>
-              <md-radio v-model="EditJenisKelamin" value="M">Laki-laki</md-radio>
-              <md-radio v-model="EditJenisKelamin" value="F">Prempuan</md-radio>
-            <md-dialog-actions>
-              <md-button class="md-primary" @click="editDataSiswa(EditId)">Simpan</md-button>
-            </md-dialog-actions>
-          </div>
+      <div style="padding:20px; width: 500px;">
+        <md-field>
+          <label>Nama</label>
+          <md-input v-model="EditNamaLengkap" disabled></md-input>
+        </md-field>
+        <md-field>
+          <label>Email</label>
+          <md-input v-model="EditEmail"></md-input>
+        </md-field>
+        <md-field>
+          <label>RFID</label>
+          <md-input v-model="EditKodeRFID"></md-input>
+        </md-field>
+        Jenis Kelamin<br>
+        <md-radio v-model="EditJenisKelamin" value="M">Laki-laki</md-radio>
+        <md-radio v-model="EditJenisKelamin" value="F">Prempuan</md-radio>
+
+        <md-dialog-actions>
+          <md-button class="md-primary" @click="editDataSiswa(EditId)">Simpan</md-button>
+          <md-button class="md-primary" @click="showDialogEdit = false">Batal</md-button>
+        </md-dialog-actions>
+      </div>
     </md-dialog>
   </section>
   
@@ -360,6 +367,7 @@ export default {
       sekolah_id: null,
       // Edit Data
       EditId: null,
+      EditEmail: null,
       EditNamaLengkap: null,
       EditKodeRFID: null,
       EditKelas: null,
@@ -425,6 +433,7 @@ export default {
     },
     editSiswaFieldTampil: async function (param) {
       this.EditId = param._id
+      this.EditEmail = param.email
       this.EditNamaLengkap = param.nama_lengkap
       this.EditKodeRFID = param.RFID
       this.EditKelas = param.Kelas
@@ -446,6 +455,7 @@ export default {
             if (kelasTahunAjaran.tahun_ajaran === paramTahunAjaran) {
               var hasilArrayAkhir = {
                 '_id': result[x]._id,
+                'email': result[x].email,
                 'nama_lengkap': result[x].profil.nama_lengkap,
                 'RFID': result[x].RFID.serial_number,
                 'jenis_kelamin': result[x].profil.jenis_kelamin,
@@ -580,7 +590,7 @@ export default {
         console.log(error)
       }
     },
-    loadTableTest: async function () {
+    loadTableExport: async function () {
       this.getNumberMonth(this.bulan)
       var date = new Date(this.tahunRekap, this.bulanNumber)
       var firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
