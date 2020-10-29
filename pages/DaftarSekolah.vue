@@ -134,11 +134,11 @@ export default {
         'foto': this.login.foto
       }
       await api.requestSekolah(dataLogin, 'tambah')
-      const response = await api.requestJsonPengguna(dataLogin, 'tambah')
+      const response = await api.requestSekolahPengguna(dataLogin)
       if (response.data.success === true) {
         this.$swal({
           title: 'Berhasil!',
-          text: 'Berhasil Delete!',
+          text: 'Daftar Berhasil!',
           type: 'success',
           confirmButtonText: 'Yes',
           showLoaderOnConfirm: true

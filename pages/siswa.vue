@@ -127,10 +127,9 @@
             <th>Pulang</th>
           </tr>
           
-          <tr v-for="data in dataTampilanRecord" :key="data._id">
-            <td> {{ data._id }}</td>
-            <td v-for="(value) in data.tap" :key="value._id"> {{ value }} </td>
-            <!-- <td v-for="(value) in data.tap" :key="value._id"> {{ value.date_pulang }} </td> -->
+          <tr v-for="data in dataTampilanRecord" :key="data.nama_lengkap">
+            <td> {{ data.nama_lengkap }}</td>
+            <td v-for="(value) in data.tap" :key="value.nama_lengkap"> {{ value }} </td>
           </tr>
           <tr>
             <td></td>
@@ -158,18 +157,18 @@
           </md-table-toolbar>
           <md-table-row slot="md-table-row" slot-scope="{ item }">
             <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
+            <md-table-cell md-label="Email">{{ item.email }}</md-table-cell>
             <md-table-cell md-label="RFID">{{ item.RFID }}</md-table-cell>
             <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
             <md-table-cell md-label="Bagian">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
-              <!-- <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button> -->
-              <md-button v-on:click.prevent="DeleteSiswa(item.nama_lengkap)" class="md-accent">Delete</md-button>            
+              <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button>
+              <md-button v-on:click.prevent="DeleteSiswa(item._id)" class="md-accent">Delete</md-button>            
             </md-table-cell>
           </md-table-row>
         </md-table>
       </div>       
       </md-tab>
-      
       <md-tab id="tab-posts" md-label="Tambah Personil">
         <form novalidate class="md-layout" >
           <md-card class="md-layout-item md-size-50 md-small-size-50">
@@ -226,10 +225,34 @@
               </div>
              </md-card>
             </form>
+          </md-tab>  
+          <md-tab id="tab-import" md-label="Import Personil">
+            <md-card>
+              <md-card-header>
+                <div class="md-title">Upload Excel</div>
+              </md-card-header>
+              <md-card-content>
+                <div class="md-accent" style="background-color: #c0edf1; width: 100%; height: 120px; display: block; padding: 10px;">
+                  <h3>Perhatian!</h3>
+                  <p>Format harus dalam format <b>.xlsx</b>. Unduh format template xlsx <b><a href="http://abstein.pptik.id/data/template/template_import_pengguna.xlsx">disini</a></b></p>
+                </div>
+                <md-field>
+                  <label> Pilih Bagian </label>
+                  <md-select v-model="selectedKelas">
+                    <md-option disabled>Pilih Bagian</md-option>
+                    <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
+                  </md-select>
+                </md-field>
+                <md-field>
+                  <input type="file" id="files" ref="files" accept="xlsx/*" v-on:change="handleFileUpload()"/>
+                </md-field>
+                <md-button :disabled="this.selectedTahunAjaran === null && this.uploadPenggunaExcel === undefined || this.uploadPenggunaExcel === null" class="md-raised md-primary" v-on:click.prevent="importExcelPengguna()">Import Pengguna</md-button>
+              </md-card-content>
+            </md-card>
           </md-tab>
         </md-tabs>
     </div>
-    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-50 md-small-size-50">
+    <md-dialog  :md-active.sync="showDate" class="md-layout-item md-size-100 md-small-size-50">
       <md-dialog-title>Rekap Absensi Per Bulan {{this.selectedKelas}}</md-dialog-title>
       <div style="padding:20px">
         <div class="md-layout md-gutter containers">
@@ -259,7 +282,7 @@
         </div>
       </div>
           <md-dialog-actions>
-              <md-button class="md-primary" @click="loadTableTest()">Export Excel</md-button>
+              <md-button class="md-primary" @click="loadTableExport()">Export Excel</md-button>
               <div v-if="this.namaSekolahLocal == 'SMP Assalam'">
                 <md-button class="md-primary" @click="exportGoogleSpreatSheet()">Export ke GoogleSheet</md-button>
               </div>
@@ -267,29 +290,30 @@
       </div>
     </md-dialog>
     <!---DIALOG BOX--->
-    <md-dialog :md-active.sync="showDialogEdit" class="md-layout-item md-size-50 md-small-size-70">
+    <md-dialog :md-active.sync="showDialogEdit">
       <md-dialog-title>Edit Siswa</md-dialog-title>
-      <md-tabs md-dynamic-height>
-        <md-tab md-label="Kelas">
-          <div style="padding:20px;">
-            <md-field>
-              <label>Nama</label>
-              <md-input v-model="EditNamaLengkap"></md-input>
-            </md-field>
-             <md-field>
-              <label>RFID</label>
-              <md-input v-model="EditKodeRFID"></md-input>
-            </md-field>
-            <md-field>
-              <label>Jenis Kelamin</label>
-              <md-input v-model="EditJenisKelamin"></md-input>
-            </md-field>
-            <md-dialog-actions>
-              <md-button class="md-primary" @click="editDataSiswa()">Simpan</md-button>
-            </md-dialog-actions>
-          </div>
-        </md-tab>
-      </md-tabs>
+      <div style="padding:20px; width: 500px;">
+        <md-field>
+          <label>Nama</label>
+          <md-input v-model="EditNamaLengkap" disabled></md-input>
+        </md-field>
+        <md-field>
+          <label>Email</label>
+          <md-input v-model="EditEmail"></md-input>
+        </md-field>
+        <md-field>
+          <label>RFID</label>
+          <md-input v-model="EditKodeRFID"></md-input>
+        </md-field>
+        Jenis Kelamin<br>
+        <md-radio v-model="EditJenisKelamin" value="M">Laki-laki</md-radio>
+        <md-radio v-model="EditJenisKelamin" value="F">Prempuan</md-radio>
+
+        <md-dialog-actions>
+          <md-button class="md-primary" @click="editDataSiswa(EditId)">Simpan</md-button>
+          <md-button class="md-primary" @click="showDialogEdit = false">Batal</md-button>
+        </md-dialog-actions>
+      </div>
     </md-dialog>
   </section>
   
@@ -342,6 +366,8 @@ export default {
       usernameLocal: null,
       sekolah_id: null,
       // Edit Data
+      EditId: null,
+      EditEmail: null,
       EditNamaLengkap: null,
       EditKodeRFID: null,
       EditKelas: null,
@@ -364,8 +390,9 @@ export default {
         sakit: 0,
         izin: 0,
         alfa: 0
-      }
-      // Fields
+      },
+      // Import Siswa
+      uploadPenggunaExcel: null
     }
   },
   components: {
@@ -405,6 +432,8 @@ export default {
       this.sekolah_id = dataAuth._id
     },
     editSiswaFieldTampil: async function (param) {
+      this.EditId = param._id
+      this.EditEmail = param.email
       this.EditNamaLengkap = param.nama_lengkap
       this.EditKodeRFID = param.RFID
       this.EditKelas = param.Kelas
@@ -425,6 +454,8 @@ export default {
             var kelasTahunAjaran = result[x].Kelas[i]
             if (kelasTahunAjaran.tahun_ajaran === paramTahunAjaran) {
               var hasilArrayAkhir = {
+                '_id': result[x]._id,
+                'email': result[x].email,
                 'nama_lengkap': result[x].profil.nama_lengkap,
                 'RFID': result[x].RFID.serial_number,
                 'jenis_kelamin': result[x].profil.jenis_kelamin,
@@ -559,16 +590,18 @@ export default {
         console.log(error)
       }
     },
-    loadTableTest: async function () {
+    loadTableExport: async function () {
       this.getNumberMonth(this.bulan)
       var date = new Date(this.tahunRekap, this.bulanNumber)
-      var firstDay = new Date(date.getFullYear(), date.getMonth(), 2)
+      var firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
       var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+      firstDay.setHours(0, 0, 0, 0)
+      lastDay.setHours(23, 59, 59, 999)
       let postData = {
         sekolah: this.namaSekolahLocal,
         tahun: this.selectedTahunAjaran,
-        jam_awal: new Date(firstDay),
-        jam_akhir: new Date(lastDay),
+        jam_awal: firstDay,
+        jam_akhir: lastDay,
         kelas: this.selectedKelas
       }
 
@@ -688,7 +721,7 @@ export default {
     },
     DeleteSiswa: async function (params) {
       var dataSiswaDelete = {
-        'nama_lengkap': params
+        '_id': params
       }
       this.$swal({
         title: 'Hapus Siswa?',
@@ -838,28 +871,53 @@ export default {
         })
       }
     },
+    importExcelPengguna: async function () {
+      let formData = new FormData()
+      formData.append('kelas', this.selectedKelas)
+      formData.append('tahun_ajaran', this.selectedTahunAjaran)
+      formData.append('sekolah', this.namaSekolahLocal)
+      formData.append('file', this.uploadPenggunaExcel)
+      this.$swal({
+        title: 'Konfirmasi Import Pengguna',
+        type: 'info',
+        html: `Anda yakin akan mengimport pengguna untuk bagian <b>${this.selectedKelas}</b> dengan tahun ajaran <b>${this.selectedTahunAjaran}</b> ?`,
+        showCancelButton: true,
+        confirmButtonText: `Konfirmasi`
+      }).then((result) => {
+        if (result.value) {
+          api.importExcelPengguna(formData).then((response) => {
+            this.$swal('Import Success!', '', 'success')
+          }, (error) => {
+            this.$swal('Fetch Excel Failed!', error, 'danger')
+          })
+        } else {
+          this.$swal('Import Failed!')
+        }
+      })
+    },
+    handleFileUpload () {
+      this.uploadPenggunaExcel = this.$refs.files.files[0]
+    },
     editDataSiswa: async function (param) {
-      // var dataInputEditSiswa = {
-      //   'nama_lengkap': this.EditNamaLengkap,
-      //   'rfid': this.EditKodeRFID,
-      //   'kelas': this.EditKelas,
-      //   'sekolah': this.namaSekolahLocal,
-      //   'jenis_kelamin': this.EditJenisKelamin
-      // }
-      // const response = await api.requestJsonPengguna(dataInputEditSiswa, 'edit')
-      // if (response.data.success === true) {
-      //   this.$swal({
-      //     title: 'Berhasil!',
-      //     text: 'Berhasil Membuat Pengguna baru!',
-      //     icon: 'success'
-      //   })
-      // } else {
-      //   this.$swal('Gagal!', {
-      //     title: 'Gagal',
-      //     text: 'Gagal Membuat Pengguna baru!',
-      //     icon: 'error'
-      //   })
-      // }
+      var dataInputEditSiswa = {
+        'id': this.EditId,
+        'rfid': this.EditKodeRFID,
+        'jenis_kelamin': this.EditJenisKelamin
+      }
+      const response = await api.requestUpdateProfilPenggunaByAdmin(dataInputEditSiswa)
+      if (response.data.success === true) {
+        this.$swal({
+          title: 'Berhasil!',
+          text: 'Berhasil Edit Pengguna!',
+          icon: 'success'
+        })
+      } else {
+        this.$swal('Gagal!', {
+          title: 'Gagal',
+          text: 'Gagal Membuat Pengguna baru!',
+          icon: 'error'
+        })
+      }
     }
   }
 }

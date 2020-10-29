@@ -2,13 +2,13 @@
   <div>
     <md-button to="dashboard" class="md-raised md-primary">Kembali</md-button>  
     <div class="centered-container">
-        <div class="md-layout-item md-size-50">
+        <div class="md-layout-item md-size-60">
         <h2><span>Tap Terakhir: {{datamesin}}</span></h2>
-        <md-table v-model="dataAbsen" md-card class="md-layout-item md-size-100 md-small-size-100">
+        <md-table v-model="dataAbsen" md-card class="md-layout-item md-size-100 md-small-size-100" md-fixed-header>
           <md-table-toolbar>
             <h1 class="md-title">List RFID</h1>
           </md-table-toolbar>
-          <md-table-row slot-scope="{ item }" slot="md-table-row">
+          <md-table-row slot-scope="{ item }" slot="md-table-row" class="md-size-60">
               <md-table-cell md-label="mac">{{item.mac_address}}</md-table-cell>
               <md-table-cell md-label="rfid">{{item.rfid}}</md-table-cell>
               <md-table-cell md-label="date">{{item.created_at}}</md-table-cell>
@@ -70,7 +70,7 @@ export default {
       mesinDataLengkap.on('message', function (topic, message) {
         let mesinRFID = JSON.parse(message.toString())
         if (dataAuth.sekolah === mesinRFID.sekolah) {
-          ini.datamesin = mesinRFID.nama_lengkap + ' ' + mesinRFID.jam
+          ini.datamesin = mesinRFID.nama_lengkap + ' ( Mesin ' + mesinRFID.mac + ' )' + '. ' + mesinRFID.jam
         }
       })
     },
