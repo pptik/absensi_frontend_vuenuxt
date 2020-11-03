@@ -901,6 +901,7 @@ export default {
     editDataSiswa: async function (param) {
       var dataInputEditSiswa = {
         'id': this.EditId,
+        'email': this.EditEmail,
         'rfid': this.EditKodeRFID,
         'jenis_kelamin': this.EditJenisKelamin
       }
