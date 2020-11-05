@@ -67,10 +67,32 @@
               <md-table-cell v-if="item.status == '-' && item.date_datang != '-'" type="text" md-label="Status" md-sort-by="status"> hadir </md-table-cell>
               <md-table-cell v-else type="text" md-label="Status" md-sort-by="status">  {{item.status}} </md-table-cell>
               <md-table-cell v-if="item.date_datang === '-'" type="number" md-label="Waktu Datang" md-sort-by="date_datang">Belum Melakukan Absen Pulang</md-table-cell>
-              <md-table-cell v-else type="number" md-label="Waktu Datang" md-sort-by="date_datang">{{ item.date_datang }}</md-table-cell>
+              <md-table-cell v-else type="number" md-label="Waktu Datang" md-sort-by="date_datang">
+                <span class="computer_time">
+                  {{ item.date_datang | getDate }}
+                  <md-tooltip md-direction="bottom">Waktu Komputer</md-tooltip>
+                </span>
+                (
+                  <span class="server_time">
+                    {{ item.date_datang | serverDate }}
+                    <md-tooltip md-direction="bottom">Waktu Server</md-tooltip>
+                  </span>
+                )
+              </md-table-cell>
               <md-table-cell md-sort-by="mesin_datang" md-label="Mesin Datang" >{{ item.mac_datang }}</md-table-cell>
               <md-table-cell v-if="item.date_pulang === '-'" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
-              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="date_pulang" >{{ item.date_pulang }}</md-table-cell>
+              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="date_pulang">
+                <span class="computer_time">
+                  {{ item.date_pulang | getDate }}
+                  <md-tooltip md-direction="bottom">Waktu Komputer</md-tooltip>
+                </span>
+                (
+                  <span class="server_time">
+                    {{ item.date_pulang | serverDate }}
+                    <md-tooltip md-direction="bottom">Waktu Server</md-tooltip>
+                  </span>
+                )
+              </md-table-cell>
               <md-table-cell md-sort-by="mesin_pulang" md-label="Mesin Pulang" >{{ item.mac_pulang }}</md-table-cell>
             </md-table-row>
           </md-table>
@@ -82,6 +104,8 @@
 import api from '../middleware/routes_api/routes'
 import apiGetData from '../middleware/routes_api/routes_get_data'
 import XLSX from 'xlsx'
+import moment from 'moment-timezone'
+moment.locale('id')
 
 export default {
   data () {
@@ -102,6 +126,15 @@ export default {
     this.dataRekapHarian()
     // this.dataSiswaHarianJSON()
     // this.dataRekapHarian()
+  },
+  filters: {
+    getDate: function (date) {
+      console.log(date)
+      return moment(date).format('MMMM Do,h:mm a')
+    },
+    serverDate: function (date) {
+      return moment(date).tz('Asia/Jakarta').format('YYYY-MM-DD hh:mm:ss')
+    }
   },
   methods: {
     exportData: async function () {
@@ -203,4 +236,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.computer_time, .server_time {
+  text-decoration: underline;
+}
+</style>
 
