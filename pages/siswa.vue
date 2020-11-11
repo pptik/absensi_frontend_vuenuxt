@@ -129,7 +129,7 @@
           
           <tr v-for="data in dataTampilanRecord" :key="data.nama_lengkap">
             <td> {{ data.nama_lengkap }}</td>
-            <td v-for="(value) in data.tap" :key="value.nama_lengkap"> {{ value }} </td>
+            <td v-for="(value) in data.tap"> {{ value }} </td>
           </tr>
           <tr>
             <td></td>
@@ -258,8 +258,11 @@
         <div class="md-layout md-gutter containers">
           <div class="md-layout-item">
             <md-field>
-              <label>Tahun</label>
-              <md-input v-model="tahunRekap" type="number"></md-input>
+              <label> Pilih Tahun </label>
+                <md-select v-model="tahunRekap">
+                  <md-option disabled>Pilih Tahun</md-option>
+                  <md-option v-for="hasil in getListCurrentYear" :value="hasil.tahun" :key="hasil.tahun">{{ hasil.tahun }}</md-option>
+                </md-select>
             </md-field>
           </div>
         <div class="md-layout-item">
@@ -381,6 +384,7 @@ export default {
       emailSelector: true,
       selectedTahun: null,
       dataTahunAjaran: [],
+      getListCurrentYear: [],
       selectedTahunAjaran: null,
       // Rekap 1 Month
       dayIn1Month: 31,
@@ -404,6 +408,7 @@ export default {
     this.setItemAuth()
     this.listKelasJSON()
     this.pilihtahunajaran()
+    this.tahunListField()
     // this.loadTableTest()
   },
   methods: {
@@ -438,6 +443,18 @@ export default {
       this.EditKodeRFID = param.RFID
       this.EditKelas = param.Kelas
       this.EditJenisKelamin = param.jenis_kelamin
+    },
+    tahunListField: async function () {
+      let currentYear = new Date().getFullYear()
+      let earliestYear = 1970
+      this.getListCurrentYear = []
+      while (currentYear >= earliestYear) {
+        let insertCurrentYear = {
+          'tahun': currentYear
+        }
+        this.getListCurrentYear.push(insertCurrentYear)
+        currentYear -= 1
+      }
     },
     tampilsiswaperkelas: async function (param, paramTahunAjaran) {
       var arrayHasil = []
@@ -619,6 +636,7 @@ export default {
         alfa: responseTotalRekap.data.data.alfa
       }
       this.totalRekapBulanan = dataTotal
+      this.$swal.showLoading()
       api.requestExcelDataV2(postData).then(response => {
         let getResponse = response.data.data
         this.dataTampilanRecord = getResponse
