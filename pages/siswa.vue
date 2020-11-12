@@ -11,7 +11,7 @@
             <md-option disabled>Pilih Bagian</md-option>
             <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
           </md-select>
-          <md-button class="md-default md-raised" @click="showDate = true;">
+          <md-button :disabled="selectedTahunAjaran === null" class="md-default md-raised" @click="showDate = true;">
             Export to XLS
           </md-button>
         </md-field>
@@ -129,7 +129,7 @@
           
           <tr v-for="data in dataTampilanRecord" :key="data.nama_lengkap">
             <td> {{ data.nama_lengkap }}</td>
-            <td v-for="(value) in data.tap"> {{ value }} </td>
+            <td v-for="(value) in data.tap" :key="value.tap"> {{ value }} </td>
           </tr>
           <tr>
             <td></td>

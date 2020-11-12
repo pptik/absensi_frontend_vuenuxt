@@ -14,7 +14,6 @@ module.exports = {
       { rel: 'stylesheet', href: '//fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,700,400italic|Material+Icons' }
     ]
   },
-  
   /*
   ** Customize the progress bar color
   */
@@ -23,7 +22,7 @@ module.exports = {
   ** Build configuration
   */
   css: [
-    { src: 'sweetalert2/dist/sweetalert2.min.css', lang: 'css'},
+    { src: 'sweetalert2/dist/sweetalert2.min.css', lang: 'css' },
     { src: 'vue-material/dist/vue-material.min.css', lang: 'css' },
     { src: '~/assets/theme.scss', lang: 'scss' } // include vue-material theme engine
   ],
@@ -34,12 +33,17 @@ module.exports = {
     { src: '~/plugins/vue-material' },
     { src: '~/plugins/vue-chart' },
     // { src: '~/plugins/vue-json-excel'},
-    { src: '~/plugins/vue-session', ssr: false}
+    { src: '~/plugins/vue-session', ssr: false }
   ],
   build: {
     /*
     ** Run ESLint on save
     */
+    postcss: {
+      plugins: {
+        'postcss-custom-properties': false
+      }
+    },
     vendor: ['vue-material'],
     extend (config, { isDev, isClient }) {
       if (isDev && isClient) {

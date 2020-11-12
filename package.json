@@ -30,7 +30,7 @@
     "vue-chartjs": "^3.4.2",
     "vue-datatable": "^1.0.4",
     "vue-json-excel": "^0.2.98",
-    "vue-material": "latest",
+    "vue-material": "^1.0.0-beta-15",
     "vue-no-ssr": "^1.1.1",
     "vue-session": "^1.0.0",
     "vue-sessionstorage": "^1.0.0",
