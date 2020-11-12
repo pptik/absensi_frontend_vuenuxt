@@ -101,7 +101,6 @@ export default {
         mesin: this.AddressEditMesin,
         deskripsi: this.editDesktipsi
       }
-      // console.log(dataEditDeskripsi)
       let update = await api.requestJsonMesin(dataEditDeskripsi, 'update')
       if (update.data.success === true) {
         this.$swal({
@@ -126,7 +125,6 @@ export default {
       }
     },
     onCancel () {
-      // console.log('dde')
     },
     setItemAuth: async function () {
       if (!this.$session.exists()) {
@@ -166,7 +164,6 @@ export default {
           })
         }
       })
-      // console.log(dataInputMesin)
     },
     deleteMacAddress: async function (param) {
       var dataDeleteMesin = {
@@ -203,11 +200,9 @@ export default {
       }
       const response = await apiGetData.requestListMesin(dataPost)
       this.dataMesinJSON = response.data.data.Mesin
-      console.log(this.dataMesinJSON)
       // PAKAI JSON
       // const response = await api.JSON_Sekolah(this.namaSekolahLocal)
       // this.dataMesinJSON = response.data[0].Mesin
-      // console.log(response.data)
       // var totalMesin = []
       // var mesin = response.data[0].mac_address_absensi
       // for (let i = 0; i < mesin.length; i++) {

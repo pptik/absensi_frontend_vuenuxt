@@ -24,7 +24,6 @@
       <footer class="footer">
       <div class="footer-notes">
         <div class="col">
-          <div>© 2019 PPTIK, Gunakan Browser Microsoft Edge Untuk Performa Terbaik</div>
         </div>
       </div>
     </footer>  

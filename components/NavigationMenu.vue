@@ -52,7 +52,6 @@
 export default {
   methods: {
     logout: function () {
-      console.log('data')
       this.$session.destroy()
       localStorage.removeItem('auth')
       this.$router.push('/')

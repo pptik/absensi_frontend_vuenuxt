@@ -129,7 +129,6 @@ export default {
   },
   filters: {
     getDate: function (date) {
-      console.log(date)
       return moment(date).format('MMMM Do,h:mm a')
     },
     serverDate: function (date) {
@@ -169,9 +168,7 @@ export default {
         'sekolah': this.$session.get('auth').sekolah
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
-      // console.log(response)
       this.dataTahunAjaran = response.data.data
-      // Selected tahun ajaran pertama load
       this.selectedTahunAjaran = this.dataTahunAjaran[0]
     },
     listKelasJSON: async function (param) {
@@ -228,7 +225,6 @@ export default {
       }
       this.dataHarianSiswa = arrayKosong
       this.dataHarianSiswa.sort((a, b) => {
-        // console.log(a.created_at)
         return new Date(a.date) - new Date(b.date)
       })
       return this.dataHarianSiswa

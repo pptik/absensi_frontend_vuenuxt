@@ -157,7 +157,6 @@ export default {
       this.mac_address = dataAuth.mac_address
     },
     monitoringSiswaJSON: async function (param) {
-      // console.log((new Date().getFullYear() - 1) + '/' + new Date().getFullYear())
       var date = new Date()
       var dataParamSend = {
         sekolah: this.namaSekolahLocal,

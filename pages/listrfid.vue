@@ -22,7 +22,6 @@
 
 <script>
 import mesin from '../middleware/rmq/mqtt'
-import mesinDataLengkap from '../middleware/RMQ/mqtt_Detail'
 import api from '../middleware/routes_api/routes'
 import moment from 'moment'
 import momentTZ from 'moment-timezone'
@@ -38,18 +37,14 @@ export default {
     mesin.on('connect', function () {
       mesin.subscribe('absensi.listrfid', function (err) {
         if (!err) {
-          console.log('Subscribe to RMQ PPTIK Success')
         } else if (err) {
-          console.log(err)
         }
       })
     })
-    mesinDataLengkap.on('connect', function () {
-      mesinDataLengkap.subscribe('absensi.webservice', function (err) {
+    mesin.on('connect', function () {
+      mesin.subscribe('absensi.webservice', function (err) {
         if (!err) {
-          console.log('Subscribe to RMQ PPTIK Success')
         } else if (err) {
-          console.log(err)
         }
       })
     })
@@ -67,7 +62,7 @@ export default {
         ini.dataAbsen.unshift({'mac_address': mesinRFID.mac, 'rfid': mesinRFID.rfid, 'created_at': momentTZ.tz(Date.now(), 'Asia/Jakarta').format('MMMM Do, h:mm z')})
       })
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
-      mesinDataLengkap.on('message', function (topic, message) {
+      mesin.on('message', function (topic, message) {
         let mesinRFID = JSON.parse(message.toString())
         if (dataAuth.sekolah === mesinRFID.sekolah) {
           ini.datamesin = mesinRFID.nama_lengkap + ' ( Mesin ' + mesinRFID.mac + ' )' + '. ' + mesinRFID.jam

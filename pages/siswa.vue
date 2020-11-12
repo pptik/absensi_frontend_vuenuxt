@@ -409,7 +409,6 @@ export default {
     this.listKelasJSON()
     this.pilihtahunajaran()
     this.tahunListField()
-    // this.loadTableTest()
   },
   methods: {
     loadHeaderRekap: async function () {
@@ -421,11 +420,8 @@ export default {
         'sekolah': this.$session.get('auth').sekolah
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
-      // console.log(response)
       this.dataTahunAjaran = response.data.data
       // load tahun ajaran pertama load
-      // this.selectedTahunAjaran = this.dataTahunAjaran[0]
-      // console.log('second')
     },
     setItemAuth: async function (param) {
       if (!this.$session.exists()) {
@@ -463,9 +459,7 @@ export default {
           sekolah: this.namaSekolahLocal
         }
         const responTwo = await apiGetData.requestListPengguna(sendSekolah)
-        // console.log(responTwo)
         var result = load.filter(responTwo.data.data, { Kelas: [{ tahun_ajaran: paramTahunAjaran, nama_kelas: this.selectedKelas }] })
-        // console.log(result)
         for (let x = 0; x < result.length; x++) {
           for (let i = 0; i < result[x].Kelas.length; i++) {
             var kelasTahunAjaran = result[x].Kelas[i]
@@ -490,8 +484,6 @@ export default {
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
       this.dataKelas = response.data.data
-
-      // console.log(this.dataKelas)
       for (let i = 0; i < this.dataKelas.length; i++) {
         const element = this.dataKelas[i].nama_kelas
         this.dataArrayNamaKelas.push(element)
@@ -698,28 +690,18 @@ export default {
           kelas: this.selectedKelas,
           sekolah: this.namaSekolahLocal
         }
-        // console.log(mdata + ' export')
-        // console.log(mdata)
         const response = await api.requestExcelData(mdata)
-        // console.log(response.data.data)
         const values = response.data.data
-        // console.log(values)
         var ExportData = []
         for (let i = 0; i < values.length; i++) {
-          // if (values[i].RFID.hasOwnProperty('rekap_rfid')) {
           var check = values[i].RFID
           for (let a = 0; a < 32; a++) {
-            // console.log(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a])
             var tgl = Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]
             if (typeof (Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a]) === 'undefined') {
-              // ExportData.push({Tanggal: '', Nama: values[i].profil.nama_lengkap})
             } else {
               ExportData.push({Tanggal: Object.keys(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`])[a].replace('_', ''), Nama: values[i].profil.nama_lengkap, Datang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Datang).format('MMMM Do YYYY, h:mm:ss'), Pulang: moment(check.rekap_rfid[`_${mdata.tahun}`][`${this.bulan}`][`${tgl}`].Pulang).format('MMMM Do YYYY, h:mm:ss')})
             }
           }
-          // } else {
-          //   console.log('gagal')
-          // }
         }
         this.Datas['kelas_' + this.selectedKelas] = ExportData
         var animalWS = XLSX.utils.json_to_sheet(this.Datas[`kelas_` + this.selectedKelas])
@@ -727,7 +709,6 @@ export default {
         XLSX.utils.book_append_sheet(wb, animalWS, 'kelas_' + this.selectedKelas) // sheetAName is name of Worksheet
         XLSX.writeFile(wb, 'Report Kehadiran.xlsx')
       } catch (error) {
-        console.log('error nih.... ' + error)
         this.$swal('Gagal!', {
           title: 'Data Belum Lengkap',
           text: 'Data personil ' + this.selectedKelas + ' pada bulan ' + this.bulan + ' harus lengkap!',
@@ -793,8 +774,6 @@ export default {
       const response = await apiGetData.requestListKelas(dataSendKelas)
       this.dataJSONTampilKelas = response.data.data
       this.selectedKelas = this.dataJSONTampilKelas[0].NAMA_KELAS
-      // console.log(this.dataJSONTampilKelas[0].NAMA_KELAS)
-      // console.log('first')
       // this.selectedKelas = this.dataJSONTampilKelas[0].NAMA_KELAS
 
       var arrayHasil = []

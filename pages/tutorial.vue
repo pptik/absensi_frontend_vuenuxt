@@ -21,18 +21,11 @@
     name: 'StepperAlternative',
     data () {
       return {
-        pilihanSatu: null,
-        pilihanDua: null,
-        selectOne: [{'_id': 1, 'Data': 'worst'}, {'_id': 2, 'Data': 'worstist'}],
-        selectTwo: []
       }
     },
     mounted () {
     },
     methods: {
-      selectPilihanKedua: async function (param) {
-        console.log(param)
-      }
     }
 }
 </script>
