@@ -198,7 +198,6 @@ export default {
     },
     dataSiswaHarianJSON: async function (param) {
       var date = this.selectedDate
-      // var tahunAjaran = (new Date().getFullYear().toString() - 1) + '/' + new Date().getFullYear().toString()
       var tahunAjaran = param
       var dataParamSend = {
         sekolah: this.$session.get('auth').sekolah,

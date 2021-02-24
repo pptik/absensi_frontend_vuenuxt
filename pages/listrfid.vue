@@ -50,7 +50,7 @@ export default {
     })
   },
   mounted () {
-    this.dataAwal()
+    this.getUserList()
     this.filldata()
   },
   methods: {
@@ -69,7 +69,7 @@ export default {
         }
       })
     },
-    dataAwal: async function () {
+    getUserList: async function () {
       let ini = this
       var paramsKosong = []
       const responses = await api.requestSekolah(paramsKosong, 'listrfid')
