@@ -5,6 +5,9 @@
     <DashboardTable></DashboardTable>
     <div class="md-layout md-gutter">
     </div>
+    <md-snackbar :md-position="position" :md-duration="isInfinity ? Infinity : duration" :md-active.sync="showSnackbar" md-persistent>
+      <span>PENGUMUMAN!!! DIKARENAKAN ADA PERUBAHAN SERVER, MAKA SEGERA UPDATE MESIN ABSENSI RFID ANDA SEBELUM TANGGAL 31 MARET, WEBSITE YANG LAMA MASIH BISA DILIHAT DI <a href="http://absteinold.pptik.id/"> ABSTEINOLD.PPTIK.ID</a> DAN AKAN SEGERA DI NON-AKTIFKAN, TERIMA KASIH</span>
+    </md-snackbar>
   </section>
 </template>
 
@@ -20,7 +23,11 @@ export default {
     return {
       namaSekolahLocal: null,
       usernameLocal: null,
-      sekolah_id: null
+      sekolah_id: null,
+      showSnackbar: true,
+      position: 'center',
+      duration: 4000,
+      isInfinity: false
     }
   },
   mounted () {
@@ -44,6 +51,9 @@ export default {
   .small {
     max-width: 600px;
     margin:  150px auto;
+  }
+  .md-snackbar {
+    max-width: 800px;
   }
   .md-body-1 {
     padding-bottom: 20px;
