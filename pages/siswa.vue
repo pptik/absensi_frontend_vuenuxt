@@ -6,7 +6,7 @@
       <div style="padding-top: 20px;padding-left: 20px;">
         <div class="md-layout md-gutter">
         <md-field style="width: 500px;">
-          <label>Pilih Bagian</label>   
+          <label>Pilih Bagian</label>
           <md-select v-model="selectedKelas" @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
             <md-option disabled>Pilih Bagian</md-option>
             <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
@@ -34,99 +34,99 @@
           <tr>
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
-            
+
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
-            
+
             <th>Datang</th>
             <th>Pulang</th>
           </tr>
-          
+
           <tr v-for="data in dataTampilanRecord" :key="data.nama_lengkap">
             <td> {{ data.nama_lengkap }}</td>
             <td v-for="(value) in data.tap" :key="value.tap"> {{ value }} </td>
@@ -162,12 +162,12 @@
             <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
             <md-table-cell md-label="Bagian">{{ item.Kelas }}</md-table-cell>
             <md-table-cell>
-              <md-button class="md-primary md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button>
-              <md-button v-on:click.prevent="DeleteSiswa(item._id)" class="md-accent">Delete</md-button>            
+              <md-button class="md-success md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button>
+              <md-button v-on:click.prevent="DeleteSiswa(item._id)" class="md-accent md-raised">Delete</md-button>
             </md-table-cell>
           </md-table-row>
         </md-table>
-      </div>       
+      </div>
       </md-tab>
       <md-tab id="tab-posts" md-label="Tambah Personil">
         <form novalidate class="md-layout" >
@@ -186,7 +186,7 @@
                   <label>Email</label>
                   <md-input v-model="inputEmail" required></md-input>
                 </md-field>
-                
+
                 <md-field>
                   <label>Username</label>
                   <md-input id="username" v-model="inputUsername" required></md-input>
@@ -225,7 +225,53 @@
               </div>
              </md-card>
             </form>
-          </md-tab>  
+          </md-tab>
+          <md-tab id="tab-class" md-label="Naik Kelas">
+            <md-card>
+              <md-card-header>
+                <div class="md-title">Kelas Lama</div>
+              </md-card-header>
+              <md-card-content>
+                <md-field>
+                  <label> Pilih Bagian </label>
+                  <md-select v-model="selectedKelas">
+                    <md-option disabled>Pilih Bagian</md-option>
+                    <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
+                  </md-select>
+                </md-field>
+                <md-field>
+                  <label>Pilih Tahun</label>
+                  <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
+                    <md-option disabled>Select tahun ajaran</md-option>
+                    <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+                  </md-select>
+                </md-field>
+              </md-card-content>
+            </md-card>
+            <br>
+            <md-card>
+              <md-card-header>
+                <div class="md-title">Kelas Baru</div>
+              </md-card-header>
+              <md-card-content>
+                <md-field>
+                  <label> Pilih Bagian </label>
+                  <md-select v-model="promotedClass">
+                    <md-option disabled>Pilih Bagian</md-option>
+                    <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
+                  </md-select>
+                </md-field>
+                <md-field>
+                  <label>Pilih Tahun</label>
+                  <md-select v-model="promotedClassYear" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
+                    <md-option disabled>Select tahun ajaran</md-option>
+                    <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+                  </md-select>
+                </md-field>
+                <md-button class="md-primary" v-on:click.prevent="promotedGradeClass()">Update</md-button>
+              </md-card-content>
+            </md-card>
+          </md-tab>
           <md-tab id="tab-import" md-label="Import Personil">
             <md-card>
               <md-card-header>
@@ -292,10 +338,29 @@
             </md-dialog-actions>
       </div>
     </md-dialog>
-    <!---DIALOG BOX--->
+    <md-dialog :md-active.sync="showDialogGrade">
+      <md-dialog-title>Naik Kelas</md-dialog-title>
+      <div style="padding:20px; margin-bottom: 20px; width: 500px;">
+        <md-field>
+          <label> Pilih Bagian </label>
+          <md-select v-model="promotedClass">
+            <md-option disabled>Pilih Bagian</md-option>
+            <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
+          </md-select>
+        </md-field>
+        <md-field>
+          <label>Pilih Tahun</label>
+          <md-select v-model="promotedClassYear" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
+            <md-option disabled>Select tahun ajaran</md-option>
+            <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+          </md-select>
+        </md-field>
+        <md-button class="md-primary" v-on:click.prevent="promotedGradeUser()">Update</md-button>
+      </div>
+    </md-dialog>
     <md-dialog :md-active.sync="showDialogEdit">
       <md-dialog-title>Edit Siswa</md-dialog-title>
-      <div style="padding:20px; width: 500px;">
+      <div style="padding:20px; height: 500px; width: 500px;">
         <md-field>
           <label>Nama</label>
           <md-input v-model="EditNamaLengkap" disabled></md-input>
@@ -319,7 +384,7 @@
       </div>
     </md-dialog>
   </section>
-  
+
 </template>
 
 <script>
@@ -327,16 +392,13 @@ import api from '../middleware/routes_api/routes'
 import load from 'lodash'
 import moment from 'moment'
 import XLSX from 'xlsx'
-// import JsonExcel from 'vue-json-excel'
-/* eslint-disable import/first */
-// import downloadexcel from 'vue-json-excel'
-// import api_service from '../middleware/api_service'
 import apiGetData from '../middleware/routes_api/routes_get_data'
 export default {
   layout: 'default', // layouts used
   data () {
     return {
       showDialogEdit: false,
+      showDialogGrade: false,
       model: {
         selectedGroup: null
       },
@@ -361,6 +423,8 @@ export default {
       inputKodeRFID: null,
       inputKelas: null,
       inputTahunAjaran: null,
+      promotedClass: null,
+      promotedClassYear: null,
       // TAMPIL SISWA JSON
       dataJsonTampilSiswa: [],
       dataJSONTampilKelas: [],
@@ -395,16 +459,12 @@ export default {
         izin: 0,
         alfa: 0
       },
-      // Import Siswa
       uploadPenggunaExcel: null
     }
   },
   components: {
-    // 'downloadExcel': JsonExcel
-    // downloadexcel
   },
   mounted () {
-    // this.tampilsemuakelas({'sekolah': this.idSekolah})
     this.setItemAuth()
     this.listKelasJSON()
     this.pilihtahunajaran()
@@ -432,6 +492,9 @@ export default {
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
     },
+    promotedClassField: function (param) {
+      this.EditId = param._id
+    },
     editSiswaFieldTampil: async function (param) {
       this.EditId = param._id
       this.EditEmail = param.email
@@ -452,13 +515,15 @@ export default {
         currentYear -= 1
       }
     },
-    tampilsiswaperkelas: async function (param, paramTahunAjaran) {
+    tampilsiswaperkelas: async function (namaKelas, paramTahunAjaran) {
       var arrayHasil = []
       try {
-        var sendSekolah = {
-          sekolah: this.namaSekolahLocal
+        const parameter = {
+          sekolah: this.namaSekolahLocal,
+          tahun_ajaran: paramTahunAjaran,
+          nama_kelas: namaKelas
         }
-        const responTwo = await apiGetData.requestListPengguna(sendSekolah)
+        const responTwo = await apiGetData.requestListPengguna(parameter)
         var result = load.filter(responTwo.data.data, { Kelas: [{ tahun_ajaran: paramTahunAjaran, nama_kelas: this.selectedKelas }] })
         for (let x = 0; x < result.length; x++) {
           for (let i = 0; i < result[x].Kelas.length; i++) {
@@ -774,17 +839,13 @@ export default {
       const response = await apiGetData.requestListKelas(dataSendKelas)
       this.dataJSONTampilKelas = response.data.data
       this.selectedKelas = this.dataJSONTampilKelas[0].NAMA_KELAS
-      // this.selectedKelas = this.dataJSONTampilKelas[0].NAMA_KELAS
 
       var arrayHasil = []
       for (let i = 0; i < this.dataJSONTampilKelas.length; i++) {
         const element = this.dataJSONTampilKelas[i].NAMA_KELAS
         this.dataArrayNamaKelas.push(element)
       }
-      // LOAD BAGIAN NAMA KELAS PERTAMA KALI LOAD
-      /* kalo mau tampil kelas paling awal
-      this.selectedKelas = this.dataArrayNamaKelas[0]
-      */
+
       const responTwo = await apiGetData.requestListPengguna(dataSendKelas)
       var result = load.filter(responTwo.data, { Kelas: [{ tahun_ajaran: '2018/2019', nama_kelas: this.selectedKelas }] })
       for (let x = 0; x < result.length; x++) {
@@ -866,6 +927,43 @@ export default {
           type: 'error'
         }).then((result) => {
         })
+      }
+    },
+    promotedGradeClass: async function () {
+      try {
+        const data = {
+          nama_sekolah: this.namaSekolahLocal,
+          newClass: this.promotedClass,
+          newClassYear: this.promotedClassYear,
+          oldClass: this.selectedKelas,
+          oldYear: this.selectedTahunAjaran
+        }
+        const pengguna = await apiGetData.promotedGradeClass(data)
+        this.$swal({
+          title: 'Berhasil!',
+          text: 'Berhasil Naik Kelas',
+          type: 'success',
+          confirmButtonText: 'Yes',
+          showLoaderOnConfirm: true
+        }).then((result) => {
+          window.location.reload()
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    promotedGradeUser: async function () {
+      try {
+        const data = {
+          id: this.EditId,
+          nama_sekolah: this.namaSekolahLocal,
+          newClass: this.promotedClass,
+          newClassYear: this.promotedClassYear
+        }
+        const pengguna = await apiGetData.promotedGradeUser(data)
+        console.log(pengguna)
+      } catch (error) {
+        console.log(error)
       }
     },
     importExcelPengguna: async function () {

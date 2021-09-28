@@ -15,5 +15,14 @@ export default {
   },
   requestListPenggunaHarian (param) {
     return Api().post('/pengguna/dataharianPenggunaV2', param)
+  },
+  getDaftarPenggunaBerdasarkanKelas (params) {
+    return Api().post('/pengguna/getDaftarPenggunaBerdasarkanKelas', params)
+  },
+  promotedGradeClass (params) {
+    return Api().post('/pengguna/promotedGradesClass', params)
+  },
+  promotedGradeUser (params) {
+    return Api().post('/pengguna/promotedGradesUser', params)
   }
 }

@@ -29,14 +29,14 @@
                 <md-field>
                   <label>Jam Pulang</label>
                   <md-input v-model="inputJamPulang"></md-input>
-                </md-field>  
+                </md-field>
                 <md-card-actions>
                   <md-button type="submit" class="md-primary" v-on:click.prevent="simpankelas()" >Tambah Bagian</md-button>
                 </md-card-actions>
               </div>
             </md-card>
           </form>
-        </div>       
+        </div>
       </md-tab>
       <md-tab id="tab-list" md-label="Daftar Bagian">
         <div class="content_kelas">
@@ -54,20 +54,17 @@
                 <md-table-cell md-label="Jam Masuk">{{ item.Jam_Pulang }}</md-table-cell>
                 <md-table-cell>
                   <md-button class="md-primary md-raised" @click="showDialogEdit = true; editKelasFieldTampil(item);">Edit</md-button>
-                  <md-button v-on:click.prevent="deleteKelasFungsi(item._id)" class="md-accent">Delete</md-button>            
+                  <md-button v-on:click.prevent="deleteKelasFungsi(item._id)" class="md-accent">Delete</md-button>
                 </md-table-cell>
               </md-table-row>
             </md-table>
             </form>
-        </div>     
+        </div>
       </md-tab>
     </md-tabs>
       <!-- <md-tab id="tab-posts" md-label="List Kelas"> -->
-      
     </div>
-
-    <!---DIALOG BOX--->
-    <md-dialog :md-active.sync="showDialogEdit" class="md-layout-item md-size-50 md-small-size-70">
+    <md-dialog :md-active.sync="showDialogEdit">
       <md-dialog-title>Edit Kelas</md-dialog-title>
       <md-tabs md-dynamic-height>
         <md-tab md-label="Kelas">
@@ -283,5 +280,7 @@ export default {
   .content_kelas{
     padding-top: 50px;
   }
+  .md-dialog /deep/.md-dialog-container {
+    max-width: 768px;
+  }
 </style>
- 

@@ -98,5 +98,8 @@ export default {
   // IMPORT PENGGUNA
   importExcelPengguna (params) {
     return Api().post('/pengguna/importPengguna', params)
+  },
+  getDaftarPenggunaBerdasarkanKelas (params) {
+    return Api().post('/pengguna/getDaftarPenggunaBerdasarkanKelas', params)
   }
 }

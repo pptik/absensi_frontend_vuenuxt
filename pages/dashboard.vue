@@ -2,12 +2,9 @@
   <section class="container">
     <div class="md-title">{{namaSekolahLocal}}</div>
     <br><br>
-    <DashboardTable></DashboardTable>
-    <div class="md-layout md-gutter">
+      <DashboardTable></DashboardTable>
+      <div class="md-layout md-gutter">
     </div>
-    <md-snackbar :md-position="position" :md-duration="isInfinity ? Infinity : duration" :md-active.sync="showSnackbar" md-persistent>
-      <span>PENGUMUMAN!!! DIKARENAKAN ADA PERUBAHAN SERVER, MAKA SEGERA UPDATE MESIN ABSENSI RFID ANDA SEBELUM TANGGAL 31 MARET, WEBSITE YANG LAMA MASIH BISA DILIHAT DI <a href="http://absteinold.pptik.id/"> ABSTEINOLD.PPTIK.ID</a> DAN AKAN SEGERA DI NON-AKTIFKAN, TERIMA KASIH</span>
-    </md-snackbar>
   </section>
 </template>
 
