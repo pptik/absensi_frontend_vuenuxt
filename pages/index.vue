@@ -1,7 +1,7 @@
 <template>
   <div>
   <div class="centered-container">
-    <form novalidate class="md-layout" @keydown.enter="loginAuth()">  
+    <form novalidate class="md-layout" @keydown.enter="loginAuth()">
       <md-content class="md-elevation-5">
         <div class="title">
           <img width="150px" src="~/assets/VidyaRossa Putih-01.png">
@@ -26,9 +26,6 @@
         </md-content>
       </form>
     <div class="background" />
-    <md-snackbar :md-position="position" :md-duration="isInfinity ? Infinity : duration" :md-active.sync="showSnackbar" md-persistent>
-      <span>PENGUMUMAN!!! DIKARENAKAN ADA PERUBAHAN SERVER, MAKA SEGERA UPDATE MESIN ABSENSI RFID ANDA SEBELUM TANGGAL 31 MARET, WEBSITE YANG LAMA MASIH BISA DILIHAT DI <a href="http://absteinold.pptik.id/"> ABSTEINOLD.PPTIK.ID</a> DAN AKAN SEGERA DI NON-AKTIFKAN, TERIMA KASIH</span>
-    </md-snackbar>
   </div>
   </div>
 </template>
