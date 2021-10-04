@@ -903,6 +903,7 @@ export default {
       }
       if (this.validateBool) {
         const response = await api.requestJsonPengguna(dataInputSimpanSiswa, 'tambah')
+        console.log(response)
         if (response.data.success === true) {
           this.$swal({
             title: 'Berhasil!',
@@ -912,12 +913,10 @@ export default {
             window.location.reload()
           })
         } else {
-          this.$swal('Gagal!', {
-            title: 'Gagal',
-            text: 'Gagal Membuat Pengguna baru!',
+          this.$swal({
+            title: `Gagal`,
+            text: `${response.data.data}`,
             type: 'error'
-          }).then((result) => {
-            window.location.reload()
           })
         }
       } else {
