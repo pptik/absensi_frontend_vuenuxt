@@ -523,25 +523,18 @@ export default {
           tahun_ajaran: paramTahunAjaran,
           nama_kelas: namaKelas
         }
-        const responTwo = await apiGetData.requestListPengguna(parameter)
-        var result = load.filter(responTwo.data.data, { Kelas: [{ tahun_ajaran: paramTahunAjaran, nama_kelas: this.selectedKelas }] })
-        for (let x = 0; x < result.length; x++) {
-          for (let i = 0; i < result[x].Kelas.length; i++) {
-            var kelasTahunAjaran = result[x].Kelas[i]
-            if (kelasTahunAjaran.tahun_ajaran === paramTahunAjaran) {
-              var hasilArrayAkhir = {
-                '_id': result[x]._id,
-                'email': result[x].email,
-                'nama_lengkap': result[x].profil.nama_lengkap,
-                'RFID': result[x].RFID.serial_number,
-                'jenis_kelamin': result[x].profil.jenis_kelamin,
-                'Kelas': kelasTahunAjaran.nama_kelas
-              }
-              arrayHasil.push(hasilArrayAkhir)
-            }
+        const response = await apiGetData.requestListPengguna(parameter)
+        let result = response.data.data.map(data => (
+          {
+            _id: data._id,
+            nama_lengkap: data.profil.nama_lengkap,
+            email: data.email,
+            RFID: data.RFID.serial_number,
+            jenis_kelamin: data.profil.jenis_kelamin,
+            Kelas: namaKelas
           }
-        }
-        this.dataHasilTampilSiswa = arrayHasil
+        ))
+        this.dataHasilTampilSiswa = result
       } catch (error) {
         console.log(error)
       }
