@@ -164,6 +164,7 @@
             <md-table-cell>
               <md-button class="md-success md-raised" @click="showDialogEdit = true; editSiswaFieldTampil(item);">Edit</md-button>
               <md-button v-on:click.prevent="DeleteSiswa(item._id)" class="md-accent md-raised">Delete</md-button>
+              <md-button v-on:click.prevent="promotedClassField(item); showDialogGrade = true;" class="md-primary md-raised">Naik Kelas</md-button>
             </md-table-cell>
           </md-table-row>
         </md-table>
@@ -226,6 +227,7 @@
              </md-card>
             </form>
           </md-tab>
+
           <md-tab id="tab-class" md-label="Naik Kelas">
             <md-card>
               <md-card-header>
@@ -272,6 +274,65 @@
               </md-card-content>
             </md-card>
           </md-tab>
+
+          <md-tab id="tab-random-class" md-label="Naik Kelas Acak">
+            <md-card>
+              <md-card-header>
+                <div class="md-title">Kelas Kelas Lama</div>
+              </md-card-header>
+              <md-card-content>
+                <md-field>
+                  <label> Pilih Bagian </label>
+                  <md-select v-model="selectedKelas">
+                    <md-option disabled>Pilih Bagian</md-option>
+                    <md-option v-for="hasil in dataJSONTampilKelas" :value="hasil.NAMA_KELAS" :key="hasil._id">{{ hasil.NAMA_KELAS }}</md-option>
+                  </md-select>
+                </md-field>
+                <md-field>
+                  <label>Pilih Tahun Ajaran Lama</label>
+                  <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
+                    <md-option disabled>Select tahun ajaran</md-option>
+                    <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+                  </md-select>
+                </md-field>
+              </md-card-content>
+            </md-card>
+            <br>
+            <md-card>
+              <md-card-header>
+                <div class="md-title">Kelas Kelas Baru</div>
+              </md-card-header>
+              <md-card-content>
+
+                <md-field>
+                  <label>Tingkat</label>
+                  <md-select v-model="tingkat" name="pilih_tahun" id="pilih_tahun" md-dense>
+                    <md-option disabled>Select tahun ajaran</md-option>
+                    <md-option  value="1">1</md-option>
+                    <md-option  value="2">2</md-option>
+                    <md-option  value="3">3</md-option>
+                    <md-option  value="4">4</md-option>
+                    <md-option  value="5">5</md-option>
+                    <md-option  value="6">6</md-option>
+                    <md-option  value="7">7</md-option>
+                    <md-option  value="8">8</md-option>
+                    <md-option  value="9">9</md-option>
+                    <md-option  value="10">10</md-option>
+                    <md-option  value="11">11</md-option>
+                    <md-option  value="12">12</md-option>
+                  </md-select>
+                </md-field>
+
+                <md-field>
+                  <label>Pilih Tahun Ajaran Terbaru</label>
+                  <md-input type="text" class="md-layout-item md-size-100" v-model="promotedClassYear" placeholder="ex: 2018/2019"  maxlength="9"></md-input>
+                </md-field>
+
+                <md-button class="md-primary" v-on:click.prevent="showDialogListUsersByClass = true, tampilsiswaNaikKelas(selectedKelas, selectedTahunAjaran)">Update</md-button>
+              </md-card-content>
+             </md-card>
+          </md-tab>
+
           <md-tab id="tab-import" md-label="Import Personil">
             <md-card>
               <md-card-header>
@@ -349,15 +410,13 @@
           </md-select>
         </md-field>
         <md-field>
-          <label>Pilih Tahun</label>
-          <md-select v-model="promotedClassYear" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="tampilsiswaperkelas(selectedKelas, selectedTahunAjaran)">
-            <md-option disabled>Select tahun ajaran</md-option>
-            <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
-          </md-select>
+          <label>Pilih Tahun Ajaran Terbaru</label>
+          <md-input type="text" class="md-layout-item md-size-100" v-model="promotedClassYear" placeholder="ex: 2018/2019"  maxlength="9"></md-input>
         </md-field>
         <md-button class="md-primary" v-on:click.prevent="promotedGradeUser()">Update</md-button>
       </div>
     </md-dialog>
+
     <md-dialog :md-active.sync="showDialogEdit">
       <md-dialog-title>Edit Siswa</md-dialog-title>
       <div style="padding:20px; height: 500px; width: 500px;">
@@ -383,6 +442,25 @@
         </md-dialog-actions>
       </div>
     </md-dialog>
+
+
+    <md-dialog :md-active.sync="showDialogListUsersByClass">
+      <md-dialog-title>List Siswa/Pengguna</md-dialog-title>
+          <md-dialog-content>
+          <md-table v-model="dataHasilTampilSiswa" md-sort-order="asc" md-card>
+          <md-table-toolbar>
+            <h1 class="md-title">Personil/Siswa</h1>
+          </md-table-toolbar>
+          <md-table-row slot="md-table-row" slot-scope="{ item }">
+            <md-table-cell md-label="Name">{{ item.nama_lengkap }}</md-table-cell>
+            <md-table-cell md-label="Email">{{ item.email }}</md-table-cell>
+            <md-table-cell md-label="RFID">{{ item.RFID }}</md-table-cell>
+            <md-table-cell md-label="Jenis Kelamin">{{ item.jenis_kelamin }}</md-table-cell>
+            <md-table-cell md-label="Bagian">{{ item.Kelas }}</md-table-cell>
+          </md-table-row>
+          </md-table>
+          </md-dialog-content>
+    </md-dialog>
   </section>
 
 </template>
@@ -399,6 +477,7 @@ export default {
     return {
       showDialogEdit: false,
       showDialogGrade: false,
+      showDialogListUsersByClass: false,
       model: {
         selectedGroup: null
       },
@@ -425,6 +504,9 @@ export default {
       inputTahunAjaran: null,
       promotedClass: null,
       promotedClassYear: null,
+      // Input Kelas Random
+      inputTahunAjaranRand: null,
+      tingkat: null,
       // TAMPIL SISWA JSON
       dataJsonTampilSiswa: [],
       dataJSONTampilKelas: [],
@@ -539,6 +621,32 @@ export default {
         console.log(error)
       }
     },
+
+    tampilsiswaNaikKelas: async function (namaKelas, paramTahunAjaran) {
+      var arrayHasil = []
+      try {
+        const parameter = {
+          sekolah: this.namaSekolahLocal,
+          tahun_ajaran: paramTahunAjaran,
+          nama_kelas: namaKelas
+        }
+        const response = await apiGetData.requestListPengguna(parameter)
+        let result = response.data.data.map(data => (
+          {
+            _id: data._id,
+            nama_lengkap: data.profil.nama_lengkap,
+            email: data.email,
+            RFID: data.RFID.serial_number,
+            jenis_kelamin: data.profil.jenis_kelamin,
+            Kelas: namaKelas
+          }
+        ))
+        this.dataHasilTampilSiswa = result
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
     tampilsemuakelas: async function (param) {
       const response = await api.getKelas(param)
       this.dataKelas = response.data.data
@@ -921,6 +1029,31 @@ export default {
         })
       }
     },
+
+    promotedGradeClassRand: async function () {
+      try {
+        const data = {
+          nama_sekolah: this.namaSekolahLocal,
+          newClassYear: this.promotedClassYear,
+          oldClass: this.selectedKelas,
+          oldYear: this.selectedTahunAjaran,
+          tingkat: this.tingkat
+        }
+        console.log(data)
+        // const pengguna = await apiGetData.promotedGradeClass(data)
+        // this.$swal({
+        //   title: 'Berhasil!',
+        //   text: 'Berhasil Naik Kelas',
+        //   type: 'success',
+        //   confirmButtonText: 'Yes',
+        //   showLoaderOnConfirm: true
+        // }).then((result) => {
+        //   window.location.reload()
+        // })
+      } catch (error) {
+        console.log(error)
+      }
+    },
     promotedGradeClass: async function () {
       try {
         const data = {
@@ -953,7 +1086,7 @@ export default {
           newClassYear: this.promotedClassYear
         }
         const pengguna = await apiGetData.promotedGradeUser(data)
-        console.log(pengguna)
+        this.$swal('Berhasil Naik Kelas', '', 'success')
       } catch (error) {
         console.log(error)
       }
