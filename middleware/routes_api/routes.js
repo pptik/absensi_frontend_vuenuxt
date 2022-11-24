@@ -54,6 +54,9 @@ export default {
   requestHarianDataSiswa (params, type) {
     return Api().post('/pengguna/' + type + 'PenggunaV2', params)
   },
+  requestSekolahPengguna (params, type) {
+    return Api().post('/general/tambah_akun_sekolah', params)
+  },
   requestJsonSekolah (params, type) {
     return Api().post('/general/' + type + '_MacAddress', params)
   },
@@ -86,7 +89,14 @@ export default {
   requestUpdateProfilPengguna (params) {
     return Api().post('/pengguna/editProfilePengguna', params)
   },
+  requestUpdateProfilPenggunaByAdmin (params) {
+    return Api().post('/pengguna/editProfilePenggunaByAdmin', params)
+  },
   requestTotalRekapBulanan (params) {
     return Api().post('/pengguna/rekaptotal', params)
+  },
+  // IMPORT PENGGUNA
+  importExcelPengguna (params) {
+    return Api().post('/pengguna/importPengguna', params)
   }
 }

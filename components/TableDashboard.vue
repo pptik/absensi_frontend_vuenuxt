@@ -9,7 +9,7 @@
                 <label>Pilih Tahun Ajaran</label>
                 <md-select v-model="selectedTahunAjaran" name="pilih_tahun" id="pilih_tahun" md-dense  @md-selected="dataRekapHarian(selectedTahunAjaran)">
                   <md-option disabled>Select tahun ajaran</md-option>
-                  <md-option  v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil._id">{{ hasil }}</md-option>
+                  <md-option v-for="hasil in dataTahunAjaran" :value="hasil" :key="hasil">{{ hasil }}</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -39,7 +39,9 @@
               <td> Nama Lengkap </td>
               <td> Kelas </td>
               <td> Datang </td>
+              <td> Mesin Datang</td>
               <td> Pulang </td>
+              <td> Mesin Pulang</td>
               <td> Status </td>
             </tr>
             </thead>
@@ -48,7 +50,9 @@
               <td>{{ data.nama_lengkap }}</td>
               <td>{{ data.kelas.nama_kelas }}</td>
               <td>{{ data.date_datang }}</td>
+              <td>{{ data.mac_datang }}</td>
               <td>{{ data.date_pulang }}</td>
+              <td>{{ data.mac_pulang }}</td>
               <td v-if="data.status == '-' && data.date_datang != '-'" > hadir </td>
               <td v-else >{{ data.status }}</td>
             </tr>
@@ -63,9 +67,33 @@
               <md-table-cell v-if="item.status == '-' && item.date_datang != '-'" type="text" md-label="Status" md-sort-by="status"> hadir </md-table-cell>
               <md-table-cell v-else type="text" md-label="Status" md-sort-by="status">  {{item.status}} </md-table-cell>
               <md-table-cell v-if="item.date_datang === '-'" type="number" md-label="Waktu Datang" md-sort-by="date_datang">Belum Melakukan Absen Pulang</md-table-cell>
-              <md-table-cell v-else type="number" md-label="Waktu Datang" md-sort-by="date_datang">{{ item.date_datang }}</md-table-cell>
+              <md-table-cell v-else type="number" md-label="Waktu Datang" md-sort-by="date_datang">
+                <span class="computer_time">
+                  {{ item.date_datang | getDate }}
+                  <md-tooltip md-direction="bottom">Waktu Komputer</md-tooltip>
+                </span>
+                (
+                  <span class="server_time">
+                    {{ item.date_datang | serverDate }}
+                    <md-tooltip md-direction="bottom">Waktu Server</md-tooltip>
+                  </span>
+                )
+              </md-table-cell>
+              <md-table-cell md-sort-by="mesin_datang" md-label="Mesin Datang" >{{ item.mac_datang }}</md-table-cell>
               <md-table-cell v-if="item.date_pulang === '-'" type="number" md-label="Waktu Pulang">Belum Melakukan Absen Pulang</md-table-cell>
-              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="date_pulang" >{{ item.date_pulang }}</md-table-cell>
+              <md-table-cell v-else type="number" md-label="Waktu Pulang" md-sort-by="date_pulang">
+                <span class="computer_time">
+                  {{ item.date_pulang | getDate }}
+                  <md-tooltip md-direction="bottom">Waktu Komputer</md-tooltip>
+                </span>
+                (
+                  <span class="server_time">
+                    {{ item.date_pulang | serverDate }}
+                    <md-tooltip md-direction="bottom">Waktu Server</md-tooltip>
+                  </span>
+                )
+              </md-table-cell>
+              <md-table-cell md-sort-by="mesin_pulang" md-label="Mesin Pulang" >{{ item.mac_pulang }}</md-table-cell>
             </md-table-row>
           </md-table>
         </div>
@@ -76,6 +104,8 @@
 import api from '../middleware/routes_api/routes'
 import apiGetData from '../middleware/routes_api/routes_get_data'
 import XLSX from 'xlsx'
+import moment from 'moment-timezone'
+moment.locale('id')
 
 export default {
   data () {
@@ -96,6 +126,14 @@ export default {
     this.dataRekapHarian()
     // this.dataSiswaHarianJSON()
     // this.dataRekapHarian()
+  },
+  filters: {
+    getDate: function (date) {
+      return moment(date).format('MMMM Do,h:mm a')
+    },
+    serverDate: function (date) {
+      return moment(date).tz('Asia/Jakarta').format('YYYY-MM-DD hh:mm:ss')
+    }
   },
   methods: {
     exportData: async function () {
@@ -130,9 +168,7 @@ export default {
         'sekolah': this.$session.get('auth').sekolah
       }
       const response = await api.requestJsonPengguna(dataParamSend, 'getFilterTahun')
-      // console.log(response)
       this.dataTahunAjaran = response.data.data
-      // Selected tahun ajaran pertama load
       this.selectedTahunAjaran = this.dataTahunAjaran[0]
     },
     listKelasJSON: async function (param) {
@@ -189,7 +225,6 @@ export default {
       }
       this.dataHarianSiswa = arrayKosong
       this.dataHarianSiswa.sort((a, b) => {
-        // console.log(a.created_at)
         return new Date(a.date) - new Date(b.date)
       })
       return this.dataHarianSiswa
@@ -197,4 +232,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.computer_time, .server_time {
+  text-decoration: underline;
+}
+</style>
 

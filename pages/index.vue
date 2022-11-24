@@ -108,7 +108,6 @@ export default {
   layout: 'loginarea',
   methods: {
     loginAuth: async function (param) {
-      // console.log('login')
       this.loading = true
       var dataLogin = {
         email: this.login.username,

@@ -7,9 +7,7 @@ module.exports = {
       try {
         let rmqConn = await rmq.connect(config.rmq)
         resolve(rmqConn)
-        console.log('connecteddd')
       } catch (error) {
-        console.log('fail to connect ', error)
         reject(error)
       }
     })

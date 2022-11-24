@@ -35,7 +35,6 @@ export default {
       this.namaSekolahLocal = dataAuth.sekolah
       this.usernameLocal = dataAuth.username
       this.sekolah_id = dataAuth._id
-      // console.log(momentTimeZone.tz(new Date(), 'Asia/Jakarta'))
     }
   }
 }
