@@ -12,6 +12,11 @@
               <md-table-cell md-label="mac">{{item.mac_address}}</md-table-cell>
               <md-table-cell md-label="rfid">{{item.rfid}}</md-table-cell>
               <md-table-cell md-label="date">{{item.created_at}}</md-table-cell>
+              <md-table-cell md-label="date"></md-table-cell>
+              <md-table-cell md-label="image">
+              <img v-if="item.image" :src="item.image" alt="Image Description" class="table-image"  />
+              <img v-else src="https://monitoring.pptik.id/data/RFIDCAM/no_image.jpg" alt="Placeholder Image" class="table-image" />
+            </md-table-cell>
           </md-table-row>
             </md-table>
             </div>
@@ -64,6 +69,7 @@ export default {
       var dataAuth = JSON.parse(localStorage.getItem('auth'))
       mesin.on('message', function (topic, message) {
         let mesinRFID = JSON.parse(message.toString())
+        // console.log(mesinRFID)
         if (dataAuth.sekolah === mesinRFID.sekolah) {
           ini.datamesin = mesinRFID.nama_lengkap + ' ( Mesin ' + mesinRFID.mac + ' )' + '. ' + mesinRFID.jam
         }
@@ -73,13 +79,21 @@ export default {
       let ini = this
       var paramsKosong = []
       const responses = await api.requestSekolah(paramsKosong, 'listrfid')
+      // console.log('Response')
+      // console.log(responses)
+      // console.log('Image')
+      // console.log(responses.data.data[0].image)
       for (let i = 0; i < responses.data.data.length; i++) {
         var responsesParser = {
           'mac_address': responses.data.data[i].mac_address,
           'rfid': responses.data.data[i].rfid,
+          'image': responses.data.data[i].image,
           'created_at': momentTZ.tz(responses.data.data[i].created_at, 'Asia/Jakarta').format('MMMM Do, h:mm z')
         }
+        // console.log(responsesParser)
         ini.dataAbsen.push(responsesParser)
+        // console.log('INi DATA Absen')
+        // console.log(ini.dataAbsen)
       }
     }
   }
@@ -139,5 +153,11 @@ export default {
     align-items: center;
     justify-content: center;
   }
+ .table-image {
+  max-width: 200px;
+  height: auto;
+  border-radius: 10%;    // Maintain the aspect ratio while resizing
+}
+
 }
 </style>
